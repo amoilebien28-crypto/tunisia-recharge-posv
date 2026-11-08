@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tunisie Recharge TPE Vendeur - لوحة التحكم</title>
+    <title>Tunisie Recharge - لوحة تحكم البائع</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome للأيقونات -->
@@ -11,15 +11,67 @@
 </head>
 <body class="bg-slate-100 min-h-screen font-sans pb-12 text-slate-800">
 
-    <!-- رأسية لوحة البائعين بلون فاتح ومرتاح -->
+    <!-- شاشة تسجيل الدخول / التسجيل للبائع (تظهر إذا لم يتم تسجيل الدخول) -->
+    <div id="authScreen" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full space-y-6">
+            <div class="text-center space-y-2">
+                <div class="bg-indigo-50 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto text-indigo-600 text-2xl font-bold">
+                    <i class="fa-solid fa-user-tie"></i>
+                </div>
+                <h2 class="text-2xl font-black text-slate-900">منصة البائعين (TPE Vendeur)</h2>
+                <p class="text-xs text-slate-500">الرجاء تسجيل الدخول أو إنشاء حساب جديد للبدء</p>
+            </div>
+
+            <!-- أزرار التبديل بين تسجيل الدخول وتسجيل حساب جديد -->
+            <div class="flex bg-slate-100 p-1 rounded-2xl">
+                <button onclick="switchAuthMode('login')" id="loginTabBtn" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-sm transition">دخول</button>
+                <button onclick="switchAuthMode('register')" id="registerTabBtn" class="flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-500 transition">حساب جديد</button>
+            </div>
+
+            <!-- نموذج الدخول -->
+            <div id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">رقم الهاتف:</label>
+                    <input type="text" id="loginPhone" placeholder="أدخل رقم الهاتف..." class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">كلمة المرور:</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
+                </div>
+                <button onclick="handleVendeurLogin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold shadow-sm transition">تسجيل الدخول</button>
+            </div>
+
+            <!-- نموذج التسجيل الجديد -->
+            <div id="registerForm" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">اسم البائع / الشركة:</label>
+                    <input type="text" id="regName" placeholder="اسمك الكامل..." class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">رقم الهاتف:</label>
+                    <input type="text" id="regPhone" placeholder="رقم الهاتف..." class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">كلمة المرور:</label>
+                    <input type="password" id="regPassword" placeholder="••••••••" class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
+                </div>
+                <button onclick="handleVendeurRegister()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold shadow-sm transition">إنشاء الحساب</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- رأسية لوحة التحكم (تظهر بعد تسجيل الدخول) -->
     <header class="bg-white text-slate-800 shadow-sm border-b border-slate-200">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
             <h1 class="text-xl font-bold flex items-center gap-2 text-indigo-700">
-                <i class="fa-solid fa-cash-register text-emerald-600"></i> Tunisie Recharge TPE Vendeur
+                <i class="fa-solid fa-cash-register text-emerald-600"></i> <span id="headerVendeurName">مرحباً بائعنا الكريم</span>
             </h1>
             <div class="flex gap-2">
                 <button onclick="openRecetteModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow-sm">
                     <i class="fa-solid fa-chart-line"></i> المداخيل والمرابيح
+                </button>
+                <button onclick="logoutVendeur()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-2 rounded-xl text-xs font-bold transition">
+                    <i class="fa-solid fa-right-from-bracket"></i> خروج
                 </button>
             </div>
         </div>
@@ -27,65 +79,66 @@
 
     <main class="container mx-auto px-4 py-8 max-w-3xl space-y-6">
 
-        <!-- واجهة الاختيار الرئيسية (الخيارين الأولين عند الدخول) -->
+        <!-- واجهة الاختيار الرئيسية -->
         <div id="mainChoicesSection" class="space-y-4">
             <div class="text-center space-y-2 mb-6">
-                <h2 class="text-2xl font-black text-slate-900">مرحباً بك في لوحة تحكم البائع</h2>
-                <p class="text-sm text-slate-500">الرجاء اختيار القسم للبدء بالعمل:</p>
+                <h2 class="text-2xl font-black text-slate-900">لوحة تحكم البائع والموزع</h2>
+                <p class="text-sm text-slate-500">إدارة زبائنك، الكاسة، والطلبات بكل احترافية:</p>
             </div>
 
-            <!-- الاختيار الأول: نظام البيع المباشر والكاسة -->
-            <button onclick="selectMainChoice('pos')" class="w-full text-right bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-md transform hover:-translate-y-0.5">
+            <!-- الاختيار الأول: الكاسة والبيع المباشر -->
+            <button onclick="selectMainChoice('pos')" class="w-full text-right bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-md">
                 <div class="flex items-center gap-4">
                     <div class="bg-white/20 p-4 rounded-2xl text-2xl">
                         <i class="fa-solid fa-cash-register text-yellow-300"></i>
                     </div>
                     <div>
                         <h3 class="text-lg font-black">1. نظام البيع المباشر (Caisse POS)</h3>
-                        <p class="text-xs text-emerald-100 font-normal mt-1">البيع السريع، اختيار الحانوت، وشحن الرصيد المباشر</p>
+                        <p class="text-xs text-emerald-100 font-normal mt-1">اختيار الحانوت التابع لك، البيع الفوري وشحن الرصيد</p>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-left text-lg"></i>
             </button>
 
-            <!-- الاختيار الثاني: إدارة الطلبات والمخزون والإدارة -->
-            <button onclick="selectMainChoice('management')" class="w-full text-right bg-white hover:bg-slate-50 border border-slate-200 text-slate-800 p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-sm transform hover:-translate-y-0.5">
+            <!-- الاختيار الثاني: الإدارة، الحوانت والطلبات -->
+            <button onclick="selectMainChoice('management')" class="w-full text-right bg-white hover:bg-slate-50 border border-slate-200 text-slate-800 p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-sm">
                 <div class="flex items-center gap-4">
                     <div class="bg-indigo-50 p-4 rounded-2xl text-2xl text-indigo-600">
                         <i class="fa-solid fa-boxes-stacked"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-black text-slate-900">2. إدارة المخزون، الطلبات والحسابات</h3>
-                        <p class="text-xs text-slate-500 font-normal mt-1">طلبات التجار، فواتير الشراء، الكريدي، والإحصائيات</p>
+                        <h3 class="text-lg font-black text-slate-900">2. إدارة الحوانت، الطلبات والمخزون</h3>
+                        <p class="text-xs text-slate-500 font-normal mt-1">إضافة حانوت جديد، متابعة طلبات زبائنك، الكريدي والإحصائيات</p>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-left text-slate-400 text-lg"></i>
             </button>
         </div>
 
-        <!-- الأقسام التفصيلية (تظهر حسب الاختيار الثاني أو عند الحاجة) -->
+        <!-- الأقسام التفصيلية للإدارة -->
         <div id="detailedManagementSection" class="hidden space-y-4">
             <div class="flex items-center justify-between mb-2">
                 <button onclick="backToMainChoices()" class="text-indigo-600 font-bold text-xs flex items-center gap-1 hover:underline">
                     <i class="fa-solid fa-arrow-right"></i> العودة للقائمة الرئيسية
                 </button>
-                <h3 class="font-bold text-slate-700 text-sm">لوحة الإدارة والمتابعة</h3>
+                <h3 class="font-bold text-slate-700 text-sm">إدارة الحوانت والمتابعة</h3>
             </div>
 
             <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 space-y-3">
+                <!-- زر خاص بإضافة حانوت جديد يتبع هذا البائع -->
+                <button onclick="openAddClientModal()" class="w-full text-right bg-emerald-50 hover:bg-emerald-100 text-emerald-900 p-4 rounded-2xl font-bold flex justify-between items-center transition border border-emerald-200">
+                    <span><i class="fa-solid fa-store ml-2 text-emerald-600"></i> إضافة حانوت جديد (الزبون الخاص بك + كلمة المرور)</span>
+                    <i class="fa-solid fa-plus text-xs text-emerald-600"></i>
+                </button>
+
                 <button onclick="openAdminWindow('orders')" class="w-full text-right bg-indigo-50 hover:bg-indigo-100 text-indigo-900 p-4 rounded-2xl font-bold flex justify-between items-center transition">
-                    <span><i class="fa-solid fa-box-archive ml-2 text-indigo-600"></i> طلبات التجار (التحضير والتسليم)</span>
+                    <span><i class="fa-solid fa-box-archive ml-2 text-indigo-600"></i> طلبات الحوانت الخاصة بي</span>
                     <i class="fa-solid fa-chevron-left text-xs"></i>
                 </button>
 
-                <button onclick="openAdminWindow('stats')" class="w-full text-right bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 p-4 rounded-2xl font-bold flex justify-between items-center transition">
-                    <span><i class="fa-solid fa-chart-pie ml-2 text-amber-500"></i> إحصائيات المبيعات</span>
+                <button onclick="openAdminWindow('clients')" class="w-full text-right bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 p-4 rounded-2xl font-bold flex justify-between items-center transition">
+                    <span><i class="fa-solid fa-address-book ml-2 text-blue-600"></i> قائمة الحوانت المسجلة لدي (Relevés & Crédit)</span>
                     <i class="fa-solid fa-chevron-left text-xs text-slate-400"></i>
-                </button>
-
-                <button onclick="openMonthlyBeneficeModal()" class="w-full text-right bg-teal-50 hover:bg-teal-100 text-teal-900 p-4 rounded-2xl font-bold flex justify-between items-center transition">
-                    <span><i class="fa-solid fa-calendar-days ml-2 text-teal-600"></i> مرابيح كل شهر (جانفي، فيفري، مارس...)</span>
-                    <i class="fa-solid fa-chevron-left text-xs"></i>
                 </button>
 
                 <button onclick="openAdminWindow('stock')" class="w-full text-right bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 p-4 rounded-2xl font-bold flex justify-between items-center transition">
@@ -93,40 +146,43 @@
                     <i class="fa-solid fa-chevron-left text-xs text-slate-400"></i>
                 </button>
 
-                <button onclick="openAdminWindow('purchases')" class="w-full text-right bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 p-4 rounded-2xl font-bold flex justify-between items-center transition">
-                    <span><i class="fa-solid fa-file-invoice-dollar ml-2 text-indigo-600"></i> إدارة فواتير الشراء (Factures d'achat)</span>
-                    <i class="fa-solid fa-chevron-left text-xs text-slate-400"></i>
-                </button>
-
-                <button onclick="openCapitalModal()" class="w-full text-right bg-amber-50 hover:bg-amber-100 text-amber-900 p-4 rounded-2xl font-bold flex justify-between items-center transition">
-                    <span><i class="fa-solid fa-vault ml-2 text-amber-600"></i> رأس المال والمخزون النهائي (Capital & Stock)</span>
-                    <i class="fa-solid fa-chevron-left text-xs"></i>
-                </button>
-
-                <button onclick="openAdminWindow('credits')" class="w-full text-right bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 p-4 rounded-2xl font-bold flex justify-between items-center transition">
-                    <span><i class="fa-solid fa-hand-holding-dollar ml-2 text-rose-500"></i> إدارة الكريدي والديون</span>
-                    <i class="fa-solid fa-chevron-left text-xs text-slate-400"></i>
-                </button>
-
-                <button onclick="openAdminWindow('clients')" class="w-full text-right bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 p-4 rounded-2xl font-bold flex justify-between items-center transition">
-                    <span><i class="fa-solid fa-address-book ml-2 text-blue-600"></i> كشف حساب الحوانت (Relevés)</span>
-                    <i class="fa-solid fa-chevron-left text-xs text-slate-400"></i>
-                </button>
-
-                <button onclick="openAdminWindow('broadcast')" class="w-full text-right bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 p-4 rounded-2xl font-bold flex justify-between items-center transition">
-                    <span><i class="fa-solid fa-bullhorn ml-2 text-purple-600"></i> تنبيهات الحوانت</span>
-                    <i class="fa-solid fa-chevron-left text-xs text-slate-400"></i>
-                </button>
-
-                <button onclick="openAdminWindow('tariffs')" class="w-full text-right bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 p-4 rounded-2xl font-bold flex justify-between items-center transition">
-                    <span><i class="fa-solid fa-tags ml-2 text-teal-600"></i> إدارة الأسعار</span>
+                <button onclick="openAdminWindow('stats')" class="w-full text-right bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 p-4 rounded-2xl font-bold flex justify-between items-center transition">
+                    <span><i class="fa-solid fa-chart-pie ml-2 text-amber-500"></i> إحصائيات المبيعات</span>
                     <i class="fa-solid fa-chevron-left text-xs text-slate-400"></i>
                 </button>
             </div>
         </div>
     </main>
 
-    <!-- النوافذ المنبثقة (Modals) تبقى جاهزة للعمل -->
+    <!-- نافذة إضافة حانوت جديد بواسطة البائع -->
+    <div id="addClientModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
+        <div class="bg-white p-6 rounded-3xl shadow-xl max-w-md w-full space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-store text-emerald-600 ml-2"></i> إضافة حانوت جديد لزبائنك</h3>
+                <button onclick="closeAddClientModal()" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">اسم الحانوت (المحل):</label>
+                    <input type="text" id="newClientName" placeholder="مثال: حانوت البركة..." class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">رقم الهاتف (رقم دخول الزبون):</label>
+                    <input type="text" id="newClientPhone" placeholder="رقم الهاتف..." class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">كلمة المرور الخاصة بالتاجر:</label>
+                    <input type="password" id="newClientPassword" placeholder="كلمة المرور للدخول..." class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">العنوان / المنطقة:</label>
+                    <input type="text" id="newClientAddress" placeholder="المكان..." class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
+                </div>
+            </div>
+            <button onclick="saveNewClientByVendeur()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold text-sm shadow-sm">حفظ الحانوت الجديد</button>
+        </div>
+    </div>
+
     <!-- نافذة المداخيل والمرابيح -->
     <div id="recetteModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-sm w-full mx-4 space-y-4">
@@ -136,15 +192,11 @@
             </div>
             <div class="space-y-3">
                 <div class="bg-slate-50 p-3 rounded-xl flex justify-between items-center border border-slate-100">
-                    <span class="text-xs text-slate-600">مداخيل اليوم (الخلاص الحاضر):</span>
+                    <span class="text-xs text-slate-600">مداخيل اليوم:</span>
                     <span id="modalRecetteDay" class="font-bold text-slate-900">0.000 د.ت</span>
                 </div>
-                <div class="bg-slate-50 p-3 rounded-xl flex justify-between items-center border border-slate-100">
-                    <span class="text-xs text-slate-600">مداخيل الشهر الحالي:</span>
-                    <span id="modalRecetteMonth" class="font-bold text-slate-900">0.000 د.ت</span>
-                </div>
                 <div class="bg-emerald-50 p-3 rounded-xl flex justify-between items-center border border-emerald-100">
-                    <span class="text-xs text-emerald-700 font-bold">صافي الأرباح (Benefice):</span>
+                    <span class="text-xs text-emerald-700 font-bold">صافي الأرباح:</span>
                     <span id="modalTotalBenefice" class="font-extrabold text-emerald-600 text-lg">0.000 د.ت</span>
                 </div>
                 <div class="bg-rose-50 p-3 rounded-xl flex justify-between items-center border border-rose-100">
@@ -152,85 +204,32 @@
                     <span id="modalTotalCredit" class="font-extrabold text-rose-600 text-lg">0.000 د.ت</span>
                 </div>
             </div>
-            <button onclick="closeRecetteModal()" class="w-full bg-slate-800 text-white py-2.5 rounded-xl font-bold text-sm shadow-sm hover:bg-slate-900">إغلاق</button>
+            <button onclick="closeRecetteModal()" class="w-full bg-slate-800 text-white py-2.5 rounded-xl font-bold text-sm shadow-sm">إغلاق</button>
         </div>
     </div>
 
-    <!-- بقية النوافذ (طلبات، إحصائيات، مخزون...) -->
+    <!-- نوافذ الإدارة والطلبات والكاسة -->
     <div id="windowOrders" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
-                <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-box-archive text-indigo-600 ml-2"></i> طلبات التجار (التحضير)</h4>
+                <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-box-archive text-indigo-600 ml-2"></i> طلبات الحوانت التابعة لي</h4>
                 <button onclick="closeAdminWindow('orders')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
             </div>
-            <p class="text-xs text-slate-500 font-bold">اضغط على اسم الحانوت لفتح الفاتورة ومراجعتها أو تعديلها:</p>
-            <div id="ordersListContainer" class="space-y-2"></div>
+            <div id="ordersListContainer" class="space-y-2">
+                <p class="text-slate-400 text-sm text-center py-4">لا توجد طلبات حالياً.</p>
+            </div>
             <button onclick="closeAdminWindow('orders')" class="w-full bg-slate-100 text-slate-700 py-2.5 rounded-xl font-bold text-sm">إغلاق</button>
         </div>
     </div>
 
-    <!-- نافذة إحصائيات المبيعات -->
-    <div id="windowStats" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
+    <div id="windowClients" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
-                <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-chart-pie text-indigo-600 ml-2"></i> إحصائيات كميات المبيعات</h4>
-                <button onclick="closeAdminWindow('stats')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+                <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-address-book text-blue-600 ml-2"></i> قائمة الحوانت المسجلة لدي</h4>
+                <button onclick="closeAdminWindow('clients')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-right border-collapse">
-                    <thead>
-                        <tr class="border-b bg-slate-50 text-slate-600 text-sm">
-                            <th class="p-3">المشغل</th>
-                            <th class="p-3">الفئة / النوع</th>
-                            <th class="p-3">الكمية الإجمالية المباعة</th>
-                        </tr>
-                    </thead>
-                    <tbody id="salesStatsTableBody"></tbody>
-                </table>
-            </div>
-            <button onclick="closeAdminWindow('stats')" class="w-full bg-slate-100 text-slate-700 py-2.5 rounded-xl font-bold text-sm">إغلاق</button>
-        </div>
-    </div>
-
-    <!-- نافذة المخزون -->
-    <div id="windowStock" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-boxes-stacked text-indigo-600 ml-2"></i> إدارة المخزون الحالي (Stock)</h4>
-                <button onclick="closeAdminWindow('stock')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-right border-collapse">
-                    <thead>
-                        <tr class="border-b bg-slate-50 text-slate-600 text-sm">
-                            <th class="p-3">المشغل</th>
-                            <th class="p-3">الفئة</th>
-                            <th class="p-3">المشتريات</th>
-                            <th class="p-3">المتبقي في المخزون</th>
-                        </tr>
-                    </thead>
-                    <tbody id="stockTableBody"></tbody>
-                </table>
-            </div>
-            <button onclick="closeAdminWindow('stock')" class="w-full bg-slate-100 text-slate-700 py-2.5 rounded-xl font-bold text-sm">إغلاق</button>
-        </div>
-    </div>
-
-    <!-- نافذة فواتير الشراء -->
-    <div id="windowPurchases" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto space-y-4">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-file-invoice-dollar text-indigo-600 ml-2"></i> فواتير الشراء</h4>
-                <button onclick="closeAdminWindow('purchases')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
-            </div>
-            <div class="flex justify-between items-center">
-                <span class="text-xs text-slate-500">سجل فواتير الشراء:</span>
-                <button onclick="openPurchaseModal()" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-indigo-700 shadow-sm"><i class="fa-solid fa-plus ml-1"></i> تسجيل فاتورة شراء جديدة</button>
-            </div>
-            <div id="purchaseInvoicesContainer" class="space-y-2 mt-3">
-                <p class="text-slate-400 text-sm text-center py-3">لا توجد فواتير شراء مسجلة بعد.</p>
-            </div>
-            <button onclick="closeAdminWindow('purchases')" class="w-full bg-slate-100 text-slate-700 py-2.5 rounded-xl font-bold text-sm mt-4">إغلاق</button>
+            <div id="clientsListContainer" class="space-y-2"></div>
+            <button onclick="closeAdminWindow('clients')" class="w-full bg-slate-100 text-slate-700 py-2.5 rounded-xl font-bold text-sm">إغلاق</button>
         </div>
     </div>
 
@@ -245,28 +244,24 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">اختر الحانوت المسجل:</label>
-                        <div class="flex gap-2">
-                            <select id="posRegisteredClientSelect" class="border border-slate-300 p-3 rounded-xl w-full text-sm font-bold bg-white">
-                                <option value="">اختر الحانوت...</option>
-                            </select>
-                            <button onclick="openQuickRegisterClientModal()" class="bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap shadow-sm hover:bg-emerald-700">حانوت جديد +</button>
-                        </div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">اختر الحانوت الخاص بك:</label>
+                        <select id="posRegisteredClientSelect" class="border border-slate-300 p-3 rounded-xl w-full text-sm font-bold bg-white">
+                            <option value="">اختر الحانوت...</option>
+                        </select>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">طريقة الخلاص:</label>
                         <select id="posPaymentStatus" class="border border-slate-300 p-3 rounded-xl w-full font-bold text-sm bg-white">
                             <option value="Payé">خلاص كاش (Payé)</option>
                             <option value="Crédit">كريدي كلي (Crédit)</option>
-                            <option value="Partiel">خلاص جزئي (Tranche)</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <button onclick="selectPosOperator('Ooredoo')" class="bg-red-500 hover:bg-red-600 text-white p-3 rounded-2xl font-bold text-sm shadow-sm">أوريدو</button>
-                    <button onclick="selectPosOperator('Telecom')" class="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-2xl font-bold text-sm shadow-sm">تيليكوم</button>
-                    <button onclick="selectPosOperator('Orange')" class="bg-orange-500 hover:bg-orange-600 text-white p-3 rounded-2xl font-bold text-sm shadow-sm">أورنج</button>
+                    <button onclick="selectPosOperator('Ooredoo')" class="bg-red-500 hover:bg-red-600 text-white p-3 rounded-2xl font-bold text-sm">أوريدو</button>
+                    <button onclick="selectPosOperator('Telecom')" class="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-2xl font-bold text-sm">تيليكوم</button>
+                    <button onclick="selectPosOperator('Orange')" class="bg-orange-500 hover:bg-orange-600 text-white p-3 rounded-2xl font-bold text-sm">أورنج</button>
                 </div>
 
                 <div id="posProductsSection" class="hidden space-y-3 border-t pt-3">
@@ -277,21 +272,21 @@
 
             <div class="border-t pt-4 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50 p-4 rounded-2xl mt-2">
                 <div>
-                    <span class="text-slate-500 text-sm">المجموع الجملي للبيع:</span>
+                    <span class="text-slate-500 text-sm">المجموع الجملي:</span>
                     <span id="posCartTotal" class="text-2xl font-extrabold text-emerald-600 mr-2">0.000 د.ت</span>
                 </div>
                 <div class="flex gap-3 w-full md:w-auto">
-                    <button onclick="closeAdminWindow('pos')" class="flex-1 md:flex-none bg-slate-200 text-slate-700 px-6 py-3 rounded-xl font-bold hover:bg-slate-300">إغلاق الكاسة</button>
-                    <button onclick="window.submitPosOrder()" class="flex-1 md:flex-none bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-emerald-700 shadow-sm">تأكيد عملية البيع</button>
+                    <button onclick="closeAdminWindow('pos')" class="flex-1 md:flex-none bg-slate-200 text-slate-700 px-6 py-3 rounded-xl font-bold">إغلاق</button>
+                    <button onclick="submitPosOrder()" class="flex-1 md:flex-none bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-emerald-700 shadow-sm">تأكيد البيع</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- السكربت والربط بالفايربيز -->
+    <!-- السكربت والربط بقاعدة البيانات -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAYNDYcwlmX5rdnpXyGoHR48g-T6h_oHFk",
@@ -306,21 +301,190 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         window.db = db;
-        window.updateDoc = updateDoc;
-        window.doc = doc;
 
-        window.posOperator = 'Ooredoo';
-        window.posCart = {};
+        // إدارة حالة تسجيل دخول البائع في LocalStorage
+        window.currentVendeur = JSON.parse(localStorage.getItem('currentVendeur') || 'null');
+
+        window.checkVendeurAuth = function() {
+            if (window.currentVendeur) {
+                document.getElementById('authScreen').classList.add('hidden');
+                document.getElementById('headerVendeurName').innerText = `البائع: ${window.currentVendeur.name}`;
+                fetchVendeurData();
+            } else {
+                document.getElementById('authScreen').classList.remove('hidden');
+            }
+        };
+
+        window.switchAuthMode = function(mode) {
+            if (mode === 'login') {
+                document.getElementById('loginForm').classList.remove('hidden');
+                document.getElementById('registerForm').classList.add('hidden');
+                document.getElementById('loginTabBtn').className = 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-sm transition';
+                document.getElementById('registerTabBtn').className = 'flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-500 transition';
+            } else {
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('registerForm').classList.remove('hidden');
+                document.getElementById('registerTabBtn').className = 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-sm transition';
+                document.getElementById('loginTabBtn').className = 'flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-500 transition';
+            }
+        };
+
+        window.handleVendeurRegister = async function() {
+            const name = document.getElementById('regName').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+            if (!name || !phone || !password) {
+                alert('الرجاء ملء كل البيانات.');
+                return;
+            }
+            try {
+                const docRef = await addDoc(collection(db, "vendeurs"), { name, phone, password });
+                window.currentVendeur = { id: docRef.id, name, phone };
+                localStorage.setItem('currentVendeur', JSON.stringify(window.currentVendeur));
+                alert('تم إنشاء الحساب بنجاح!');
+                window.checkVendeurAuth();
+            } catch (e) {
+                alert('خطأ في التسجيل.');
+            }
+        };
+
+        window.handleVendeurLogin = async function() {
+            const phone = document.getElementById('loginPhone').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            try {
+                const q = query(collection(db, "vendeurs"), where("phone", "==", phone), where("password", "==", password));
+                const querySnapshot = await getDocs(q);
+                if (!querySnapshot.empty) {
+                    let vData;
+                    querySnapshot.forEach(d => vData = { id: d.id, ...d.data() });
+                    window.currentVendeur = vData;
+                    localStorage.setItem('currentVendeur', JSON.stringify(window.currentVendeur));
+                    window.checkVendeurAuth();
+                } else {
+                    alert('رقم الهاتف أو كلمة المرور غير صحيحة.');
+                }
+            } catch (e) {
+                alert('خطأ في الاتصال.');
+            }
+        };
+
+        window.logoutVendeur = function() {
+            localStorage.removeItem('currentVendeur');
+            window.currentVendeur = null;
+            location.reload();
+        };
+
+        // إدارة الحوانت الخاصة بهذا البائع حصرياً
+        window.openAddClientModal = () => document.getElementById('addClientModal').classList.remove('hidden');
+        window.closeAddClientModal = () => document.getElementById('addClientModal').classList.add('hidden');
+
+        window.saveNewClientByVendeur = async function() {
+            const name = document.getElementById('newClientName').value.trim();
+            const phone = document.getElementById('newClientPhone').value.trim();
+            const password = document.getElementById('newClientPassword').value.trim();
+            const address = document.getElementById('newClientAddress').value.trim();
+
+            if (!name || !phone || !password) {
+                alert('الرجاء إدخال اسم الحانوت، رقم الهاتف، وكلمة المرور.');
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, "clients"), {
+                    name, phone, password, address,
+                    vendeurId: window.currentVendeur.id,
+                    createdAt: new Date().toISOString()
+                });
+                alert('تم إضافة الحانوت بنجاح وأصبح له حساب دخول!');
+                window.closeAddClientModal();
+                fetchVendeurData();
+            } catch (e) {
+                alert('حدث خطأ أثناء الحفظ.');
+            }
+        };
+
+        window.allClients = [];
         window.allOrders = [];
-        window.allRegisteredClients = [];
-        window.purchaseInvoices = JSON.parse(localStorage.getItem('purchaseInvoices_vendeur') || '[]');
-        window.stockPurchases = JSON.parse(localStorage.getItem('stockPurchases_vendeur') || '{}');
 
-        // وظائف التنقل بين الاختيارين الرئيسيين
+        async function fetchVendeurData() {
+            if (!window.currentVendeur) return;
+            try {
+                // جلب الحوانت التابعة لهذا البائع فقط
+                const clientsSnap = await getDocs(query(collection(db, "clients"), where("vendeurId", "==", window.currentVendeur.id)));
+                window.allClients = [];
+                clientsSnap.forEach(d => window.allClients.push({ id: d.id, ...d.data() }));
+
+                // جلب الطلبات الخاصة بالحوانت التابعة لهذا البائع
+                onSnapshot(collection(db, "orders"), (snap) => {
+                    window.allOrders = [];
+                    snap.forEach(d => {
+                        let o = d.data();
+                        // التحقق أن الطلب يخص حانوت تابع لهذا البائع
+                        let belongs = window.allClients.some(c => c.name === o.clientName);
+                        if (belongs) window.allOrders.push({ id: d.id, ...o });
+                    });
+                    processAdminStats();
+                });
+
+                updateClientsUI();
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function updateClientsUI() {
+            let selectHtml = '<option value="">اختر الحانوت...</option>';
+            let listHtml = '';
+            window.allClients.forEach(c => {
+                selectHtml += `<option value="${c.name}">${c.name} (${c.phone})</option>`;
+                listHtml += `
+                    <div class="bg-slate-50 p-4 rounded-2xl border flex justify-between items-center">
+                        <div>
+                            <h4 class="font-bold text-slate-900">${c.name}</h4>
+                            <p class="text-xs text-slate-500">الهاتف: ${c.phone} | العنوان: ${c.address || 'غير محدد'}</p>
+                        </div>
+                        <span class="text-xs bg-indigo-50 text-indigo-700 px-3 py-1 rounded-xl font-bold">كلمة المرور: ${c.password}</span>
+                    </div>
+                `;
+            });
+            const sel = document.getElementById('posRegisteredClientSelect');
+            if (sel) sel.innerHTML = selectHtml;
+            const lst = document.getElementById('clientsListContainer');
+            if (lst) lst.innerHTML = listHtml || '<p class="text-slate-400 text-center py-4">لا توجد حوانت مسجلة بعد.</p>';
+        }
+
+        function processAdminStats() {
+            let dayTotal = 0, totalBenefice = 0, totalCredit = 0;
+            const today = new Date().toISOString().slice(0, 10);
+            let ordersHtml = '';
+
+            window.allOrders.forEach(o => {
+                if (o.paidAmount) dayTotal += (o.date.slice(0, 10) === today ? o.paidAmount : 0);
+                if (o.benefice) totalBenefice += o.benefice;
+                if (o.creditAmount) totalCredit += o.creditAmount;
+
+                ordersHtml += `
+                    <div class="bg-slate-50 p-4 rounded-2xl border space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-slate-900">${o.clientName}</span>
+                            <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-1 rounded-lg font-bold">${o.paymentStatus}</span>
+                        </div>
+                        <p class="text-xs text-slate-500">المجموع: ${o.totalSell} د.ت | التاريخ: ${new Date(o.date).toLocaleDateString()}</p>
+                    </div>
+                `;
+            });
+
+            document.getElementById('modalRecetteDay').innerText = dayTotal.toFixed(3) + ' د.ت';
+            document.getElementById('modalTotalBenefice').innerText = totalBenefice.toFixed(3) + ' د.ت';
+            document.getElementById('modalTotalCredit').innerText = totalCredit.toFixed(3) + ' د.ت';
+            const oContainer = document.getElementById('ordersListContainer');
+            if (oContainer) oContainer.innerHTML = ordersHtml || '<p class="text-slate-400 text-center py-4">لا توجد طلبات حالياً.</p>';
+        }
+
+        // دويار القوائم والنوافذ
         window.selectMainChoice = function(choice) {
-            if (choice === 'pos') {
-                window.openAdminWindow('pos');
-            } else if (choice === 'management') {
+            if (choice === 'pos') window.openAdminWindow('pos');
+            else if (choice === 'management') {
                 document.getElementById('mainChoicesSection').classList.add('hidden');
                 document.getElementById('detailedManagementSection').classList.remove('hidden');
             }
@@ -331,148 +495,60 @@
             document.getElementById('mainChoicesSection').classList.remove('hidden');
         };
 
-        window.tariffs = [
-            { id: 'Ooredoo_1', operator: 'Ooredoo', name: '1 د.ت', buy: 0.950, sell: 1.000, color: 'bg-slate-50 border-slate-300 text-slate-900' },
-            { id: 'Ooredoo_5', operator: 'Ooredoo', name: '5 د.ت', buy: 4.750, sell: 5.000, color: 'bg-slate-50 border-slate-300 text-slate-900' },
-            { id: 'Ooredoo_10', operator: 'Ooredoo', name: '10 د.ت', buy: 9.500, sell: 10.000, color: 'bg-slate-50 border-slate-300 text-slate-900' },
-            { id: 'Ooredoo_25', operator: 'Ooredoo', name: '25 د.ت', buy: 23.750, sell: 25.000, color: 'bg-slate-50 border-slate-300 text-slate-900' },
-            { id: 'Ooredoo_recharge', operator: 'Ooredoo', name: 'شحن رصيد مباشر', buy: 0.000, sell: 0.000, color: 'bg-rose-50 border-rose-200 text-rose-900' },
-            
-            { id: 'Telecom_1', operator: 'Telecom', name: '1 د.ت', buy: 0.950, sell: 1.000, color: 'bg-slate-50 border-slate-300 text-slate-900' },
-            { id: 'Telecom_5', operator: 'Telecom', name: '5 د.ت', buy: 4.750, sell: 5.000, color: 'bg-slate-50 border-slate-300 text-slate-900' },
-            { id: 'Telecom_10', operator: 'Telecom', name: '10 د.ت', buy: 9.500, sell: 10.000, color: 'bg-slate-50 border-slate-300 text-slate-900' },
-            { id: 'Telecom_25', operator: 'Telecom', name: '25 د.ت', buy: 23.750, sell: 25.000, color: 'bg-slate-50 border-slate-300 text-slate-900' },
-            { id: 'Telecom_recharge', operator: 'Telecom', name: 'شحن رصيد مباشر', buy: 0.000, sell: 0.000, color: 'bg-rose-50 border-rose-200 text-rose-900' },
-
-            { id: 'Orange_1', operator: 'Orange', name: '1 د.ت', buy: 0.950, sell: 1.000, color: 'bg-slate-50 border-slate-300 text-slate-900' },
-            { id: 'Orange_5', operator: 'Orange', name: '5 د.ت', buy: 4.750, sell: 5.000, color: 'bg-slate-50 border-slate-300 text-slate-900' },
-            { id: 'Orange_10', operator: 'Orange', name: '10 د.ت', buy: 9.500, sell: 10.000, color: 'bg-slate-50 border-slate-300 text-slate-900' },
-            { id: 'Orange_25', operator: 'Orange', name: '25 د.ت', buy: 23.750, sell: 25.000, color: 'bg-slate-50 border-slate-300 text-slate-900' },
-            { id: 'Orange_recharge', operator: 'Orange', name: 'شحن رصيد مباشر', buy: 0.000, sell: 0.000, color: 'bg-rose-50 border-rose-200 text-rose-900' }
-        ];
-
-        async function fetchRegisteredClients() {
-            try {
-                const querySnapshot = await getDocs(collection(db, "clients"));
-                window.allRegisteredClients = [];
-                querySnapshot.forEach((docSnap) => {
-                    window.allRegisteredClients.push(docSnap.data());
-                });
-                processAdminData();
-            } catch (e) {
-                console.error("Error fetching clients:", e);
-            }
-        }
-        fetchRegisteredClients();
-
-        onSnapshot(collection(db, "orders"), (snapshot) => {
-            window.allOrders = [];
-            snapshot.forEach((docSnap) => {
-                window.allOrders.push({ id: docSnap.id, ...docSnap.data() });
-            });
-            window.allOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
-            processAdminData();
-        }, (error) => {
-            console.error("Error loading orders:", error);
-        });
-
-        window.openAdminWindow = function(pageName) {
+        window.openAdminWindow = function(name) {
             document.querySelectorAll('.admin-window').forEach(el => el.classList.add('hidden'));
-            const targetWindow = document.getElementById(`window${capitalize(pageName)}`);
-            if (targetWindow) {
-                targetWindow.classList.remove('hidden');
-                processAdminData();
-                if (pageName === 'pos') {
-                    selectPosOperator('Ooredoo');
-                }
-            }
+            const w = document.getElementById(`window${name.charAt(0).toUpperCase() + name.slice(1)}`);
+            if (w) w.classList.remove('hidden');
         };
 
-        window.closeAdminWindow = function(pageName) {
-            const targetWindow = document.getElementById(`window${capitalize(pageName)}`);
-            if (targetWindow) targetWindow.classList.add('hidden');
+        window.closeAdminWindow = function(name) {
+            const w = document.getElementById(`window${name.charAt(0).toUpperCase() + name.slice(1)}`);
+            if (w) w.classList.add('hidden');
         };
-
-        function capitalize(s) {
-            if (s === 'orders') return 'Orders';
-            if (s === 'stats') return 'Stats';
-            if (s === 'stock') return 'Stock';
-            if (s === 'purchases') return 'Purchases';
-            if (s === 'pos') return 'Pos';
-            return 'Orders';
-        }
 
         window.openRecetteModal = () => document.getElementById('recetteModal').classList.remove('hidden');
         window.closeRecetteModal = () => document.getElementById('recetteModal').classList.add('hidden');
 
-        window.selectPosOperator = function(operator) {
-            window.posOperator = operator;
-            document.getElementById('posProductsSection').classList.remove('hidden');
-            document.getElementById('posSelectedOperatorTitle').innerText = `اختر للبيع المباشر: ${operator}`;
-            
-            const opTariffs = window.tariffs.filter(t => t.operator === operator);
-            let gridHtml = '';
-            opTariffs.forEach(t => {
-                let currentPosQty = window.posCart[t.id] || 0;
-                let isRecharge = t.id.includes('recharge');
+        // قائمة البطاقات والأسعار للبيع المباشر
+        window.tariffs = [
+            { id: 'Ooredoo_1', operator: 'Ooredoo', name: '1 د.ت', buy: 0.950, sell: 1.000 },
+            { id: 'Ooredoo_5', operator: 'Ooredoo', name: '5 د.ت', buy: 4.750, sell: 5.000 },
+            { id: 'Ooredoo_10', operator: 'Ooredoo', name: '10 د.ت', buy: 9.500, sell: 10.000 },
+            { id: 'Telecom_1', operator: 'Telecom', name: '1 د.ت', buy: 0.950, sell: 1.000 },
+            { id: 'Telecom_5', operator: 'Telecom', name: '5 د.ت', buy: 4.750, sell: 5.000 },
+            { id: 'Orange_1', operator: 'Orange', name: '1 د.ت', buy: 0.950, sell: 1.000 },
+            { id: 'Orange_5', operator: 'Orange', name: '5 د.ت', buy: 4.750, sell: 5.000 }
+        ];
+        window.posCart = {};
 
-                if (isRecharge) {
-                    gridHtml += `
-                        <div class="bg-rose-50/70 p-3 rounded-xl border border-rose-200 flex flex-col justify-between col-span-2">
-                            <div><span class="text-xs text-rose-700 font-bold">${t.name}</span></div>
-                            <div class="mt-2 flex items-center gap-2">
-                                <input type="number" min="0" step="0.001" id="pos_qty_${t.id}" value="${currentPosQty || ''}" oninput="updatePosRechargeQty('${t.id}', this.value)" placeholder="المبلغ بـ د.ت" class="border p-2 rounded-xl w-full text-center font-extrabold text-sm bg-white">
-                                <span class="text-xs text-slate-700 font-bold">د.ت</span>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    gridHtml += `
-                        <div onclick="addPosCardQty('${t.id}')" class="${t.color} border-2 p-3 rounded-xl flex flex-col justify-between cursor-pointer hover:shadow-sm transition select-none relative">
-                            <button onclick="event.stopPropagation(); decreasePosCardQty('${t.id}')" class="absolute top-2 left-2 bg-white/90 hover:bg-white text-slate-700 w-6 h-6 rounded-full font-black text-xs shadow-xs flex items-center justify-center border">-</button>
-                            <div>
-                                <h4 class="font-black text-lg">${t.name}</h4>
-                                <p class="font-extrabold text-xs mt-0.5">${t.sell.toFixed(3)} د.ت</p>
-                            </div>
-                            <div class="mt-3 text-center bg-white/80 py-1 rounded-lg border border-slate-200">
-                                <span id="pos_qty_${t.id}" class="font-black text-base text-slate-900">${currentPosQty}</span>
-                            </div>
-                        </div>
-                    `;
-                }
+        window.selectPosOperator = function(op) {
+            document.getElementById('posProductsSection').classList.remove('hidden');
+            document.getElementById('posSelectedOperatorTitle').innerText = `اختر للبيع: ${op}`;
+            let html = '';
+            window.tariffs.filter(t => t.operator === op).forEach(t => {
+                let qty = window.posCart[t.id] || 0;
+                html += `
+                    <div onclick="addPosCardQty('${t.id}')" class="bg-white border-2 p-3 rounded-xl cursor-pointer hover:shadow transition">
+                        <h4 class="font-bold">${t.name}</h4>
+                        <p class="text-xs text-slate-500">${t.sell} د.ت</p>
+                        <div class="mt-2 text-center bg-slate-100 py-1 rounded font-bold" id="pos_qty_${t.id}">${qty}</div>
+                    </div>
+                `;
             });
-            document.getElementById('posCardsGrid').innerHTML = gridHtml;
-            calculatePosTotal();
+            document.getElementById('posCardsGrid').innerHTML = html;
         };
 
         window.addPosCardQty = (id) => {
-            if (!window.posCart[id]) window.posCart[id] = 0;
-            window.posCart[id] += 1;
+            window.posCart[id] = (window.posCart[id] || 0) + 1;
             document.getElementById(`pos_qty_${id}`).innerText = window.posCart[id];
-            calculatePosTotal();
+            calcPosTotal();
         };
 
-        window.decreasePosCardQty = (id) => {
-            if (!window.posCart[id]) window.posCart[id] = 0;
-            window.posCart[id] -= 1;
-            if (window.posCart[id] < 0) window.posCart[id] = 0;
-            document.getElementById(`pos_qty_${id}`).innerText = window.posCart[id];
-            calculatePosTotal();
-        };
-
-        window.updatePosRechargeQty = (id, val) => {
-            window.posCart[id] = parseFloat(val) || 0;
-            calculatePosTotal();
-        };
-
-        function calculatePosTotal() {
+        function calcPosTotal() {
             let total = 0;
-            for (let i in window.posCart) {
-                const item = window.tariffs.find(t => t.id === i);
-                if (item) {
-                    if (item.id.includes('recharge')) total += window.posCart[i] || 0;
-                    else if (item.sell > 0) total += item.sell * window.posCart[i];
-                }
+            for (let id in window.posCart) {
+                let item = window.tariffs.find(t => t.id === id);
+                if (item) total += item.sell * window.posCart[id];
             }
             document.getElementById('posCartTotal').innerText = total.toFixed(3) + ' د.ت';
         }
@@ -480,93 +556,36 @@
         window.submitPosOrder = async function() {
             const clientName = document.getElementById('posRegisteredClientSelect').value;
             const paymentStatus = document.getElementById('posPaymentStatus').value;
-            if (!clientName) {
-                alert('الرجاء اختيار الحانوت.');
-                return;
-            }
-            let clientObj = window.allRegisteredClients.find(c => c.name === clientName);
-            let itemsOrdered = [];
-            let totalSell = 0, totalBuy = 0;
-
+            if (!clientName) { alert('اختر الحانوت.'); return; }
+            
+            let items = [], totalSell = 0, totalBuy = 0;
             for (let id in window.posCart) {
                 if (window.posCart[id] > 0) {
-                    const item = window.tariffs.find(t => t.id === id);
-                    if (item.id.includes('recharge')) {
-                        let amount = window.posCart[id];
-                        itemsOrdered.push({ ...item, qty: 1, sell: amount, buy: amount, name: `شحن رصيد مباشر (${amount} د.ت)` });
-                        totalSell += amount; totalBuy += amount;
-                    } else {
-                        itemsOrdered.push({ ...item, qty: window.posCart[id] });
-                        totalSell += item.sell * window.posCart[id];
-                        totalBuy += item.buy * window.posCart[id];
-                    }
+                    let item = window.tariffs.find(t => t.id === id);
+                    items.push({ ...item, qty: window.posCart[id] });
+                    totalSell += item.sell * window.posCart[id];
+                    totalBuy += item.buy * window.posCart[id];
                 }
             }
-            if (itemsOrdered.length === 0) {
-                alert('الرجاء اختيار منتج.');
-                return;
-            }
+            if (items.length === 0) { alert('اختر منتج.'); return; }
 
             try {
                 await addDoc(collection(db, "orders"), {
-                    clientName, clientPhone: clientObj?.phone || '', clientAddress: clientObj?.address || '',
-                    items: itemsOrdered, totalSell, totalBuy, benefice: totalSell - totalBuy,
+                    clientName, items, totalSell, totalBuy, benefice: totalSell - totalBuy,
                     paymentStatus, paidAmount: paymentStatus === 'Payé' ? totalSell : 0,
                     creditAmount: paymentStatus === 'Payé' ? 0 : totalSell,
-                    date: new Date().toISOString(), status: 'مكتمل (مباشر)'
+                    date: new Date().toISOString(), status: 'مكتمل'
                 });
-                alert('تم تسجيل عملية البيع بنجاح!');
+                alert('تم البيع بنجاح!');
                 window.posCart = {};
-                document.getElementById('posProductsSection').classList.add('hidden');
-                processAdminData();
+                window.closeAdminWindow('pos');
             } catch (e) {
-                alert('حدث خطأ أثناء الحفظ.');
+                alert('خطأ أثناء الحفظ.');
             }
         };
 
-        function processAdminData() {
-            let dayTotal = 0, monthTotal = 0, totalBenefice = 0, totalCredit = 0;
-            const today = new Date().toISOString().slice(0, 10);
-            const thisMonth = new Date().toISOString().slice(0, 7);
-            let ordersHtml = '', clientsMap = {}, salesCounts = {};
-
-            if (window.allRegisteredClients) {
-                window.allRegisteredClients.forEach(c => clientsMap[c.name] = { phone: c.phone, credit: 0 });
-            }
-
-            window.allOrders.forEach((o) => {
-                if (!clientsMap[o.clientName]) clientsMap[o.clientName] = { phone: o.clientPhone || 'غير متوفر', credit: 0 };
-                if (o.status === 'مكتمل' || o.status === 'مكتمل (مباشر)') {
-                    if (o.paidAmount) dayTotal += (o.date.slice(0, 10) === today ? o.paidAmount : 0);
-                    if (o.paidAmount) monthTotal += (o.date.slice(0, 7) === thisMonth ? o.paidAmount : 0);
-                    if (o.benefice) totalBenefice += o.benefice;
-                    let currentCred = o.creditAmount !== undefined ? o.creditAmount : (o.paymentStatus === 'Crédit' ? o.totalSell : 0);
-                    totalCredit += currentCred;
-                    clientsMap[o.clientName].credit += currentCred;
-
-                    if (o.items) {
-                        o.items.forEach(i => {
-                            if (!i.id.includes('recharge')) {
-                                if (!salesCounts[i.id]) salesCounts[i.id] = { operator: i.operator, name: i.name, qty: 0 };
-                                salesCounts[i.id].qty += i.qty;
-                            }
-                        });
-                    }
-                }
-            });
-
-            document.getElementById('modalRecetteDay').innerText = dayTotal.toFixed(3) + ' د.ت';
-            document.getElementById('modalRecetteMonth').innerText = monthTotal.toFixed(3) + ' د.ت';
-            document.getElementById('modalTotalBenefice').innerText = totalBenefice.toFixed(3) + ' د.ت';
-            document.getElementById('modalTotalCredit').innerText = totalCredit.toFixed(3) + ' د.ت';
-
-            let clientsListHtml = '<option value="">اختر الحانوت...</option>';
-            for (let cName in clientsMap) {
-                clientsListHtml += `<option value="${cName}">${cName}</option>`;
-            }
-            const clientSelect = document.getElementById('posRegisteredClientSelect');
-            if(clientSelect) clientSelect.innerHTML = clientsListHtml;
-        }
+        // تشغيل التحقق عند فتح الصفحة
+        window.checkVendeurAuth();
     </script>
 </body>
 </html>
