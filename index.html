@@ -22,10 +22,10 @@
                 <p class="text-xs text-slate-500">الرجاء تسجيل الدخول أو إنشاء حساب جديد للبدء</p>
             </div>
 
-            <!-- أزرار التبديل المصلحة والمنظمة -->
-            <div class="flex bg-slate-100 p-1 rounded-2xl border border-slate-200">
-                <button type="button" onclick="switchAuthMode('login')" id="loginTabBtn" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-2xs transition">دخول</button>
-                <button type="button" onclick="switchAuthMode('register')" id="registerTabBtn" class="flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-500 transition">حساب جديد</button>
+            <!-- أزرار التبديل منظمة ومعدلة بالمليمتر -->
+            <div class="grid grid-cols-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 gap-1">
+                <button type="button" onclick="switchAuthMode('login')" id="loginTabBtn" class="py-2.5 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-2xs transition">دخول</button>
+                <button type="button" onclick="switchAuthMode('register')" id="registerTabBtn" class="py-2.5 rounded-xl text-xs font-bold text-slate-500 transition">حساب جديد</button>
             </div>
 
             <!-- نموذج تسجيل الدخول -->
@@ -41,7 +41,7 @@
                 <button type="button" onclick="handleVendeurLogin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold shadow-sm transition">تسجيل الدخول</button>
             </div>
 
-            <!-- نموذج إنشاء حساب جديد (النافذة التي لم تكن تفتح سابقاً) -->
+            <!-- نموذج إنشاء حساب جديد -->
             <div id="registerForm" class="space-y-4 hidden">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">اسم البائع / الشركة:</label>
@@ -599,7 +599,7 @@
         </div>
     </div>
 
-    <!-- السكربت والربط بقاعدة البيانات -->
+    <!-- السكربت والربط بقاعدة البيانات (مضبوط بالكامل بالمليمتر) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -618,8 +618,83 @@
         const db = getFirestore(app);
         window.db = db;
 
-        // استرجاع البائع وتصحيح التحقق
         window.currentVendeur = JSON.parse(localStorage.getItem('currentVendeur') || 'null');
+
+        // تعريف الدوال المتاحة عامة لتعمل الأزرار بسلاسة
+        window.switchAuthMode = function(mode) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const loginTab = document.getElementById('loginTabBtn');
+            const registerTab = document.getElementById('registerTabBtn');
+
+            if (!loginForm || !registerForm || !loginTab || !registerTab) return;
+
+            if (mode === 'login') {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                loginTab.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-2xs transition';
+                registerTab.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-500 transition';
+            } else {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                registerTab.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-2xs transition';
+                loginTab.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-500 transition';
+            }
+        };
+
+        window.handleVendeurRegister = async function() {
+            const name = document.getElementById('regName').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+            if (!name || !phone || !password) { alert('الرجاء ملء كل البيانات.'); return; }
+            try {
+                const docRef = await addDoc(collection(db, "vendeurs"), { name, phone, password });
+                window.currentVendeur = { id: docRef.id, name, phone };
+                localStorage.setItem('currentVendeur', JSON.stringify(window.currentVendeur));
+                window.showSystemNotification("تم التسجيل", "تم إنشاء الحساب بنجاح وشكرا!");
+                window.checkVendeurAuth();
+            } catch (e) { alert('خطأ في التسجيل: ' + e.message); }
+        };
+
+        window.handleVendeurLogin = async function() {
+            const phone = document.getElementById('loginPhone').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            if (!phone || !password) { alert('الرجاء إدخال رقم الهاتف وكلمة المرور.'); return; }
+            try {
+                const q = query(collection(db, "vendeurs"), where("phone", "==", phone), where("password", "==", password));
+                const querySnapshot = await getDocs(q);
+                if (!querySnapshot.empty) {
+                    let vData;
+                    querySnapshot.forEach(d => vData = { id: d.id, ...d.data() });
+                    window.currentVendeur = vData;
+                    localStorage.setItem('currentVendeur', JSON.stringify(window.currentVendeur));
+                    window.checkVendeurAuth();
+                } else { 
+                    alert('رقم الهاتف أو كلمة المرور غير صحيحة. الرجاء التأكد أو إنشاء حساب جديد.'); 
+                }
+            } catch (e) { 
+                alert('خطأ في الاتصال بقاعدة البيانات: ' + e.message); 
+            }
+        };
+
+        window.logoutVendeur = function() {
+            localStorage.removeItem('currentVendeur');
+            window.currentVendeur = null;
+            location.reload();
+        };
+
+        window.checkVendeurAuth = function() {
+            const authScreen = document.getElementById('authScreen');
+            if (!authScreen) return;
+            if (window.currentVendeur && window.currentVendeur.id) {
+                authScreen.classList.add('hidden');
+                document.getElementById('headerVendeurName').innerText = window.currentVendeur.name || "مراد";
+                fetchVendeurData();
+                renderInvoiceForm();
+            } else {
+                authScreen.classList.remove('hidden');
+            }
+        };
 
         window.printReportTable = function(tbodyId, title) {
             let tbody = document.getElementById(tbodyId);
@@ -705,72 +780,6 @@
             { id: 'Orange_25', operator: 'Orange', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 },
             { id: 'Orange_Recharge', operator: 'Orange', name: 'شحن مباشر (E-recharge)', buy: 0.960, sell: 1.000 }
         ];
-
-        window.checkVendeurAuth = function() {
-            if (window.currentVendeur && window.currentVendeur.id) {
-                document.getElementById('authScreen').classList.add('hidden');
-                document.getElementById('headerVendeurName').innerText = window.currentVendeur.name || "مراد";
-                fetchVendeurData();
-                renderInvoiceForm();
-            } else {
-                document.getElementById('authScreen').classList.remove('hidden');
-            }
-        };
-
-        window.switchAuthMode = function(mode) {
-            if (mode === 'login') {
-                document.getElementById('loginForm').classList.remove('hidden');
-                document.getElementById('registerForm').classList.add('hidden');
-                document.getElementById('loginTabBtn').className = 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-2xs transition';
-                document.getElementById('registerTabBtn').className = 'flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-500 transition';
-            } else {
-                document.getElementById('loginForm').classList.add('hidden');
-                document.getElementById('registerForm').classList.remove('hidden');
-                document.getElementById('registerTabBtn').className = 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-2xs transition';
-                document.getElementById('loginTabBtn').className = 'flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-500 transition';
-            }
-        };
-
-        window.handleVendeurRegister = async function() {
-            const name = document.getElementById('regName').value.trim();
-            const phone = document.getElementById('regPhone').value.trim();
-            const password = document.getElementById('regPassword').value.trim();
-            if (!name || !phone || !password) { alert('الرجاء ملء كل البيانات.'); return; }
-            try {
-                const docRef = await addDoc(collection(db, "vendeurs"), { name, phone, password });
-                window.currentVendeur = { id: docRef.id, name, phone };
-                localStorage.setItem('currentVendeur', JSON.stringify(window.currentVendeur));
-                window.showSystemNotification("تم التسجيل", "تم إنشاء الحساب بنجاح وشكرا!");
-                window.checkVendeurAuth();
-            } catch (e) { alert('خطأ في التسجيل: ' + e.message); }
-        };
-
-        window.handleVendeurLogin = async function() {
-            const phone = document.getElementById('loginPhone').value.trim();
-            const password = document.getElementById('loginPassword').value.trim();
-            if (!phone || !password) { alert('الرجاء إدخال رقم الهاتف وكلمة المرور.'); return; }
-            try {
-                const q = query(collection(db, "vendeurs"), where("phone", "==", phone), where("password", "==", password));
-                const querySnapshot = await getDocs(q);
-                if (!querySnapshot.empty) {
-                    let vData;
-                    querySnapshot.forEach(d => vData = { id: d.id, ...d.data() });
-                    window.currentVendeur = vData;
-                    localStorage.setItem('currentVendeur', JSON.stringify(window.currentVendeur));
-                    window.checkVendeurAuth();
-                } else { 
-                    alert('رقم الهاتف أو كلمة المرور غير صحيحة. الرجاء التأكد أو إنشاء حساب جديد.'); 
-                }
-            } catch (e) { 
-                alert('خطأ في الاتصال بقاعدة البيانات: ' + e.message); 
-            }
-        };
-
-        window.logoutVendeur = function() {
-            localStorage.removeItem('currentVendeur');
-            window.currentVendeur = null;
-            location.reload();
-        };
 
         window.openAddClientModal = () => document.getElementById('addClientModal').classList.remove('hidden');
         window.closeAddClientModal = () => document.getElementById('addClientModal').classList.add('hidden');
@@ -1387,7 +1396,7 @@
             } catch (e) { alert('خطأ أثناء الحفظ.'); }
         };
 
-        // تأكيد تشغيل المصادقة فور تحميل السكربت بالمليمتر
+        // تفعيل التحقق الأولي عند التحميل
         window.checkVendeurAuth();
     </script>
 </body>
