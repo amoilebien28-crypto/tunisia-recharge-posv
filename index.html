@@ -41,7 +41,7 @@
                 <button type="button" onclick="handleVendeurLogin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold shadow-sm transition">تسجيل الدخول</button>
             </div>
 
-            <!-- نموذج إنشاء حساب جديد (تم تفعيله ليفتح بوضوح تام) -->
+            <!-- نموذج إنشاء حساب جديد -->
             <div id="registerForm" class="space-y-4 hidden">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">اسم البائع / الشركة:</label>
@@ -213,7 +213,7 @@
         </div>
     </main>
 
-    <!-- النوافذ المنبثقة -->
+    <!-- النوافذ المنبثقة كاملة -->
     <div id="systemNotificationModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-sm w-full space-y-4 text-center border border-slate-300">
             <div id="sysNotifIcon" class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold border border-emerald-300">
@@ -225,7 +225,7 @@
         </div>
     </div>
 
-    <!-- نافذة يوميات البيع (Journal des Ventes) -->
+    <!-- نافذة يوميات البيع -->
     <div id="journalVentesModal" class="fixed inset-0 bg-black/70 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
@@ -254,7 +254,7 @@
         </div>
     </div>
 
-    <!-- نافذة تفاصيل يوم محدد من يوميات البيع -->
+    <!-- تفاصيل يوم محدد من يوميات البيع -->
     <div id="journalDayDetailModal" class="fixed inset-0 bg-black/80 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
@@ -266,7 +266,7 @@
         </div>
     </div>
 
-    <!-- نافذة تفاصيل الفاتورة -->
+    <!-- تفاصيل الفاتورة -->
     <div id="invoiceDetailModal" class="fixed inset-0 bg-black/70 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
@@ -281,7 +281,7 @@
         </div>
     </div>
 
-    <!-- نافذة إضافة حانوت جديد -->
+    <!-- نافذة إضافة حانوت -->
     <div id="addClientModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-md w-full space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
@@ -317,7 +317,6 @@
                 <h3 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-chart-line text-amber-600 ml-2"></i> الروسيت والمداخيل والمرابيح</h3>
                 <button type="button" onclick="closeRecetteModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
             </div>
-
             <div class="grid grid-cols-2 gap-3">
                 <div class="bg-emerald-50 p-3.5 rounded-2xl border border-emerald-300">
                     <span class="text-xs text-emerald-700 font-bold">صافي الأرباح (المرابيح):</span>
@@ -328,15 +327,13 @@
                     <h4 id="modalTotalCredit" class="text-lg font-black text-rose-600 mt-1">0.000 د.ت</h4>
                 </div>
             </div>
-
             <div class="flex bg-slate-100 p-1.5 rounded-2xl gap-2 border border-slate-200">
                 <button type="button" onclick="switchRecetteTab('days')" id="tabBtnRecetteDays" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-amber-700 shadow-2xs transition border border-slate-200">روسيت الأيام</button>
                 <button type="button" onclick="switchRecetteTab('months')" id="tabBtnRecetteMonths" class="flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600 transition border border-transparent">روسيت الشهور</button>
             </div>
-
             <div id="sectionRecetteDays" class="space-y-2">
                 <div class="flex justify-between items-center">
-                    <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الأيام (مفصل):</h5>
+                    <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الأيام:</h5>
                     <div class="flex gap-1.5">
                         <button type="button" onclick="printReportTable('recetteDaysTableBody', 'تقرير روسيت الأيام')" class="bg-slate-800 text-white px-2.5 py-1 rounded-lg text-xs font-bold">طباعة</button>
                         <button type="button" onclick="exportTableToWhatsApp('recetteDaysTableBody', 'تقرير روسيت الأيام')" class="bg-emerald-600 text-white px-2.5 py-1 rounded-lg text-xs font-bold">واتساب</button>
@@ -349,7 +346,6 @@
                     </table>
                 </div>
             </div>
-
             <div id="sectionRecetteMonths" class="space-y-2 hidden">
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الشهور:</h5>
@@ -365,7 +361,6 @@
                     </table>
                 </div>
             </div>
-
             <button type="button" onclick="closeRecetteModal()" class="w-full bg-slate-800 text-white py-3 rounded-xl font-bold text-xs">إغلاق</button>
         </div>
     </div>
@@ -385,7 +380,7 @@
         </div>
     </div>
 
-    <!-- نافذة الـ Historique -->
+    <!-- نافذة سجل الـ Historique -->
     <div id="clientDetailHistoryModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
@@ -401,7 +396,7 @@
         </div>
     </div>
 
-    <!-- نافذة تفاصيل طلبية Historique -->
+    <!-- تفاصيل طلبية Historique -->
     <div id="historyOrderDetailModal" class="fixed inset-0 bg-black/70 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-md w-full space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
@@ -437,7 +432,7 @@
         </div>
     </div>
 
-    <!-- نافذة تفاصيل الطلبية وتأكيدها -->
+    <!-- نافذة تأكيد الطلبية (Valider) -->
     <div id="orderDetailModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-lg w-full space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
@@ -541,6 +536,70 @@
         </div>
     </div>
 
+    <!-- نافذة نظام البيع POS الكاملة -->
+    <div id="windowPos" class="admin-window fixed inset-0 bg-slate-950/60 backdrop-blur-xs hidden flex items-center justify-center z-40 p-2 md:p-6 text-slate-800">
+        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-5xl w-full h-[95vh] flex flex-col justify-between overflow-hidden border border-slate-300">
+            <div class="overflow-y-auto pr-1 flex-1 space-y-4">
+                <div class="flex justify-between items-center border-b pb-3 sticky top-0 bg-white z-10 border-slate-200">
+                    <h4 class="font-extrabold text-xl text-slate-900"><i class="fa-solid fa-cash-register text-emerald-600 ml-2"></i> نظام البيع المباشر (Caisse POS)</h4>
+                    <button type="button" onclick="closeAdminWindow('pos')" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">اختر الحانوت الخاص بك:</label>
+                        <select id="posRegisteredClientSelect" class="border border-slate-300 p-3 rounded-xl w-full text-sm font-bold bg-white">
+                            <option value="">اختر الحانوت...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">طريقة الخلاص:</label>
+                        <select id="posPaymentStatus" class="border border-slate-300 p-3 rounded-xl w-full font-bold text-sm bg-white">
+                            <option value="Payé">خلاص كاش تام (Payé)</option>
+                            <option value="Crédit">كريدي كلي (Crédit)</option>
+                            <option value="Partiel">خلاص جزئي (Paiement Partiel)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="posPartielAmountDiv" class="hidden bg-amber-50 p-4 rounded-2xl border border-amber-200">
+                    <label class="block text-xs font-bold text-amber-900 mb-1">المبلغ المدفوع كاش حالياً:</label>
+                    <input type="number" step="0.001" id="posPaidAmountInput" placeholder="0.000 د.ت" class="w-full border border-amber-300 p-3 rounded-xl text-sm font-bold bg-white">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <button type="button" onclick="selectPosOperator('Ooredoo')" class="bg-red-500 hover:bg-red-600 text-white p-3 rounded-2xl font-bold text-sm">أوريدو</button>
+                    <button type="button" onclick="selectPosOperator('Telecom')" class="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-2xl font-bold text-sm">تيليكوم</button>
+                    <button type="button" onclick="selectPosOperator('Orange')" class="bg-orange-500 hover:bg-orange-600 text-white p-3 rounded-2xl font-bold text-sm">أورنج</button>
+                </div>
+
+                <div id="posProductsSection" class="hidden space-y-3 border-t pt-3 border-slate-200">
+                    <h5 id="posSelectedOperatorTitle" class="font-bold text-slate-700 text-sm"></h5>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="posCardsGrid"></div>
+
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-300 space-y-2 mt-4">
+                        <label class="block text-xs font-bold text-slate-700"><i class="fa-solid fa-bolt text-amber-500 ml-1"></i> الشحن المباشر (اكتب القيمة مباشرة):</label>
+                        <div class="flex gap-2">
+                            <input type="number" id="posDirectRechargeInput" placeholder="أدخل القيمة بالدينار (مثال: 15)..." class="flex-1 border border-slate-300 p-3 rounded-xl text-sm font-bold bg-white">
+                            <button type="button" onclick="addPosDirectRecharge()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 rounded-xl font-bold text-xs shadow-sm">إضافة للقفة</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t pt-4 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50 p-4 rounded-2xl mt-2 border-slate-200">
+                <div>
+                    <span class="text-slate-500 text-sm">المجموع الجملي:</span>
+                    <span id="posCartTotal" class="text-2xl font-extrabold text-emerald-600 mr-2">0.000 د.ت</span>
+                </div>
+                <div class="flex gap-3 w-full md:w-auto">
+                    <button type="button" onclick="closeAdminWindow('pos')" class="flex-1 md:flex-none bg-slate-200 text-slate-700 px-6 py-3 rounded-xl font-bold">إغلاق</button>
+                    <button type="button" onclick="submitPosOrder()" class="flex-1 md:flex-none bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-emerald-700 shadow-sm">تأكيد البيع</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- السكربت والربط بقاعدة البيانات والتحكم الكامل -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -562,153 +621,7 @@
 
         window.currentVendeur = JSON.parse(localStorage.getItem('currentVendeur') || 'null');
 
-        // دوال يوميات البيع (Journal des Ventes)
-        window.openJournalModal = function() {
-            let daysMap = {};
-            window.allOrders.forEach(o => {
-                if (o.status === 'مكتمل ومؤكد' && o.date) {
-                    let dStr = o.date.slice(0, 10);
-                    if (!daysMap[dStr]) daysMap[dStr] = { count: 0, total: 0, orders: [] };
-                    daysMap[dStr].count += 1;
-                    daysMap[dStr].total += o.totalSell;
-                    daysMap[dStr].orders.push(o);
-                }
-            });
-
-            let html = '';
-            let sortedDays = Object.keys(daysMap).sort().reverse();
-            sortedDays.forEach(day => {
-                let data = daysMap[day];
-                html += `
-                    <tr onclick="openJournalDayDetail('${day}')" class="border-b border-slate-300 text-xs hover:bg-slate-50 cursor-pointer">
-                        <td class="p-3 font-bold text-cyan-700 border-l border-slate-300"><i class="fa-solid fa-calendar-day ml-1"></i> ${day}</td>
-                        <td class="p-3 font-bold border-l border-slate-300">${data.count} عمليات</td>
-                        <td class="p-3 font-black text-emerald-600">${data.total.toFixed(3)} د.ت</td>
-                    </tr>
-                `;
-            });
-            document.getElementById('journalDaysTableBody').innerHTML = html || '<tr><td colspan="3" class="text-center text-slate-400 py-4">لا توجد مبيعات.</td></tr>';
-            document.getElementById('journalVentesModal').classList.remove('hidden');
-        };
-
-        window.closeJournalModal = function() {
-            document.getElementById('journalVentesModal').classList.add('hidden');
-        };
-
-        window.openJournalDayDetail = function(dayStr) {
-            let dayOrders = window.allOrders.filter(o => o.status === 'مكتمل ومؤكد' && o.date && o.date.slice(0, 10) === dayStr);
-            let contentHtml = `<p class="font-bold text-slate-800 mb-2">تاريخ اليوم: ${dayStr} (عدد العمليات: ${dayOrders.length})</p>`;
-            contentHtml += `<div class="space-y-2 max-h-60 overflow-y-auto">`;
-
-            dayOrders.forEach(o => {
-                contentHtml += `
-                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
-                        <div>
-                            <p class="font-bold text-slate-900"><i class="fa-solid fa-store text-emerald-600 ml-1"></i> الحانوت: ${o.clientName}</p>
-                            <p class="text-[10px] text-slate-500">الخلاص: ${o.paymentStatus || 'كاش'} | المجموع: <strong class="text-emerald-600">${o.totalSell} د.ت</strong></p>
-                        </div>
-                    </div>
-                `;
-            });
-            contentHtml += `</div>`;
-
-            document.getElementById('journalDayDetailTitle').innerHTML = `<i class="fa-solid fa-list text-cyan-600 ml-2"></i> تفاصيل مبيعات يوم: ${dayStr}`;
-            document.getElementById('journalDayDetailContent').innerHTML = contentHtml;
-            document.getElementById('journalDayDetailModal').classList.remove('hidden');
-        };
-
-        window.closeJournalDayDetail = function() {
-            document.getElementById('journalDayDetailModal').classList.add('hidden');
-        };
-
-        // تفعيل نافذة الفواتير
-        window.currentSelectedInvoice = null;
-        window.openInvoiceDetailModal = function(invoiceId) {
-            let inv = window.allInvoices.find(i => i.id === invoiceId);
-            if (!inv) return;
-            window.currentSelectedInvoice = inv;
-
-            let dateStr = inv.date ? new Date(inv.date).toLocaleString() : 'تاريخ غير محدد';
-            let itemsHtml = '<div class="space-y-2 bg-slate-50 p-3 rounded-2xl border border-slate-300 max-h-48 overflow-y-auto">';
-            if (inv.items && Array.isArray(inv.items)) {
-                inv.items.forEach(item => {
-                    itemsHtml += `
-                        <div class="flex justify-between items-center text-xs font-bold text-slate-800 border-b pb-1.5 border-slate-200">
-                            <span><i class="fa-solid fa-tag text-indigo-600 ml-1"></i> ${item.operator || ''} - ${item.name}</span>
-                            <div class="flex gap-2">
-                                <span class="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded border border-indigo-200">الكمية: ${item.qty}</span>
-                                <span class="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-indigo-200">السعر: ${item.buy} د.ت</span>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-            itemsHtml += '</div>';
-
-            document.getElementById('invoiceDetailModalTitle').innerHTML = `<i class="fa-solid fa-file-invoice text-indigo-600 ml-2"></i> تفاصيل الفاتورة (${dateStr})`;
-            document.getElementById('invoiceDetailModalContent').innerHTML = `
-                <div class="bg-slate-100 p-3.5 rounded-2xl border border-slate-300 space-y-1">
-                    <p class="font-bold text-slate-900">إجمالي مبلغ الفاتورة:</p>
-                    <p class="text-lg font-black text-indigo-600">${inv.totalCost.toFixed(3)} د.ت</p>
-                </div>
-                <div><p class="text-xs font-bold text-slate-700 mb-1">القطع والبطاقات المطلوبة في هذه الفاتورة:</p>${itemsHtml}</div>
-            `;
-            document.getElementById('invoiceDetailModal').classList.remove('hidden');
-        };
-
-        window.closeInvoiceDetailModal = function() {
-            document.getElementById('invoiceDetailModal').classList.add('hidden');
-            window.currentSelectedInvoice = null;
-        };
-
-        window.printSingleInvoice = function() {
-            if (!window.currentSelectedInvoice) return;
-            let inv = window.currentSelectedInvoice;
-            let dateStr = inv.date ? new Date(inv.date).toLocaleString() : '';
-            let win = window.open('', '_blank');
-            let rowsHtml = '';
-            if (inv.items) {
-                inv.items.forEach(i => {
-                    rowsHtml += `<tr><td>${i.operator || ''} - ${i.name}</td><td>${i.qty}</td><td>${i.buy} د.ت</td><td>${(i.qty * i.buy).toFixed(3)} د.ت</td></tr>`;
-                });
-            }
-            win.document.write(`
-                <html lang="ar" dir="rtl">
-                <head>
-                    <title>فاتورة شراء - Tunisie Recharge</title>
-                    <style>
-                        body { font-family: Tahoma, sans-serif; padding: 25px; text-align: right; direction: rtl; color: #1e293b; }
-                        h2 { color: #0f172a; margin-bottom: 5px; }
-                        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-                        th, td { border: 1px solid #cbd5e1; padding: 10px; font-size: 13px; text-align: right; }
-                        th { background-color: #f1f5f9; color: #334155; }
-                        .total { margin-top: 15px; font-size: 16px; font-weight: bold; color: #4f46e5; }
-                    </style>
-                </head>
-                <body>
-                    <h2>فاتورة شراء ستوك - Tunisie Recharge</h2>
-                    <p style="font-size: 12px; color: #64748b;">التاريخ: ${dateStr}</p>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>المنتج / البطاقة</th>
-                                <th>الكمية</th>
-                                <th>سعر الوحدة</th>
-                                <th>المجموع</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${rowsHtml}
-                        </tbody>
-                    </table>
-                    <div class="total">المجموع الجملي للفاتورة: ${inv.totalCost.toFixed(3)} د.ت</div>
-                    <script>window.onload = function() { window.print(); }</script>
-                </body>
-                </html>
-            `);
-            win.document.close();
-        };
-
+        // ربط أزرار التبديل بالمليمتر
         window.switchAuthMode = function(mode) {
             const loginForm = document.getElementById('loginForm');
             const registerForm = document.getElementById('registerForm');
@@ -1088,7 +1001,7 @@
             if (tbody) tbody.innerHTML = html || '<tr><td colspan="2" class="text-center text-slate-400 py-4">لا توجد فواتير سابقة.</td></tr>';
         }
 
-        // دالة عرض تفاصيل الفاتورة عند النقر عليها في لوحة التحكم
+        // تفاصيل الفاتورة
         window.currentSelectedInvoice = null;
         window.openInvoiceDetailModal = function(invoiceId) {
             let inv = window.allInvoices.find(i => i.id === invoiceId);
@@ -1104,7 +1017,7 @@
                             <span><i class="fa-solid fa-tag text-indigo-600 ml-1"></i> ${item.operator || ''} - ${item.name}</span>
                             <div class="flex gap-2">
                                 <span class="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded border border-indigo-200">الكمية: ${item.qty}</span>
-                                <span class="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-indigo-200">السعر: ${item.buy} د.ت</span>
+                                <span class="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-emerald-200">السعر: ${item.buy} د.ت</span>
                             </div>
                         </div>
                     `;
@@ -1176,7 +1089,7 @@
             win.document.close();
         };
 
-        function updateClientsUI() {
+        window.updateClientsUI = function() {
             let selectHtml = '<option value="">اختر الحانوت...</option>';
             let listHtml = '';
             window.allClients.forEach(c => {
@@ -1549,6 +1462,7 @@
             } catch (e) { alert('خطأ أثناء الحفظ: ' + e.message); }
         };
 
+        // تفعيل المصادقة فوراً بالمليمتر
         window.checkVendeurAuth();
     </script>
 </body>
