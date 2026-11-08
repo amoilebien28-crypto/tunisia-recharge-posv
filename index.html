@@ -202,7 +202,7 @@
         </div>
     </div>
 
-    <!-- نافذة الطلبات -->
+    <!-- نافذة الطلبات (محدثة لضمان جلب الطلبات بالـ vendeurId مباشرة) -->
     <div id="windowOrders" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
@@ -228,7 +228,7 @@
         </div>
     </div>
 
-    <!-- نافذة إدارة المخزون (Stock) - مصلحة ومفعلة بالكامل -->
+    <!-- نافذة إدارة المخزون (Stock) -->
     <div id="windowStock" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
@@ -245,7 +245,7 @@
                         </tr>
                     </thead>
                     <tbody id="stockTableBody">
-                        <tr><td colspan="3" class="text-center text-slate-400 py-4">جري حساب المخزون...</td></tr>
+                        <tr><td colspan="3" class="text-center text-slate-400 py-4">جاري حساب المخزون...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -253,7 +253,7 @@
         </div>
     </div>
 
-    <!-- نافذة إحصائيات المبيعات (Stats) - مصلحة ومفعلة بالكامل -->
+    <!-- نافذة إحصائيات المبيعات (Stats) -->
     <div id="windowStats" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
@@ -456,12 +456,11 @@
                 window.allClients = [];
                 clientsSnap.forEach(d => window.allClients.push({ id: d.id, ...d.data() }));
 
-                onSnapshot(collection(db, "orders"), (snap) => {
+                // جلب الطلبات المرتبطة حصرياً بهذا البائع عبر vendeurId مباشرة لضمان ظهورها
+                onSnapshot(query(collection(db, "orders"), where("vendeurId", "==", window.currentVendeur.id)), (snap) => {
                     window.allOrders = [];
                     snap.forEach(d => {
-                        let o = d.data();
-                        let belongs = window.allClients.some(c => c.name === o.clientName);
-                        if (belongs) window.allOrders.push({ id: d.id, ...o });
+                        window.allOrders.push({ id: d.id, ...d.data() });
                     });
                     processAdminStatsAndStock();
                 });
@@ -493,7 +492,6 @@
             if (lst) lst.innerHTML = listHtml || '<p class="text-slate-400 text-center py-4">لا توجد حوانت مسجلة بعد.</p>';
         }
 
-        // معالجة حساب الإحصائيات، المخزون، والطلبات بدقة تامة
         function processAdminStatsAndStock() {
             let dayTotal = 0, totalBenefice = 0, totalCredit = 0;
             const today = new Date().toISOString().slice(0, 10);
@@ -509,13 +507,12 @@
                     <div class="bg-slate-50 p-4 rounded-2xl border space-y-2">
                         <div class="flex justify-between items-center">
                             <span class="font-bold text-slate-900">${o.clientName}</span>
-                            <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-1 rounded-lg font-bold">${o.paymentStatus}</span>
+                            <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-1 rounded-lg font-bold">${o.paymentStatus || o.status}</span>
                         </div>
                         <p class="text-xs text-slate-500">المجموع: ${o.totalSell} د.ت | التاريخ: ${new Date(o.date).toLocaleDateString()}</p>
                     </div>
                 `;
 
-                // تجميع المبيعات للإحصائيات والمخزون
                 if (o.items && Array.isArray(o.items)) {
                     o.items.forEach(item => {
                         let key = item.id || item.name;
@@ -534,7 +531,6 @@
             const oContainer = document.getElementById('ordersListContainer');
             if (oContainer) oContainer.innerHTML = ordersHtml || '<p class="text-slate-400 text-center py-4">لا توجد طلبات حالياً.</p>';
 
-            // تعبئة جداول إحصائيات المبيعات والمخزون
             let statsHtml = '';
             let stockHtml = '';
             for (let k in salesStatsMap) {
@@ -655,7 +651,9 @@
 
             try {
                 await addDoc(collection(db, "orders"), {
-                    clientName, items, totalSell, totalBuy, benefice: totalSell - totalBuy,
+                    clientName, 
+                    vendeurId: window.currentVendeur.id,
+                    items, totalSell, totalBuy, benefice: totalSell - totalBuy,
                     paymentStatus, paidAmount: paymentStatus === 'Payé' ? totalSell : 0,
                     creditAmount: paymentStatus === 'Payé' ? 0 : totalSell,
                     date: new Date().toISOString(), status: 'مكتمل'
