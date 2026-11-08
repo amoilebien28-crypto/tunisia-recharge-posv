@@ -83,7 +83,7 @@
         <!-- واجهة الاختيار الرئيسية -->
         <div id="mainChoicesSection" class="space-y-4">
             <div class="text-center space-y-2 mb-6">
-                <h2 class="text-2xl font-black text-slate-900">لوحة تحكم البائع مراد</h2>
+                <h2 class="text-2xl font-black text-slate-900">لوحة تحكم البائع</h2>
                 <p class="text-sm text-slate-700 font-bold">اختر القسم المناسب لإدارة عملك بكل احترافية:</p>
             </div>
 
@@ -317,7 +317,6 @@
                 <h3 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-chart-line text-amber-600 ml-2"></i> الروسيت والمداخيل والمرابيح</h3>
                 <button type="button" id="closeRecetteBtn" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
             </div>
-
             <div class="grid grid-cols-2 gap-3">
                 <div class="bg-emerald-50 p-3.5 rounded-2xl border border-emerald-300">
                     <span class="text-xs text-emerald-700 font-bold">صافي الأرباح (المرابيح):</span>
@@ -328,15 +327,13 @@
                     <h4 id="modalTotalCredit" class="text-lg font-black text-rose-600 mt-1">0.000 د.ت</h4>
                 </div>
             </div>
-
             <div class="flex bg-slate-100 p-1.5 rounded-2xl gap-2 border border-slate-200">
                 <button type="button" onclick="switchRecetteTab('days')" id="tabBtnRecetteDays" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-amber-700 shadow-2xs transition border border-slate-200">روسيت الأيام</button>
                 <button type="button" onclick="switchRecetteTab('months')" id="tabBtnRecetteMonths" class="flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600 transition border border-transparent">روسيت الشهور</button>
             </div>
-
             <div id="sectionRecetteDays" class="space-y-2">
                 <div class="flex justify-between items-center">
-                    <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الأيام (مفصل):</h5>
+                    <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الأيام:</h5>
                     <div class="flex gap-1.5">
                         <button type="button" onclick="printReportTable('recetteDaysTableBody', 'تقرير روسيت الأيام')" class="bg-slate-800 text-white px-2.5 py-1 rounded-lg text-xs font-bold">طباعة</button>
                         <button type="button" onclick="exportTableToWhatsApp('recetteDaysTableBody', 'تقرير روسيت الأيام')" class="bg-emerald-600 text-white px-2.5 py-1 rounded-lg text-xs font-bold">واتساب</button>
@@ -349,7 +346,6 @@
                     </table>
                 </div>
             </div>
-
             <div id="sectionRecetteMonths" class="space-y-2 hidden">
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الشهور:</h5>
@@ -365,7 +361,6 @@
                     </table>
                 </div>
             </div>
-
             <button type="button" id="closeRecetteBtn2" class="w-full bg-slate-800 text-white py-3 rounded-xl font-bold text-xs">إغلاق</button>
         </div>
     </div>
@@ -605,7 +600,7 @@
         </div>
     </div>
 
-    <!-- السكربت والربط التام -->
+    <!-- السكربت والربط التام بالمليمتر -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -684,7 +679,13 @@
                 'closeStatsWindowBtn': 'windowStats',
                 'closeStatsWindowBtn2': 'windowStats',
                 'closePosWindowBtn': 'windowPos',
-                'closePosWindowBtn2': 'windowPos'
+                'closePosWindowBtn2': 'windowPos',
+                'ordersWindowBtn': 'windowOrders',
+                'clientsWindowBtn': 'windowClients',
+                'invoiceWindowBtn': 'windowInvoice',
+                'stockWindowBtn': 'windowStock',
+                'recetteModalBtn': 'recetteModal',
+                'statsWindowBtn': 'windowStats'
             };
 
             for (let id in closeBtns) {
@@ -942,6 +943,10 @@
         window.closeHistoryOrderDetail = function() {
             document.getElementById('historyOrderDetailModal').classList.add('hidden');
         };
+
+        window.allClients = [];
+        window.allOrders = [];
+        window.allInvoices = [];
 
         async function fetchVendeurData() {
             if (!window.currentVendeur) return;
