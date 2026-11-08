@@ -213,7 +213,7 @@
         </div>
     </main>
 
-    <!-- النوافذ المنبثقة كاملة ومتكاملة -->
+    <!-- النوافذ المنبثقة -->
     <div id="systemNotificationModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-sm w-full space-y-4 text-center border border-slate-300">
             <div id="sysNotifIcon" class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold border border-emerald-300">
@@ -600,7 +600,7 @@
         </div>
     </div>
 
-    <!-- السكربت والربط بقاعدة البيانات (مكتمل بالكامل وبدون أي نقص) -->
+    <!-- السكربت والربط بقاعدة البيانات والتحكم الكامل -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -626,7 +626,6 @@
         window.posCart = {};
         window.customDirectTariffs = {};
 
-        // ربط كافة الأزرار والنوافذ بالـ DOMContentLoaded لمنع أي Uncaught SyntaxError
         document.addEventListener('DOMContentLoaded', () => {
             const loginTabBtn = document.getElementById('loginTabBtn');
             const registerTabBtn = document.getElementById('registerTabBtn');
@@ -1099,7 +1098,7 @@
                             <span><i class="fa-solid fa-tag text-indigo-600 ml-1"></i> ${item.operator || ''} - ${item.name}</span>
                             <div class="flex gap-2">
                                 <span class="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded border border-indigo-200">الكمية: ${item.qty}</span>
-                                <span class="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-emerald-200">السعر: ${item.buy} د.ت</span>
+                                <span class="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-indigo-200">السعر: ${item.buy} د.ت</span>
                             </div>
                         </div>
                     `;
@@ -1551,7 +1550,6 @@
             } catch (e) { alert('خطأ أثناء الحفظ: ' + e.message); }
         };
 
-        // تفعيل المصادقة الفورية بالمليمتر
         window.checkVendeurAuth();
     </script>
 </body>
