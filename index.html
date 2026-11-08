@@ -605,7 +605,7 @@
         </div>
     </div>
 
-    <!-- السكربت والربط بقاعدة البيانات (مضبوط بـ Event Listeners كاملة لضمان عمل كل الأزرار) -->
+    <!-- السكربت والربط التام -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -631,7 +631,6 @@
         window.posCart = {};
         window.customDirectTariffs = {};
 
-        // ربط أزرار الواجهة عبر DOM لضمان الاستجابة التامة
         document.addEventListener('DOMContentLoaded', () => {
             const loginTabBtn = document.getElementById('loginTabBtn');
             const registerTabBtn = document.getElementById('registerTabBtn');
@@ -645,7 +644,6 @@
             if (registerBtn) registerBtn.addEventListener('click', () => window.handleVendeurRegister());
             if (logoutBtn) logoutBtn.addEventListener('click', () => window.logoutVendeur());
 
-            // أزرار القائمة الرئيسية وإدارة الحوانت
             const posChoiceBtn = document.getElementById('posChoiceBtn');
             const journalChoiceBtn = document.getElementById('journalChoiceBtn');
             const managementChoiceBtn = document.getElementById('managementChoiceBtn');
@@ -658,7 +656,6 @@
             if (backToMainBtn) backToMainBtn.addEventListener('click', () => window.backToMainChoices());
             if (addClientModalBtn) addClientModalBtn.addEventListener('click', () => window.openAddClientModal());
 
-            // إغلاق النوافذ
             const closeBtns = {
                 'closeSysNotifBtn': 'systemNotificationModal',
                 'closeJournalBtn': 'journalVentesModal',
@@ -687,13 +684,7 @@
                 'closeStatsWindowBtn': 'windowStats',
                 'closeStatsWindowBtn2': 'windowStats',
                 'closePosWindowBtn': 'windowPos',
-                'closePosWindowBtn2': 'windowPos',
-                'ordersWindowBtn': 'windowOrders',
-                'clientsWindowBtn': 'windowClients',
-                'invoiceWindowBtn': 'windowInvoice',
-                'stockWindowBtn': 'windowStock',
-                'recetteModalBtn': 'recetteModal',
-                'statsWindowBtn': 'windowStats'
+                'closePosWindowBtn2': 'windowPos'
             };
 
             for (let id in closeBtns) {
@@ -701,11 +692,8 @@
                 if (el) {
                     el.addEventListener('click', () => {
                         let targetId = closeBtns[id];
-                        if (targetId.startsWith('window') || targetId === 'recetteModal') {
-                            window.openAdminWindow ? window.openAdminWindow(targetId.replace('window', '').toLowerCase()) : null;
-                        }
                         const modal = document.getElementById(targetId);
-                        if (modal) modal.classList.toggle('hidden');
+                        if (modal) modal.classList.add('hidden');
                     });
                 }
             }
@@ -724,6 +712,8 @@
 
             const saveNewPasswordBtn = document.getElementById('saveNewPasswordBtn');
             if (saveNewPasswordBtn) saveNewPasswordBtn.addEventListener('click', () => window.saveNewClientPassword());
+
+            window.checkVendeurAuth();
         });
 
         window.switchAuthMode = function(mode) {
@@ -848,6 +838,7 @@
         ];
 
         window.openAddClientModal = () => document.getElementById('addClientModal').classList.remove('hidden');
+        window.closeAddClientModal = () => document.getElementById('addClientModal').classList.add('hidden');
 
         window.saveNewClientByVendeur = async function() {
             const name = document.getElementById('newClientName').value.trim();
@@ -864,7 +855,7 @@
                     createdAt: new Date().toISOString()
                 });
                 window.showSystemNotification("إضافة حانوت", "تم إضافة الحانوت بنجاح وشكرا!");
-                document.getElementById('addClientModal').classList.add('hidden');
+                window.closeAddClientModal();
                 fetchVendeurData();
             } catch (e) { alert('حدث خطأ أثناء الحفظ.'); }
         };
@@ -887,7 +878,7 @@
                 const clientRef = doc(db, "clients", window.currentEditingClientId);
                 await updateDoc(clientRef, { password: newPass });
                 window.showSystemNotification("تغيير الكود", "تم تغيير كلمة المرور بنجاح وشكرا!");
-                document.getElementById('editClientPasswordModal').classList.add('hidden');
+                window.closeEditPasswordModal();
                 fetchVendeurData();
             } catch (e) { alert('خطأ أثناء تحديث كلمة المرور.'); }
         };
@@ -921,6 +912,10 @@
             document.getElementById('clientDetailHistoryModal').classList.remove('hidden');
         };
 
+        window.closeClientHistoryModal = function() {
+            document.getElementById('clientDetailHistoryModal').classList.add('hidden');
+        };
+
         window.openHistoryOrderDetail = function(orderId) {
             let o = window.allOrders.find(item => item.id === orderId);
             if (!o) return;
@@ -942,6 +937,10 @@
                 <div class="mt-2"><p class="font-bold text-slate-700 mb-1">تفاصيل القطع:</p>${itemsHtml}</div>
             `;
             document.getElementById('historyOrderDetailModal').classList.remove('hidden');
+        };
+
+        window.closeHistoryOrderDetail = function() {
+            document.getElementById('historyOrderDetailModal').classList.add('hidden');
         };
 
         async function fetchVendeurData() {
@@ -1069,7 +1068,7 @@
                 window.showSystemNotification("نجاح الحفظ", "تم حفظ فاتورة الستوك بنجاح وشكرا لك!");
                 renderInvoiceForm();
                 calcInvoiceTotal();
-                document.getElementById('windowInvoice').classList.add('hidden');
+                window.closeAdminWindow('invoice');
                 fetchVendeurData();
             } catch (e) { alert('خطأ أثناء حفظ الفاتورة.'); }
         };
@@ -1123,6 +1122,11 @@
                 <div><p class="text-xs font-bold text-slate-700 mb-1">القطع والبطاقات المطلوبة في هذه الفاتورة:</p>${itemsHtml}</div>
             `;
             document.getElementById('invoiceDetailModal').classList.remove('hidden');
+        };
+
+        window.closeInvoiceDetailModal = function() {
+            document.getElementById('invoiceDetailModal').classList.add('hidden');
+            window.currentSelectedInvoice = null;
         };
 
         window.printSingleInvoice = function() {
