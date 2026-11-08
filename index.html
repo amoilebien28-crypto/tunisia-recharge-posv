@@ -213,7 +213,7 @@
         </div>
     </main>
 
-    <!-- النوافذ المنبثقة -->
+    <!-- النوافذ المنبثقة كاملة ومتكاملة -->
     <div id="systemNotificationModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-sm w-full space-y-4 text-center border border-slate-300">
             <div id="sysNotifIcon" class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold border border-emerald-300">
@@ -600,7 +600,7 @@
         </div>
     </div>
 
-    <!-- السكربت والربط بقاعدة البيانات والتحكم الكامل -->
+    <!-- السكربت والربط الكامل بقاعدة البيانات والـ DOM -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -716,6 +716,8 @@
 
             const saveNewPasswordBtn = document.getElementById('saveNewPasswordBtn');
             if (saveNewPasswordBtn) saveNewPasswordBtn.addEventListener('click', () => window.saveNewClientPassword());
+
+            window.checkVendeurAuth();
         });
 
         window.switchAuthMode = function(mode) {
