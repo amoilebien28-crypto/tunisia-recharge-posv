@@ -235,7 +235,7 @@
         </div>
     </div>
 
-    <!-- نافذة الروسيت والمداخيل (جدول الأيام والشهور المتكامل مع طباعة وتصدير مريح) -->
+    <!-- نافذة الروسيت والمداخيل -->
     <div id="recetteModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
@@ -259,7 +259,7 @@
                 <button onclick="switchRecetteTab('months')" id="tabBtnRecetteMonths" class="flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600 transition border border-transparent">روسيت الشهور</button>
             </div>
 
-            <!-- جدول الأيام المفصل (1، 2، 3...) -->
+            <!-- جدول الأيام -->
             <div id="sectionRecetteDays" class="space-y-2">
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الأيام (مفصل):</h5>
@@ -272,7 +272,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="overflow-x-auto max-h-60 overflow-y-auto border-2 border-slate-300 rounded-2xl shadow-inner bg-white printable-area">
+                <div class="overflow-x-auto max-h-60 overflow-y-auto border-2 border-slate-300 rounded-2xl shadow-inner bg-white">
                     <table class="w-full text-right border-collapse text-xs">
                         <thead>
                             <tr class="bg-slate-200 text-slate-700 border-b-2 border-slate-300 font-black">
@@ -287,7 +287,7 @@
                 </div>
             </div>
 
-            <!-- جدول الشهور الكامل (جانفي إلى ديسمبر) -->
+            <!-- جدول الشهور -->
             <div id="sectionRecetteMonths" class="space-y-2 hidden">
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الشهور (جانفي - ديسمبر):</h5>
@@ -300,7 +300,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="overflow-x-auto max-h-60 overflow-y-auto border-2 border-slate-300 rounded-2xl shadow-inner bg-white printable-area">
+                <div class="overflow-x-auto max-h-60 overflow-y-auto border-2 border-slate-300 rounded-2xl shadow-inner bg-white">
                     <table class="w-full text-right border-collapse text-xs">
                         <thead>
                             <tr class="bg-slate-200 text-slate-700 border-b-2 border-slate-300 font-black">
@@ -420,7 +420,7 @@
         </div>
     </div>
 
-    <!-- نافذة إدارة الفواتير وشراء الستوك (مع زر جميع الفواتير وطباعة/واتساب) -->
+    <!-- نافذة إدارة الفواتير وشراء الستوك -->
     <div id="windowInvoice" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto space-y-6 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
@@ -433,7 +433,6 @@
                 <button onclick="switchInvoiceTab('list')" id="tabBtnListInvoice" class="flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600 transition border border-transparent">جميع الفواتير السابقة</button>
             </div>
 
-            <!-- قسم إدخال فاتورة جديدة -->
             <div id="sectionNewInvoice" class="space-y-4">
                 <p class="text-xs text-slate-500">قم بإدخال سعر الشراء والكمية لكل منتج، ثم اضغط على حفظ الفاتورة:</p>
                 <div class="space-y-3 max-h-96 overflow-y-auto pr-1" id="invoiceProductsListContainer"></div>
@@ -447,7 +446,6 @@
                 </div>
             </div>
 
-            <!-- قسم جميع الفواتير السابقة (بجدول منسق وجميل للطباعة والواتساب) -->
             <div id="sectionListInvoice" class="space-y-3 hidden">
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">جميع الفواتير السابقة:</h5>
@@ -621,7 +619,6 @@
 
         window.currentVendeur = JSON.parse(localStorage.getItem('currentVendeur') || 'null');
 
-        // دالة الطباعة والحفظ بتنسيق جميل ومرتب
         window.printReportTable = function(tbodyId, title) {
             let tbody = document.getElementById(tbodyId);
             if (!tbody) return;
@@ -661,7 +658,6 @@
             win.document.close();
         };
 
-        // دالة تصدير الجدول للواتساب
         window.exportTableToWhatsApp = function(tbodyId, reportTitle) {
             let tbody = document.getElementById(tbodyId);
             if (!tbody) return;
@@ -1199,41 +1195,28 @@
             document.getElementById('modalTotalBenefice').innerText = totalBenefice.toFixed(3) + ' د.ت';
             document.getElementById('modalTotalCredit').innerText = totalCredit.toFixed(3) + ' د.ت';
 
-            // ملء جدول الأيام بالكامل (توليد الأيام الحالية من الشهر أو الأيام المسجلة)
+            // توليد جدول الأيام بالكامل لشهر الحالي
             let daysHtml = '';
-            let sortedDays = Object.keys(daysRecetteMap).sort().reverse();
-            if (sortedDays.length === 0) {
-                // إذا لم تكن هناك أيام مسجلة، نضع الأيام الحالية من الشهر افتراضياً
-                let now = new Date();
-                let year = now.getFullYear();
-                let month = now.getMonth() + 1;
-                let daysInMonth = new Date(year, month, 0).getDate();
-                for (let d = daysInMonth; d >= 1; d--) {
-                    let dStr = d < 10 ? '0' + d : '' + d;
-                    let mStr = month < 10 ? '0' + month : '' + month;
-                    let dayKey = `${year}-${mStr}-${dStr}`;
-                    let val = daysRecetteMap[dayKey] || 0;
-                    daysHtml += `
-                        <tr class="border-b border-slate-300 hover:bg-slate-50">
-                            <td class="p-3 font-bold text-slate-800 border-l border-slate-300">${dayKey}</td>
-                            <td class="p-3 font-black text-emerald-600">${val.toFixed(3)} د.ت</td>
-                        </tr>
-                    `;
-                }
-            } else {
-                sortedDays.forEach(day => {
-                    daysHtml += `
-                        <tr class="border-b border-slate-300 hover:bg-slate-50">
-                            <td class="p-3 font-bold text-slate-800 border-l border-slate-300">${day}</td>
-                            <td class="p-3 font-black text-emerald-600">${daysRecetteMap[day].toFixed(3)} د.ت</td>
-                        </tr>
-                    `;
-                });
+            let now = new Date();
+            let year = now.getFullYear();
+            let month = now.getMonth() + 1;
+            let daysInMonth = new Date(year, month, 0).getDate();
+            for (let d = daysInMonth; d >= 1; d--) {
+                let dStr = d < 10 ? '0' + d : '' + d;
+                let mStr = month < 10 ? '0' + month : '' + month;
+                let dayKey = `${year}-${mStr}-${dStr}`;
+                let val = daysRecetteMap[dayKey] || 0;
+                daysHtml += `
+                    <tr class="border-b border-slate-300 hover:bg-slate-50">
+                        <td class="p-3 font-bold text-slate-800 border-l border-slate-300">${dayKey}</td>
+                        <td class="p-3 font-black text-emerald-600">${val.toFixed(3)} د.ت</td>
+                    </tr>
+                `;
             }
             const daysTbody = document.getElementById('recetteDaysTableBody');
             if(daysTbody) daysTbody.innerHTML = daysHtml;
 
-            // ملء جدول الشهور بالكامل (جانفي إلى ديسمبر)
+            // توليد جدول الشهور بالكامل (جانفي إلى ديسمبر)
             let monthsHtml = '';
             let monthNames = {
                 '01': 'جانفي', '02': 'فيفري', '03': 'مارس', '04': 'أفريل',
@@ -1241,11 +1224,10 @@
                 '09': 'سبتمبر', '10': 'أكتوبر', '11': 'نوفمبر', '12': 'ديسمبر'
             };
             
-            let currentYear = new Date().getFullYear();
             let allMonthsList = [];
             for (let m = 1; m <= 12; m++) {
                 let mFormatted = m < 10 ? '0' + m : '' + m;
-                let key = `${currentYear}-${mFormatted}`;
+                let key = `${year}-${mFormatted}`;
                 allMonthsList.push(key);
             }
             allMonthsList.sort().reverse();
@@ -1342,11 +1324,12 @@
             let html = '';
             window.tariffs.filter(t => t.operator === op).forEach(t => {
                 let qty = window.posCart[t.id] || 0;
+                let cardColor = op === 'Ooredoo' ? 'bg-red-50 text-red-700 border-red-300' : (op === 'Telecom' ? 'bg-blue-50 text-blue-700 border-blue-300' : 'bg-orange-50 text-orange-700 border-orange-300');
                 html += `
-                    <div onclick="addPosCardQty('${t.id}')" class="bg-white border-2 p-3 rounded-xl cursor-pointer hover:shadow transition">
+                    <div onclick="addPosCardQty('${t.id}')" class="border-2 p-3 rounded-xl cursor-pointer hover:shadow transition ${cardColor}">
                         <h4 class="font-bold text-xs">${t.name}</h4>
-                        <p class="text-xs text-slate-500">${t.sell} د.ت</p>
-                        <div class="mt-2 text-center bg-slate-100 py-1 rounded font-bold text-xs" id="pos_qty_${t.id}">${qty}</div>
+                        <p class="text-xs mt-1 font-bold">${t.sell} د.ت</p>
+                        <div class="mt-2 text-center bg-white py-1 rounded font-bold text-xs text-slate-900 border border-slate-200" id="pos_qty_${t.id}">${qty}</div>
                     </div>
                 `;
             });
