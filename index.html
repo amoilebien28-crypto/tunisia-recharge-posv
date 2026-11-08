@@ -114,7 +114,7 @@
         <!-- الأقسام التفصيلية للإدارة (خلفية ملونة تحت الأزرار) -->
         <div id="detailedManagementSection" class="hidden space-y-4 bg-slate-100 p-6 rounded-3xl border-2 border-slate-300 shadow-inner">
             <div class="flex items-center justify-between mb-2">
-                <button onclick="backToMainChoices()" class="text-indigo-600 font-bold text-xs flex items-center gap-1 hover:underline bg-white px-3.5 py-2 rounded-xl border border-slate-300 shadow-2xs">
+                <button onclick="backToMainChoices()" class="text-indigo-600 font-bold text-xs flex items-center gap-1 bg-white px-3.5 py-2 rounded-xl border border-slate-300 shadow-2xs">
                     <i class="fa-solid fa-arrow-right"></i> العودة للقائمة الرئيسية
                 </button>
                 <h3 class="font-bold text-slate-800 text-sm">إدارة الحوانت والمتابعة</h3>
@@ -194,7 +194,7 @@
         </div>
     </main>
 
-    <!-- نافذة إشعار احترافية (لوجيسيال) -->
+    <!-- نافذة إشعار احترافية -->
     <div id="systemNotificationModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-sm w-full space-y-4 text-center border border-slate-300">
             <div id="sysNotifIcon" class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold border border-emerald-300">
@@ -259,7 +259,6 @@
                 <button onclick="switchRecetteTab('months')" id="tabBtnRecetteMonths" class="flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600 transition border border-transparent">روسيت الشهور</button>
             </div>
 
-            <!-- جدول الأيام -->
             <div id="sectionRecetteDays" class="space-y-2">
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الأيام (مفصل):</h5>
@@ -287,7 +286,6 @@
                 </div>
             </div>
 
-            <!-- جدول الشهور -->
             <div id="sectionRecetteMonths" class="space-y-2 hidden">
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الشهور (جانفي - ديسمبر):</h5>
@@ -705,7 +703,7 @@
         ];
 
         window.checkVendeurAuth = function() {
-            if (window.currentVendeur) {
+            if (window.currentVendeur && window.currentVendeur.id) {
                 document.getElementById('authScreen').classList.add('hidden');
                 document.getElementById('headerVendeurName').innerText = window.currentVendeur.name || "مراد";
                 fetchVendeurData();
@@ -746,6 +744,7 @@
         window.handleVendeurLogin = async function() {
             const phone = document.getElementById('loginPhone').value.trim();
             const password = document.getElementById('loginPassword').value.trim();
+            if (!phone || !password) { alert('الرجاء إدخال رقم الهاتف وكلمة المرور.'); return; }
             try {
                 const q = query(collection(db, "vendeurs"), where("phone", "==", phone), where("password", "==", password));
                 const querySnapshot = await getDocs(q);
@@ -756,7 +755,7 @@
                     localStorage.setItem('currentVendeur', JSON.stringify(window.currentVendeur));
                     window.checkVendeurAuth();
                 } else { alert('رقم الهاتف أو كلمة المرور غير صحيحة.'); }
-            } catch (e) { alert('خطأ في الاتصال.'); }
+            } catch (e) { alert('خطأ في الاتصال بقاعدة البيانات.'); }
         };
 
         window.logoutVendeur = function() {
@@ -1195,7 +1194,6 @@
             document.getElementById('modalTotalBenefice').innerText = totalBenefice.toFixed(3) + ' د.ت';
             document.getElementById('modalTotalCredit').innerText = totalCredit.toFixed(3) + ' د.ت';
 
-            // توليد جدول الأيام بالكامل لشهر الحالي
             let daysHtml = '';
             let now = new Date();
             let year = now.getFullYear();
@@ -1216,7 +1214,6 @@
             const daysTbody = document.getElementById('recetteDaysTableBody');
             if(daysTbody) daysTbody.innerHTML = daysHtml;
 
-            // توليد جدول الشهور بالكامل (جانفي إلى ديسمبر)
             let monthsHtml = '';
             let monthNames = {
                 '01': 'جانفي', '02': 'فيفري', '03': 'مارس', '04': 'أفريل',
@@ -1382,6 +1379,7 @@
             } catch (e) { alert('خطأ أثناء الحفظ.'); }
         };
 
+        // تشغيل التحقق من المصادقة عند التحميل فوراً
         window.checkVendeurAuth();
     </script>
 </body>
