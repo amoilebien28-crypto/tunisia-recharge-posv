@@ -11,7 +11,7 @@
 </head>
 <body class="bg-slate-100 min-h-screen font-sans pb-12 text-slate-800">
 
-    <!-- شاشة تسجيل الدخول / التسجيل للبائع (تظهر إذا لم يتم تسجيل الدخول) -->
+    <!-- شاشة تسجيل الدخول / التسجيل للبائع -->
     <div id="authScreen" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full space-y-6">
             <div class="text-center space-y-2">
@@ -22,13 +22,11 @@
                 <p class="text-xs text-slate-500">الرجاء تسجيل الدخول أو إنشاء حساب جديد للبدء</p>
             </div>
 
-            <!-- أزرار التبديل بين تسجيل الدخول وتسجيل حساب جديد -->
             <div class="flex bg-slate-100 p-1 rounded-2xl">
                 <button onclick="switchAuthMode('login')" id="loginTabBtn" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-sm transition">دخول</button>
                 <button onclick="switchAuthMode('register')" id="registerTabBtn" class="flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-500 transition">حساب جديد</button>
             </div>
 
-            <!-- نموذج الدخول -->
             <div id="loginForm" class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">رقم الهاتف:</label>
@@ -41,7 +39,6 @@
                 <button onclick="handleVendeurLogin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold shadow-sm transition">تسجيل الدخول</button>
             </div>
 
-            <!-- نموذج التسجيل الجديد -->
             <div id="registerForm" class="space-y-4 hidden">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">اسم البائع / الشركة:</label>
@@ -60,7 +57,7 @@
         </div>
     </div>
 
-    <!-- رأسية لوحة التحكم (تظهر بعد تسجيل الدخول) -->
+    <!-- رأسية لوحة التحكم -->
     <header class="bg-white text-slate-800 shadow-sm border-b border-slate-200">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
             <h1 class="text-xl font-bold flex items-center gap-2 text-indigo-700">
@@ -86,7 +83,6 @@
                 <p class="text-sm text-slate-500">إدارة زبائنك، الكاسة، والطلبات بكل احترافية:</p>
             </div>
 
-            <!-- الاختيار الأول: الكاسة والبيع المباشر -->
             <button onclick="selectMainChoice('pos')" class="w-full text-right bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-md">
                 <div class="flex items-center gap-4">
                     <div class="bg-white/20 p-4 rounded-2xl text-2xl">
@@ -100,7 +96,6 @@
                 <i class="fa-solid fa-chevron-left text-lg"></i>
             </button>
 
-            <!-- الاختيار الثاني: الإدارة، الحوانت والطلبات -->
             <button onclick="selectMainChoice('management')" class="w-full text-right bg-white hover:bg-slate-50 border border-slate-200 text-slate-800 p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-sm">
                 <div class="flex items-center gap-4">
                     <div class="bg-indigo-50 p-4 rounded-2xl text-2xl text-indigo-600">
@@ -108,7 +103,7 @@
                     </div>
                     <div>
                         <h3 class="text-lg font-black text-slate-900">2. إدارة الحوانت، الطلبات والمخزون</h3>
-                        <p class="text-xs text-slate-500 font-normal mt-1">إضافة حانوت جديد، متابعة طلبات زبائنك، الكريدي والإحصائيات</p>
+                        <p class="text-xs text-slate-500 font-normal mt-1">إضافة حانوت جديد، متابعة طلبات زبائنك، المخزون والإحصائيات</p>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-left text-slate-400 text-lg"></i>
@@ -125,7 +120,6 @@
             </div>
 
             <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 space-y-3">
-                <!-- زر خاص بإضافة حانوت جديد يتبع هذا البائع -->
                 <button onclick="openAddClientModal()" class="w-full text-right bg-emerald-50 hover:bg-emerald-100 text-emerald-900 p-4 rounded-2xl font-bold flex justify-between items-center transition border border-emerald-200">
                     <span><i class="fa-solid fa-store ml-2 text-emerald-600"></i> إضافة حانوت جديد (الزبون الخاص بك + كلمة المرور)</span>
                     <i class="fa-solid fa-plus text-xs text-emerald-600"></i>
@@ -154,7 +148,7 @@
         </div>
     </main>
 
-    <!-- نافذة إضافة حانوت جديد بواسطة البائع -->
+    <!-- نافذة إضافة حانوت جديد -->
     <div id="addClientModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-md w-full space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
@@ -208,7 +202,7 @@
         </div>
     </div>
 
-    <!-- نوافذ الإدارة والطلبات والكاسة -->
+    <!-- نافذة الطلبات -->
     <div id="windowOrders" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
@@ -222,6 +216,7 @@
         </div>
     </div>
 
+    <!-- نافذة الحوانت المسجلة -->
     <div id="windowClients" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
@@ -230,6 +225,56 @@
             </div>
             <div id="clientsListContainer" class="space-y-2"></div>
             <button onclick="closeAdminWindow('clients')" class="w-full bg-slate-100 text-slate-700 py-2.5 rounded-xl font-bold text-sm">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- نافذة إدارة المخزون (Stock) - مصلحة ومفعلة بالكامل -->
+    <div id="windowStock" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
+        <div class="bg-white p-6 rounded-3xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-boxes-stacked text-emerald-600 ml-2"></i> إدارة المخزون الحالي (Stock)</h4>
+                <button onclick="closeAdminWindow('stock')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-right border-collapse">
+                    <thead>
+                        <tr class="border-b bg-slate-50 text-slate-600 text-sm">
+                            <th class="p-3">المشغل</th>
+                            <th class="p-3">الفئة / المنتج</th>
+                            <th class="p-3">إجمالي الكميات المباعة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stockTableBody">
+                        <tr><td colspan="3" class="text-center text-slate-400 py-4">جري حساب المخزون...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <button onclick="closeAdminWindow('stock')" class="w-full bg-slate-100 text-slate-700 py-2.5 rounded-xl font-bold text-sm">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- نافذة إحصائيات المبيعات (Stats) - مصلحة ومفعلة بالكامل -->
+    <div id="windowStats" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
+        <div class="bg-white p-6 rounded-3xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-chart-pie text-amber-500 ml-2"></i> إحصائيات المبيعات</h4>
+                <button onclick="closeAdminWindow('stats')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-right border-collapse">
+                    <thead>
+                        <tr class="border-b bg-slate-50 text-slate-600 text-sm">
+                            <th class="p-3">المشغل</th>
+                            <th class="p-3">المنتج</th>
+                            <th class="p-3">عدد القطع المباعة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="salesStatsTableBody">
+                        <tr><td colspan="3" class="text-center text-slate-400 py-4">لا توجد إحصائيات مبيعات بعد.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <button onclick="closeAdminWindow('stats')" class="w-full bg-slate-100 text-slate-700 py-2.5 rounded-xl font-bold text-sm">إغلاق</button>
         </div>
     </div>
 
@@ -302,7 +347,6 @@
         const db = getFirestore(app);
         window.db = db;
 
-        // إدارة حالة تسجيل دخول البائع في LocalStorage
         window.currentVendeur = JSON.parse(localStorage.getItem('currentVendeur') || 'null');
 
         window.checkVendeurAuth = function() {
@@ -374,7 +418,6 @@
             location.reload();
         };
 
-        // إدارة الحوانت الخاصة بهذا البائع حصرياً
         window.openAddClientModal = () => document.getElementById('addClientModal').classList.remove('hidden');
         window.closeAddClientModal = () => document.getElementById('addClientModal').classList.add('hidden');
 
@@ -409,21 +452,18 @@
         async function fetchVendeurData() {
             if (!window.currentVendeur) return;
             try {
-                // جلب الحوانت التابعة لهذا البائع فقط
                 const clientsSnap = await getDocs(query(collection(db, "clients"), where("vendeurId", "==", window.currentVendeur.id)));
                 window.allClients = [];
                 clientsSnap.forEach(d => window.allClients.push({ id: d.id, ...d.data() }));
 
-                // جلب الطلبات الخاصة بالحوانت التابعة لهذا البائع
                 onSnapshot(collection(db, "orders"), (snap) => {
                     window.allOrders = [];
                     snap.forEach(d => {
                         let o = d.data();
-                        // التحقق أن الطلب يخص حانوت تابع لهذا البائع
                         let belongs = window.allClients.some(c => c.name === o.clientName);
                         if (belongs) window.allOrders.push({ id: d.id, ...o });
                     });
-                    processAdminStats();
+                    processAdminStatsAndStock();
                 });
 
                 updateClientsUI();
@@ -453,10 +493,12 @@
             if (lst) lst.innerHTML = listHtml || '<p class="text-slate-400 text-center py-4">لا توجد حوانت مسجلة بعد.</p>';
         }
 
-        function processAdminStats() {
+        // معالجة حساب الإحصائيات، المخزون، والطلبات بدقة تامة
+        function processAdminStatsAndStock() {
             let dayTotal = 0, totalBenefice = 0, totalCredit = 0;
             const today = new Date().toISOString().slice(0, 10);
             let ordersHtml = '';
+            let salesStatsMap = {};
 
             window.allOrders.forEach(o => {
                 if (o.paidAmount) dayTotal += (o.date.slice(0, 10) === today ? o.paidAmount : 0);
@@ -472,16 +514,54 @@
                         <p class="text-xs text-slate-500">المجموع: ${o.totalSell} د.ت | التاريخ: ${new Date(o.date).toLocaleDateString()}</p>
                     </div>
                 `;
+
+                // تجميع المبيعات للإحصائيات والمخزون
+                if (o.items && Array.isArray(o.items)) {
+                    o.items.forEach(item => {
+                        let key = item.id || item.name;
+                        if (!salesStatsMap[key]) {
+                            salesStatsMap[key] = { operator: item.operator || 'أخرى', name: item.name, qty: 0 };
+                        }
+                        salesStatsMap[key].qty += (item.qty || 1);
+                    });
+                }
             });
 
             document.getElementById('modalRecetteDay').innerText = dayTotal.toFixed(3) + ' د.ت';
             document.getElementById('modalTotalBenefice').innerText = totalBenefice.toFixed(3) + ' د.ت';
             document.getElementById('modalTotalCredit').innerText = totalCredit.toFixed(3) + ' د.ت';
+            
             const oContainer = document.getElementById('ordersListContainer');
             if (oContainer) oContainer.innerHTML = ordersHtml || '<p class="text-slate-400 text-center py-4">لا توجد طلبات حالياً.</p>';
+
+            // تعبئة جداول إحصائيات المبيعات والمخزون
+            let statsHtml = '';
+            let stockHtml = '';
+            for (let k in salesStatsMap) {
+                let s = salesStatsMap[k];
+                statsHtml += `
+                    <tr class="border-b text-sm">
+                        <td class="p-3 font-bold text-slate-700">${s.operator}</td>
+                        <td class="p-3">${s.name}</td>
+                        <td class="p-3 font-black text-indigo-600">${s.qty} قطعة</td>
+                    </tr>
+                `;
+                stockHtml += `
+                    <tr class="border-b text-sm">
+                        <td class="p-3 font-bold text-slate-700">${s.operator}</td>
+                        <td class="p-3">${s.name}</td>
+                        <td class="p-3 font-black text-emerald-600">${s.qty} قطعة مباعة</td>
+                    </tr>
+                `;
+            }
+
+            const statsTable = document.getElementById('salesStatsTableBody');
+            if (statsTable) statsTable.innerHTML = statsHtml || '<tr><td colspan="3" class="text-center text-slate-400 py-4">لا توجد بيانات مبيعات.</td></tr>';
+
+            const stockTable = document.getElementById('stockTableBody');
+            if (stockTable) stockTable.innerHTML = stockHtml || '<tr><td colspan="3" class="text-center text-slate-400 py-4">المخزون فارغ حالياً.</td></tr>';
         }
 
-        // دويار القوائم والنوافذ
         window.selectMainChoice = function(choice) {
             if (choice === 'pos') window.openAdminWindow('pos');
             else if (choice === 'management') {
@@ -509,15 +589,19 @@
         window.openRecetteModal = () => document.getElementById('recetteModal').classList.remove('hidden');
         window.closeRecetteModal = () => document.getElementById('recetteModal').classList.add('hidden');
 
-        // قائمة البطاقات والأسعار للبيع المباشر
         window.tariffs = [
             { id: 'Ooredoo_1', operator: 'Ooredoo', name: '1 د.ت', buy: 0.950, sell: 1.000 },
             { id: 'Ooredoo_5', operator: 'Ooredoo', name: '5 د.ت', buy: 4.750, sell: 5.000 },
             { id: 'Ooredoo_10', operator: 'Ooredoo', name: '10 د.ت', buy: 9.500, sell: 10.000 },
+            { id: 'Ooredoo_25', operator: 'Ooredoo', name: '25 د.ت', buy: 23.750, sell: 25.000 },
             { id: 'Telecom_1', operator: 'Telecom', name: '1 د.ت', buy: 0.950, sell: 1.000 },
             { id: 'Telecom_5', operator: 'Telecom', name: '5 د.ت', buy: 4.750, sell: 5.000 },
+            { id: 'Telecom_10', operator: 'Telecom', name: '10 د.ت', buy: 9.500, sell: 10.000 },
+            { id: 'Telecom_25', operator: 'Telecom', name: '25 د.ت', buy: 23.750, sell: 25.000 },
             { id: 'Orange_1', operator: 'Orange', name: '1 د.ت', buy: 0.950, sell: 1.000 },
-            { id: 'Orange_5', operator: 'Orange', name: '5 د.ت', buy: 4.750, sell: 5.000 }
+            { id: 'Orange_5', operator: 'Orange', name: '5 د.ت', buy: 4.750, sell: 5.000 },
+            { id: 'Orange_10', operator: 'Orange', name: '10 د.ت', buy: 9.500, sell: 10.000 },
+            { id: 'Orange_25', operator: 'Orange', name: '25 د.ت', buy: 23.750, sell: 25.000 }
         ];
         window.posCart = {};
 
@@ -584,7 +668,6 @@
             }
         };
 
-        // تشغيل التحقق عند فتح الصفحة
         window.checkVendeurAuth();
     </script>
 </body>
