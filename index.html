@@ -103,7 +103,7 @@
                     </div>
                     <div>
                         <h3 class="text-lg font-black text-slate-900">2. إدارة الحوانت، الطلبات والمخزون</h3>
-                        <p class="text-xs text-slate-500 font-normal mt-1">إضافة حانوت جديد، متابعة طلبات زبائنك، إدخال ستوك جديد وإحصائيات التجار</p>
+                        <p class="text-xs text-slate-500 font-normal mt-1">إضافة حانوت جديد، متابعة الطلبات، فواتير الشراء، الستوك والإحصائيات</p>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-left text-slate-400 text-lg"></i>
@@ -135,9 +135,15 @@
                     <i class="fa-solid fa-chevron-left text-xs text-slate-400"></i>
                 </button>
 
-                <button onclick="openAdminWindow('stock')" class="w-full text-right bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 p-4 rounded-2xl font-bold flex justify-between items-center transition">
-                    <span><i class="fa-solid fa-boxes-stacked ml-2 text-emerald-600"></i> إدارة المخزون (إدخال فاتورة ستوك جديد + عرض الستوك النهائي)</span>
-                    <i class="fa-solid fa-chevron-left text-xs text-slate-400"></i>
+                <!-- زران منفصلان لإدارة المخزون كما طلبت بالمليمتر -->
+                <button onclick="openAdminWindow('invoice')" class="w-full text-right bg-indigo-50 hover:bg-indigo-100 text-indigo-900 p-4 rounded-2xl font-bold flex justify-between items-center transition border border-indigo-200">
+                    <span><i class="fa-solid fa-file-invoice-dollar ml-2 text-indigo-600"></i> إدخال فاتورة شراء ستوك جديد</span>
+                    <i class="fa-solid fa-plus text-xs text-indigo-600"></i>
+                </button>
+
+                <button onclick="openAdminWindow('stock')" class="w-full text-right bg-emerald-50 hover:bg-emerald-100 text-emerald-900 p-4 rounded-2xl font-bold flex justify-between items-center transition border border-emerald-200">
+                    <span><i class="fa-solid fa-warehouse ml-2 text-emerald-600"></i> الستوك النهائي (إنفونتير المخزون وقيمته المالية)</span>
+                    <i class="fa-solid fa-chevron-left text-xs text-emerald-600"></i>
                 </button>
 
                 <button onclick="openAdminWindow('stats')" class="w-full text-right bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 p-4 rounded-2xl font-bold flex justify-between items-center transition">
@@ -246,62 +252,59 @@
         </div>
     </div>
 
-    <!-- نافذة إدارة المخزون (إدخال فاتورة ستوك جديد + عرض الستوك النهائي) -->
+    <!-- نافذة إدخال فاتورة شراء ستوك جديد (كل المنتجات والبطاقات والشحن) -->
+    <div id="windowInvoice" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
+        <div class="bg-white p-6 rounded-3xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto space-y-6">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-file-invoice-dollar text-indigo-600 ml-2"></i> إدخال فاتورة شراء ستوك جديد</h4>
+                <button onclick="closeAdminWindow('invoice')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+            </div>
+            
+            <p class="text-xs text-slate-500">قم بإدخال الكميات المشتراة تحت كل منتج، ثم اضغط على (حفظ الفاتورة) أسفل الصفحة:</p>
+
+            <div class="space-y-4" id="invoiceProductsListContainer">
+                <!-- تعبئة ديناميكية لكل المنتجات والبطاقات والشحن -->
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-2xl border flex justify-between items-center sticky bottom-0 bg-white shadow-md">
+                <div>
+                    <span class="text-xs text-slate-600">المجموع الجملي لفاتورة الشراء:</span>
+                    <span id="invoiceTotalBuyCost" class="text-xl font-black text-indigo-600 mr-2">0.000 د.ت</span>
+                </div>
+                <button onclick="saveNewStockInvoiceBatch()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-sm transition">حفظ الفاتورة وإضافة للستوك</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة الستوك النهائي (إنفونتير المخزون وقيمته الجملية) -->
     <div id="windowStock" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto space-y-6">
             <div class="flex justify-between items-center border-b pb-3">
-                <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-boxes-stacked text-emerald-600 ml-2"></i> إدارة المخزون وشراء السلعة</h4>
+                <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-warehouse text-emerald-600 ml-2"></i> الستوك النهائي (إنفونتير المخزون)</h4>
                 <button onclick="closeAdminWindow('stock')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
             </div>
 
-            <!-- قسم إدخال فاتورة شراء ستوك جديد -->
-            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
-                <h5 class="font-bold text-sm text-indigo-700"><i class="fa-solid fa-plus-circle ml-1"></i> إدخال فاتورة ستوك جديد (شراء سلعة)</h5>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">المشغل:</label>
-                        <select id="invoiceOperator" onchange="updateInvoiceProducts()" class="border p-2.5 rounded-xl w-full text-xs font-bold bg-white">
-                            <option value="Ooredoo">أوريدو</option>
-                            <option value="Telecom">تيليكوم</option>
-                            <option value="Orange">أورنج</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">المنتج / الفئة:</label>
-                        <select id="invoiceProduct" class="border p-2.5 rounded-xl w-full text-xs font-bold bg-white">
-                            <option value="1 د.ت">1 د.ت</option>
-                            <option value="5 د.ت">5 د.ت</option>
-                            <option value="10 د.ت">10 د.ت</option>
-                            <option value="25 د.ت">25 د.ت</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">الكمية المشتراة:</label>
-                        <input type="number" id="invoiceQty" placeholder="العدد..." class="border p-2.5 rounded-xl w-full text-xs font-bold bg-white">
-                    </div>
-                </div>
-                <button onclick="saveNewStockInvoice()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-bold text-xs shadow-sm transition">حفظ وإضافة إلى الستوك</button>
+            <div class="overflow-x-auto">
+                <table class="w-full text-right border-collapse">
+                    <thead>
+                        <tr class="border-b bg-slate-50 text-slate-600 text-xs">
+                            <th class="p-3">المشغل</th>
+                            <th class="p-3">المنتج / البطاقة / الشحن</th>
+                            <th class="p-3">سعر الشراء</th>
+                            <th class="p-3">المشتريات</th>
+                            <th class="p-3">المبيعات</th>
+                            <th class="p-3">الستوك النهائي</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stockTableBody">
+                        <tr><td colspan="6" class="text-center text-slate-400 py-4">جاري حساب الستوك...</td></tr>
+                    </tbody>
+                </table>
             </div>
 
-            <!-- قسم عرض الستوك النهائي لكل منتج -->
-            <div class="space-y-2">
-                <h5 class="font-bold text-sm text-slate-800"><i class="fa-solid fa-warehouse ml-1 text-emerald-600"></i> الستوك النهائي المتوفر حالياً:</h5>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-right border-collapse">
-                        <thead>
-                            <tr class="border-b bg-slate-50 text-slate-600 text-xs">
-                                <th class="p-3">المشغل</th>
-                                <th class="p-3">المنتج</th>
-                                <th class="p-3">إجمالي المشتريات</th>
-                                <th class="p-3">المبيعات المؤكدة</th>
-                                <th class="p-3">الستوك النهائي المتبقي</th>
-                            </tr>
-                        </thead>
-                        <tbody id="stockTableBody">
-                            <tr><td colspan="5" class="text-center text-slate-400 py-4">جاري حساب الستوك...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-200 flex justify-between items-center">
+                <span class="text-sm font-bold text-emerald-800">القيمة الإجمالية للمخزون (سعر الشراء):</span>
+                <span id="totalStockValue" class="text-xl font-black text-emerald-700">0.000 د.ت</span>
             </div>
 
             <button onclick="closeAdminWindow('stock')" class="w-full bg-slate-100 text-slate-700 py-2.5 rounded-xl font-bold text-sm">إغلاق</button>
@@ -416,11 +419,33 @@
 
         window.currentVendeur = JSON.parse(localStorage.getItem('currentVendeur') || 'null');
 
+        // قائمة المنتجات والبطاقات والشحن كاملة بكل تفاصيلها
+        window.tariffs = [
+            { id: 'Ooredoo_1', operator: 'Ooredoo', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 },
+            { id: 'Ooredoo_5', operator: 'Ooredoo', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 },
+            { id: 'Ooredoo_10', operator: 'Ooredoo', name: 'بطاقة 10 د.ت', buy: 9.500, sell: 10.000 },
+            { id: 'Ooredoo_25', operator: 'Ooredoo', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 },
+            { id: 'Ooredoo_Recharge', operator: 'Ooredoo', name: 'شحن مباشر (Floussi/E-recharge)', buy: 0.960, sell: 1.000 },
+            
+            { id: 'Telecom_1', operator: 'Telecom', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 },
+            { id: 'Telecom_5', operator: 'Telecom', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 },
+            { id: 'Telecom_10', operator: 'Telecom', name: 'بطاقة 10 د.ت', buy: 9.500, sell: 10.000 },
+            { id: 'Telecom_25', operator: 'Telecom', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 },
+            { id: 'Telecom_Recharge', operator: 'Telecom', name: 'شحن مباشر (E-recharge)', buy: 0.960, sell: 1.000 },
+
+            { id: 'Orange_1', operator: 'Orange', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 },
+            { id: 'Orange_5', operator: 'Orange', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 },
+            { id: 'Orange_10', operator: 'Orange', name: '10 د.ت', buy: 9.500, sell: 10.000 },
+            { id: 'Orange_25', operator: 'Orange', name: '25 د.ت', buy: 23.750, sell: 25.000 },
+            { id: 'Orange_Recharge', operator: 'Orange', name: 'شحن مباشر (E-recharge)', buy: 0.960, sell: 1.000 }
+        ];
+
         window.checkVendeurAuth = function() {
             if (window.currentVendeur) {
                 document.getElementById('authScreen').classList.add('hidden');
                 document.getElementById('headerVendeurName').innerText = `البائع: ${window.currentVendeur.name}`;
                 fetchVendeurData();
+                renderInvoiceForm();
             } else {
                 document.getElementById('authScreen').classList.remove('hidden');
             }
@@ -524,14 +549,12 @@
                 window.allClients = [];
                 clientsSnap.forEach(d => window.allClients.push({ id: d.id, ...d.data() }));
 
-                // الاستماع لفواتير المشتريات (الستوك الجديد)
                 onSnapshot(query(collection(db, "invoices"), where("vendeurId", "==", window.currentVendeur.id)), (snap) => {
                     window.allInvoices = [];
                     snap.forEach(d => window.allInvoices.push({ id: d.id, ...d.data() }));
                     processAdminStatsAndStock();
                 });
 
-                // الاستماع للطلبات
                 onSnapshot(query(collection(db, "orders"), where("vendeurId", "==", window.currentVendeur.id)), (snap) => {
                     window.allOrders = [];
                     snap.forEach(d => {
@@ -546,29 +569,68 @@
             }
         }
 
-        window.saveNewStockInvoice = async function() {
-            const operator = document.getElementById('invoiceOperator').value;
-            const productName = document.getElementById('invoiceProduct').value;
-            const qty = parseInt(document.getElementById('invoiceQty').value) || 0;
+        // عرض قائمة كل المنتجات والبطاقات والشحن لإدخال فاتورة الشراء دفعة واحدة
+        function renderInvoiceForm() {
+            let html = '';
+            window.tariffs.forEach(t => {
+                html += `
+                    <div class="bg-slate-50 p-3 rounded-2xl border flex justify-between items-center text-xs">
+                        <div>
+                            <span class="font-bold text-slate-900">${t.operator} - ${t.name}</span>
+                            <p class="text-[10px] text-slate-500">سعر الشراء: ${t.buy.toFixed(3)} د.ت</p>
+                        </div>
+                        <div class="w-32">
+                            <input type="number" min="0" value="0" id="inv_qty_${t.id}" oninput="calcInvoiceTotal()" class="w-full border p-2 rounded-xl text-center font-bold bg-white">
+                        </div>
+                    </div>
+                `;
+            });
+            const container = document.getElementById('invoiceProductsListContainer');
+            if (container) container.innerHTML = html;
+        }
 
-            if (qty <= 0) {
-                alert('الرجاء إدخال كمية صحيحة.');
+        window.calcInvoiceTotal = function() {
+            let total = 0;
+            window.tariffs.forEach(t => {
+                let input = document.getElementById(`inv_qty_${t.id}`);
+                if (input) {
+                    let qty = parseInt(input.value) || 0;
+                    total += qty * t.buy;
+                }
+            });
+            document.getElementById('invoiceTotalBuyCost').innerText = total.toFixed(3) + ' د.ت';
+        };
+
+        window.saveNewStockInvoiceBatch = async function() {
+            let itemsToSave = [];
+            window.tariffs.forEach(t => {
+                let input = document.getElementById(`inv_qty_${t.id}`);
+                if (input) {
+                    let qty = parseInt(input.value) || 0;
+                    if (qty > 0) {
+                        itemsToSave.push({ ...t, qty });
+                    }
+                }
+            });
+
+            if (itemsToSave.length === 0) {
+                alert('الرجاء إدخال كمية لمنتج واحد على الأقل.');
                 return;
             }
 
             try {
                 await addDoc(collection(db, "invoices"), {
                     vendeurId: window.currentVendeur.id,
-                    operator,
-                    productName,
-                    qty,
+                    items: itemsToSave,
                     date: new Date().toISOString()
                 });
-                alert('تم إضافة فاتورة الستوك بنجاح!');
-                document.getElementById('invoiceQty').value = '';
+                alert('تم حفظ فاتورة شراء الستوك بنجاح!');
+                renderInvoiceForm();
+                calcInvoiceTotal();
+                window.closeAdminWindow('invoice');
                 fetchVendeurData();
             } catch (e) {
-                alert('خطأ أثناء حفظ فاتورة الستوك.');
+                alert('خطأ أثناء حفظ الفاتورة.');
             }
         };
 
@@ -672,7 +734,7 @@
                     paidAmount: paidAmount,
                     creditAmount: creditAmount
                 });
-                alert('تم تأكيد الطلبية بنجاح وأضيفت للروسيت والمخزون!');
+                alert('تم تأكيد الطلبية بنجاح واختفت من الطلبات الجديدة!');
                 window.closeOrderDetailModal();
             } catch (e) {
                 console.error(e);
@@ -683,21 +745,28 @@
         function processAdminStatsAndStock() {
             let dayTotal = 0, monthTotal = 0, totalBenefice = 0, totalCredit = 0;
             const today = new Date().toISOString().slice(0, 10);
-            const currentMonth = today.slice(0, 7); // YYYY-MM
+            const currentMonth = today.slice(0, 7);
             let ordersHtml = '';
             
-            // خريطة لتجميع المبيعات حسب التاجر
             let clientSalesMap = {};
-            // خريطة لتجميع المشتريات والمبيعات للستوك
             let stockMap = {};
 
-            // 1. تهيئة الستوك من الفواتير المدخلة
+            // تهيئة الخريطة بجميع المنتجات الموجودة في tariffs
+            window.tariffs.forEach(t => {
+                stockMap[t.id] = { operator: t.operator, name: t.name, buy: t.buy, purchased: 0, sold: 0 };
+            });
+
+            // حساب المشتريات من الفواتير
             window.allInvoices.forEach(inv => {
-                let key = `${inv.operator}_${inv.productName}`;
-                if (!stockMap[key]) {
-                    stockMap[key] = { operator: inv.operator, productName: inv.productName, purchased: 0, sold: 0 };
+                if (inv.items && Array.isArray(inv.items)) {
+                    inv.items.forEach(item => {
+                        let key = item.id;
+                        if (!stockMap[key]) {
+                            stockMap[key] = { operator: item.operator, name: item.name, buy: item.buy, purchased: 0, sold: 0 };
+                        }
+                        stockMap[key].purchased += item.qty;
+                    });
                 }
-                stockMap[key].purchased += inv.qty;
             });
 
             window.allOrders.forEach(o => {
@@ -713,25 +782,22 @@
                     if (o.benefice) totalBenefice += o.benefice;
                     if (o.creditAmount) totalCredit += o.creditAmount;
 
-                    // تجميع مبيعات التجار للإحصائيات
                     if (!clientSalesMap[o.clientName]) {
                         clientSalesMap[o.clientName] = { count: 0, totalSpent: 0 };
                     }
                     clientSalesMap[o.clientName].count += 1;
                     clientSalesMap[o.clientName].totalSpent += o.totalSell;
 
-                    // حساب الستوك المباع
                     if (o.items && Array.isArray(o.items)) {
                         o.items.forEach(item => {
-                            let key = `${item.operator}_${item.name}`;
+                            let key = item.id;
                             if (!stockMap[key]) {
-                                stockMap[key] = { operator: item.operator || 'أخرى', productName: item.name, purchased: 0, sold: 0 };
+                                stockMap[key] = { operator: item.operator || 'أخرى', name: item.name, buy: item.buy || 0, purchased: 0, sold: 0 };
                             }
                             stockMap[key].sold += (item.qty || 1);
                         });
                     }
                 } else {
-                    // الطلبات التي مازالت قيد الانتظار تعرض في قائمة الطلبات
                     ordersHtml += `
                         <div onclick="openOrderDetailModal('${o.id}')" class="bg-slate-50 hover:bg-slate-100 cursor-pointer p-4 rounded-2xl border flex justify-between items-center transition shadow-xs">
                             <div class="space-y-1">
@@ -755,13 +821,12 @@
             const oContainer = document.getElementById('ordersListContainer');
             if (oContainer) oContainer.innerHTML = ordersHtml || '<p class="text-slate-400 text-center py-4">لا توجد طلبات جديدة قيد الانتظار.</p>';
 
-            // تعبئة جدول إحصائيات المبيعات حسب التجار
             let statsHtml = '';
             for (let clientName in clientSalesMap) {
                 let stat = clientSalesMap[clientName];
                 statsHtml += `
                     <tr class="border-b text-sm">
-                        <td class="p-3 font-bold text-slate-750"><i class="fa-solid fa-store text-emerald-600 ml-1"></i> ${clientName}</td>
+                        <td class="p-3 font-bold text-slate-800"><i class="fa-solid fa-store text-emerald-600 ml-1"></i> ${clientName}</td>
                         <td class="p-3 text-indigo-600 font-bold">${stat.count} طلبات</td>
                         <td class="p-3 font-black text-emerald-600">${stat.totalSpent.toFixed(3)} د.ت</td>
                     </tr>
@@ -770,15 +835,19 @@
             const statsTable = document.getElementById('salesStatsTableBody');
             if (statsTable) statsTable.innerHTML = statsHtml || '<tr><td colspan="3" class="text-center text-slate-400 py-4">لا توجد مبيعات مؤكدة للتجار بعد.</td></tr>';
 
-            // تعبئة جدول إدارة المخزون النهائي
             let stockHtml = '';
+            let totalStockFinancialValue = 0;
             for (let k in stockMap) {
                 let st = stockMap[k];
                 let finalStock = st.purchased - st.sold;
+                let lineValue = finalStock * st.buy;
+                if (finalStock > 0) totalStockFinancialValue += lineValue;
+
                 stockHtml += `
                     <tr class="border-b text-xs">
                         <td class="p-3 font-bold text-slate-700">${st.operator}</td>
-                        <td class="p-3">${st.productName}</td>
+                        <td class="p-3">${st.name}</td>
+                        <td class="p-3 text-slate-500">${st.buy.toFixed(3)} د.ت</td>
                         <td class="p-3 font-bold text-indigo-600">${st.purchased}</td>
                         <td class="p-3 font-bold text-rose-600">${st.sold}</td>
                         <td class="p-3 font-black text-emerald-600 text-sm">${finalStock} قطعة</td>
@@ -786,7 +855,10 @@
                 `;
             }
             const stockTable = document.getElementById('stockTableBody');
-            if (stockTable) stockTable.innerHTML = stockHtml || '<tr><td colspan="5" class="text-center text-slate-400 py-4">لا توجد فواتير ستوك مسجلة.</td></tr>';
+            if (stockTable) stockTable.innerHTML = stockHtml || '<tr><td colspan="6" class="text-center text-slate-400 py-4">لا توجد بيانات ستوك.</td></tr>';
+            
+            const totalStockEl = document.getElementById('totalStockValue');
+            if (totalStockEl) totalStockEl.innerText = totalStockFinancialValue.toFixed(3) + ' د.ت';
         }
 
         window.selectMainChoice = function(choice) {
@@ -816,20 +888,6 @@
         window.openRecetteModal = () => document.getElementById('recetteModal').classList.remove('hidden');
         window.closeRecetteModal = () => document.getElementById('recetteModal').classList.add('hidden');
 
-        window.tariffs = [
-            { id: 'Ooredoo_1', operator: 'Ooredoo', name: '1 د.ت', buy: 0.950, sell: 1.000 },
-            { id: 'Ooredoo_5', operator: 'Ooredoo', name: '5 د.ت', buy: 4.750, sell: 5.000 },
-            { id: 'Ooredoo_10', operator: 'Ooredoo', name: '10 د.ت', buy: 9.500, sell: 10.000 },
-            { id: 'Ooredoo_25', operator: 'Ooredoo', name: '25 د.ت', buy: 23.750, sell: 25.000 },
-            { id: 'Telecom_1', operator: 'Telecom', name: '1 د.ت', buy: 0.950, sell: 1.000 },
-            { id: 'Telecom_5', operator: 'Telecom', name: '5 د.ت', buy: 4.750, sell: 5.000 },
-            { id: 'Telecom_10', operator: 'Telecom', name: '10 د.ت', buy: 9.500, sell: 10.000 },
-            { id: 'Telecom_25', operator: 'Telecom', name: '25 د.ت', buy: 23.750, sell: 25.000 },
-            { id: 'Orange_1', operator: 'Orange', name: '1 د.ت', buy: 0.950, sell: 1.000 },
-            { id: 'Orange_5', operator: 'Orange', name: '5 د.ت', buy: 4.750, sell: 5.000 },
-            { id: 'Orange_10', operator: 'Orange', name: '10 د.ت', buy: 9.500, sell: 10.000 },
-            { id: 'Orange_25', operator: 'Orange', name: '25 د.ت', buy: 23.750, sell: 25.000 }
-        ];
         window.posCart = {};
 
         window.selectPosOperator = function(op) {
@@ -840,9 +898,9 @@
                 let qty = window.posCart[t.id] || 0;
                 html += `
                     <div onclick="addPosCardQty('${t.id}')" class="bg-white border-2 p-3 rounded-xl cursor-pointer hover:shadow transition">
-                        <h4 class="font-bold">${t.name}</h4>
+                        <h4 class="font-bold text-xs">${t.name}</h4>
                         <p class="text-xs text-slate-500">${t.sell} د.ت</p>
-                        <div class="mt-2 text-center bg-slate-100 py-1 rounded font-bold" id="pos_qty_${t.id}">${qty}</div>
+                        <div class="mt-2 text-center bg-slate-100 py-1 rounded font-bold text-xs" id="pos_qty_${t.id}">${qty}</div>
                     </div>
                 `;
             });
