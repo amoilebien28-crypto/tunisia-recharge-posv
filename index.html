@@ -495,7 +495,7 @@
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto space-y-6 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
                 <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-warehouse text-emerald-600 ml-2"></i> الستوك النهائي (إنفونتير المخزون)</h4>
-                <button type="button" onclick="closeAdminWindow('stock')" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+                <button type="button" onclick="closeAdminWindow('stock')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
             </div>
 
             <div class="flex justify-between items-center">
@@ -541,7 +541,7 @@
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
                 <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-chart-pie text-amber-500 ml-2"></i> إحصائيات المبيعات حسب التجار (الحوانت)</h4>
-                <button type="button" onclick="closeAdminWindow('stats')" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+                <button type="button" onclick="closeAdminWindow('stats')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
             </div>
             <div class="overflow-x-auto border-2 border-slate-300 rounded-2xl shadow-inner bg-white">
                 <table class="w-full text-right border-collapse text-xs">
@@ -561,7 +561,7 @@
         </div>
     </div>
 
-    <!-- نافذة البيع المباشر (POS) -->
+    <!-- نافذة البيع المباشر (POS) المحدثة بالخلاص الجزئي والشحن المباشر بالكتابة -->
     <div id="windowPos" class="admin-window fixed inset-0 bg-slate-950/60 backdrop-blur-xs hidden flex items-center justify-center z-40 p-2 md:p-6 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-5xl w-full h-[95vh] flex flex-col justify-between overflow-hidden border border-slate-300">
             <div class="overflow-y-auto pr-1 flex-1 space-y-4">
@@ -580,10 +580,17 @@
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">طريقة الخلاص:</label>
                         <select id="posPaymentStatus" class="border border-slate-300 p-3 rounded-xl w-full font-bold text-sm bg-white">
-                            <option value="Payé">خلاص كاش (Payé)</option>
+                            <option value="Payé">خلاص كاش تام (Payé)</option>
                             <option value="Crédit">كريدي كلي (Crédit)</option>
+                            <option value="Partiel">خلاص جزئي (Paiement Partiel)</option>
                         </select>
                     </div>
+                </div>
+
+                <!-- خانة المبلغ المدفوع كاش تظهر فقط عند اختيار الخلاص الجزئي -->
+                <div id="posPartielAmountDiv" class="hidden bg-amber-50 p-4 rounded-2xl border border-amber-200">
+                    <label class="block text-xs font-bold text-amber-900 mb-1">المبلغ المدفوع كاش حالياً:</label>
+                    <input type="number" step="0.001" id="posPaidAmountInput" placeholder="0.000 د.ت" class="w-full border border-amber-300 p-3 rounded-xl text-sm font-bold bg-white">
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -594,7 +601,17 @@
 
                 <div id="posProductsSection" class="hidden space-y-3 border-t pt-3 border-slate-200">
                     <h5 id="posSelectedOperatorTitle" class="font-bold text-slate-700 text-sm"></h5>
+                    <!-- شبكة البطاقات -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="posCardsGrid"></div>
+
+                    <!-- خانة الشحن المباشر بالكتابة المباشرة -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-300 space-y-2 mt-4">
+                        <label class="block text-xs font-bold text-slate-700"><i class="fa-solid fa-bolt text-amber-500 ml-1"></i> الشحن المباشر (اكتب القيمة مباشرة):</label>
+                        <div class="flex gap-2">
+                            <input type="number" id="posDirectRechargeInput" placeholder="أدخل القيمة بالدينار (مثال: 15)..." class="flex-1 border border-slate-300 p-3 rounded-xl text-sm font-bold bg-white">
+                            <button type="button" onclick="addPosDirectRecharge()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 rounded-xl font-bold text-xs shadow-sm">إضافة للقفة</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -631,6 +648,15 @@
         window.db = db;
 
         window.currentVendeur = JSON.parse(localStorage.getItem('currentVendeur') || 'null');
+
+        // إظهار وإخفاء خانة المبلغ الجزئي في POS
+        document.addEventListener('change', function(e) {
+            if (e.target && e.target.id === 'posPaymentStatus') {
+                const val = e.target.value;
+                const partDiv = document.getElementById('posPartielAmountDiv');
+                if (val === 'Partiel') { partDiv.classList.remove('hidden'); } else { partDiv.classList.add('hidden'); }
+            }
+        });
 
         window.switchAuthMode = function(mode) {
             const loginForm = document.getElementById('loginForm');
@@ -740,17 +766,19 @@
             { id: 'Ooredoo_5', operator: 'Ooredoo', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 },
             { id: 'Ooredoo_10', operator: 'Ooredoo', name: 'بطاقة 10 د.ت', buy: 9.500, sell: 10.000 },
             { id: 'Ooredoo_25', operator: 'Ooredoo', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 },
-            { id: 'Ooredoo_Recharge', operator: 'Ooredoo', name: 'شحن مباشر (Floussi)', buy: 0.960, sell: 1.000 },
+            { id: 'Ooredoo_Recharge', operator: 'Ooredoo', name: 'شحن مباشر', buy: 0.960, sell: 1.000 },
+            
             { id: 'Telecom_1', operator: 'Telecom', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 },
             { id: 'Telecom_5', operator: 'Telecom', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 },
             { id: 'Telecom_10', operator: 'Telecom', name: 'بطاقة 10 د.ت', buy: 9.500, sell: 10.000 },
             { id: 'Telecom_25', operator: 'Telecom', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 },
-            { id: 'Telecom_Recharge', operator: 'Telecom', name: 'شحن مباشر (E-recharge)', buy: 0.960, sell: 1.000 },
+            { id: 'Telecom_Recharge', operator: 'Telecom', name: 'شحن مباشر', buy: 0.960, sell: 1.000 },
+
             { id: 'Orange_1', operator: 'Orange', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 },
             { id: 'Orange_5', operator: 'Orange', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 },
             { id: 'Orange_10', operator: 'Orange', name: 'بطاقة 10 د.ت', buy: 9.500, sell: 10.000 },
             { id: 'Orange_25', operator: 'Orange', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 },
-            { id: 'Orange_Recharge', operator: 'Orange', name: 'شحن مباشر (E-recharge)', buy: 0.960, sell: 1.000 }
+            { id: 'Orange_Recharge', operator: 'Orange', name: 'شحن مباشر', buy: 0.960, sell: 1.000 }
         ];
 
         window.openAddClientModal = () => document.getElementById('addClientModal').classList.remove('hidden');
@@ -1071,23 +1099,19 @@
             window.selectedOrderForAction = null;
         };
 
-        document.addEventListener('change', function(e) {
-            if (e.target && e.target.id === 'validerPaymentStatus') {
-                const val = e.target.value;
-                const partDiv = document.getElementById('partielAmountDiv');
-                if (val === 'Partiel') { partDiv.classList.remove('hidden'); } else { partDiv.classList.add('hidden'); }
-            }
-        });
-
         window.confirmAndValidateOrder = async function() {
             if (!window.selectedOrderForAction) return;
             const payStatus = document.getElementById('validerPaymentStatus').value;
-            let paidAmount = 0, creditAmount = 0;
             let total = window.selectedOrderForAction.totalSell;
+            let paidAmount = 0, creditAmount = 0;
 
-            if (payStatus === 'Payé') { paidAmount = total; creditAmount = 0; }
-            else if (payStatus === 'Crédit') { paidAmount = 0; creditAmount = total; }
-            else if (payStatus === 'Partiel') {
+            if (payStatus === 'Payé') { 
+                paidAmount = total; 
+                creditAmount = 0; 
+            } else if (payStatus === 'Crédit') { 
+                paidAmount = 0; 
+                creditAmount = total; 
+            } else if (payStatus === 'Partiel') {
                 paidAmount = parseFloat(document.getElementById('validerPaidAmount').value) || 0;
                 creditAmount = total - paidAmount;
                 if (paidAmount <= 0 || paidAmount >= total) { alert('الرجاء إدخال مبلغ مدفوع جزئي صحيح.'); return; }
@@ -1321,10 +1345,34 @@
             calcPosTotal();
         };
 
+        // دالة إضافة الشحن المباشر بالكتابة المباشرة في POS
+        window.addPosDirectRecharge = function() {
+            let val = parseFloat(document.getElementById('posDirectRechargeInput').value) || 0;
+            if (val <= 0) { alert('أدخل مبلغ صحيح للشحن المباشر.'); return; }
+            if (!window.selectedPosOp) { alert('اختر المشغل أولاً.'); return; }
+
+            let key = `${window.selectedPosOp}_Direct_${val}`;
+            window.posCart[key] = (window.posCart[key] || 0) + 1;
+            // حفظ تفاصيل هذا الشحن المباشر مؤقتاً
+            if (!window.customDirectTariffs) window.customDirectTariffs = {};
+            window.customDirectTariffs[key] = { id: key, operator: window.selectedPosOp, name: `شحن مباشر ${val} د.ت`, buy: val * 0.960, sell: val };
+
+            document.getElementById('posDirectRechargeInput').value = '';
+            alert('تم إضافة الشحن المباشر بنجاح!');
+            calcPosTotal();
+        };
+
+        // تعديل طفيف لتخزين المشغل الحالي في POS
+        window.oldSelectPosOp = window.selectPosOperator;
+        window.selectPosOperator = function(op) {
+            window.selectedPosOp = op;
+            window.oldSelectPosOp(op);
+        };
+
         function calcPosTotal() {
             let total = 0;
             for (let id in window.posCart) {
-                let item = window.tariffs.find(t => t.id === id);
+                let item = window.tariffs.find(t => t.id === id) || (window.customDirectTariffs && window.customDirectTariffs[id]);
                 if (item) total += item.sell * window.posCart[id];
             }
             document.getElementById('posCartTotal').innerText = total.toFixed(3) + ' د.ت';
@@ -1338,7 +1386,7 @@
             let items = [], totalSell = 0, totalBuy = 0;
             for (let id in window.posCart) {
                 if (window.posCart[id] > 0) {
-                    let item = window.tariffs.find(t => t.id === id);
+                    let item = window.tariffs.find(t => t.id === id) || (window.customDirectTariffs && window.customDirectTariffs[id]);
                     items.push({ ...item, qty: window.posCart[id] });
                     totalSell += item.sell * window.posCart[id];
                     totalBuy += item.buy * window.posCart[id];
@@ -1346,22 +1394,37 @@
             }
             if (items.length === 0) { alert('اختر منتج.'); return; }
 
+            let paidAmount = 0, creditAmount = 0;
+            if (paymentStatus === 'Payé') {
+                paidAmount = totalSell;
+                creditAmount = 0;
+            } else if (paymentStatus === 'Crédit') {
+                paidAmount = 0;
+                creditAmount = totalSell;
+            } else if (paymentStatus === 'Partiel') {
+                paidAmount = parseFloat(document.getElementById('posPaidAmountInput').value) || 0;
+                creditAmount = totalSell - paidAmount;
+                if (paidAmount <= 0 || paidAmount >= totalSell) { alert('الرجاء إدخال مبلغ مدفوع جزئي صحيح.'); return; }
+            }
+
             try {
                 await addDoc(collection(db, "orders"), {
                     clientName, 
                     vendeurId: window.currentVendeur.id,
                     items, totalSell, totalBuy, benefice: totalSell - totalBuy,
-                    paymentStatus, paidAmount: paymentStatus === 'Payé' ? totalSell : 0,
-                    creditAmount: paymentStatus === 'Payé' ? 0 : totalSell,
+                    paymentStatus: paymentStatus === 'Payé' ? 'Payé' : (paymentStatus === 'Crédit' ? 'Crédit' : 'جزئي'),
+                    paidAmount: paidAmount,
+                    creditAmount: creditAmount,
                     date: new Date().toISOString(), status: 'مكتمل ومؤكد'
                 });
                 window.showSystemNotification("عملية بيع", "تم إتمام البيع بنجاح وشكرا لك!");
                 window.posCart = {};
+                window.customDirectTariffs = {};
                 window.closeAdminWindow('pos');
-            } catch (e) { alert('خطأ أثناء الحفظ.'); }
+            } catch (e) { alert('خطأ أثناء الحفظ: ' + e.message); }
         };
 
-        // تفعيل التحقق والمصادقة فوراً بالمليمتر
+        // تفعيل المصادقة فوراً بالمليمتر
         window.checkVendeurAuth();
     </script>
 </body>
