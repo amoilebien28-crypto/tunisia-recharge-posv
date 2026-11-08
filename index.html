@@ -57,18 +57,21 @@
         </div>
     </div>
 
-    <!-- رأسية لوحة التحكم (منظمة في الأعلى على اليسار/اليمين وبدون إطار مزعج) -->
+    <!-- رأسية لوحة التحكم (اسم البائع مراد كبير وواضح) -->
     <header class="bg-white shadow-xs border-b border-slate-200">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-base font-black flex items-center gap-2 text-indigo-700">
-                <i class="fa-solid fa-cash-register text-emerald-600 text-lg"></i> <span id="headerVendeurName" class="text-slate-800">مرحباً بائعنا الكريم</span>
-            </h1>
             <div class="flex items-center gap-3">
-                <span id="headerVendeurLabel" class="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs">البائع</span>
-                <button onclick="logoutVendeur()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1 border border-rose-200">
-                    <i class="fa-solid fa-right-from-bracket"></i> خروج
-                </button>
+                <div class="bg-indigo-600 text-white w-10 h-10 rounded-2xl flex items-center justify-center font-bold shadow-sm">
+                    <i class="fa-solid fa-user-tie"></i>
+                </div>
+                <div>
+                    <span class="text-[10px] text-slate-400 block font-bold">البائع المعتمد</span>
+                    <h1 id="headerVendeurName" class="text-base font-black text-indigo-900">مراد</h1>
+                </div>
             </div>
+            <button onclick="logoutVendeur()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 border border-rose-200 shadow-2xs">
+                <i class="fa-solid fa-right-from-bracket"></i> خروج
+            </button>
         </div>
     </header>
 
@@ -77,8 +80,8 @@
         <!-- واجهة الاختيار الرئيسية -->
         <div id="mainChoicesSection" class="space-y-4">
             <div class="text-center space-y-2 mb-6">
-                <h2 class="text-2xl font-black text-slate-900">لوحة تحكم البائع والموزع</h2>
-                <p class="text-sm text-slate-500">إدارة زبائنك، الكاسة، والمخزون بكل احترافية:</p>
+                <h2 class="text-2xl font-black text-slate-900">لوحة تحكم البائع مراد</h2>
+                <p class="text-sm text-slate-500">اختر القسم المناسب لإدارة عملك بكل احترافية:</p>
             </div>
 
             <button onclick="selectMainChoice('pos')" class="w-full text-right bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-md border border-emerald-500/30">
@@ -108,7 +111,7 @@
             </button>
         </div>
 
-        <!-- الأقسام التفصيلية للإدارة (أزرار ملونة ومنظمة في الوسط بإطارات واضحة) -->
+        <!-- الأقسام التفصيلية للإدارة (أزرار ملونة ومبرزحة في الوسط) -->
         <div id="detailedManagementSection" class="hidden space-y-4">
             <div class="flex items-center justify-between mb-2">
                 <button onclick="backToMainChoices()" class="text-indigo-600 font-bold text-xs flex items-center gap-1 hover:underline bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs">
@@ -117,81 +120,92 @@
                 <h3 class="font-bold text-slate-700 text-sm">إدارة الحوانت والمتابعة</h3>
             </div>
 
-            <!-- شبكة الأزرار المنظمة بالألوان والإطارات في الوسط -->
-            <div class="grid grid-cols-1 gap-3">
-                <button onclick="openAddClientModal()" class="w-full text-right bg-white hover:bg-emerald-50/50 text-slate-800 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-emerald-500 shadow-sm">
+            <!-- الأزرار الملونة والمبرزحة في الوسط بإطارات واضحة وجذابة -->
+            <div class="grid grid-cols-1 gap-3.5">
+                <button onclick="openAddClientModal()" class="w-full text-right bg-emerald-50/70 hover:bg-emerald-100 text-emerald-900 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-emerald-500 shadow-sm">
                     <div class="flex items-center gap-3">
-                        <div class="bg-emerald-100 text-emerald-700 w-10 h-10 rounded-xl flex items-center justify-center font-bold">
+                        <div class="bg-emerald-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold">
                             <i class="fa-solid fa-store"></i>
                         </div>
-                        <span>إضافة حانوت جديد (الزبون + كلمة المرور)</span>
+                        <span class="text-sm font-black">إضافة حانوت جديد</span>
                     </div>
-                    <i class="fa-solid fa-plus text-emerald-600"></i>
+                    <i class="fa-solid fa-plus text-emerald-600 text-sm font-bold"></i>
                 </button>
 
-                <button onclick="openAdminWindow('orders')" class="w-full text-right bg-white hover:bg-indigo-50/50 text-slate-800 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-indigo-500 shadow-sm">
+                <button onclick="openAdminWindow('orders')" class="w-full text-right bg-indigo-50/70 hover:bg-indigo-100 text-indigo-900 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-indigo-500 shadow-sm">
                     <div class="flex items-center gap-3">
-                        <div class="bg-indigo-100 text-indigo-700 w-10 h-10 rounded-xl flex items-center justify-center font-bold">
+                        <div class="bg-indigo-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold">
                             <i class="fa-solid fa-box-archive"></i>
                         </div>
-                        <span>طلبات الحوانت الجديدة (En attente)</span>
+                        <span class="text-sm font-black">طلبات الحوانت الجديدة (En attente)</span>
                     </div>
                     <i class="fa-solid fa-chevron-left text-indigo-600 text-xs"></i>
                 </button>
 
-                <button onclick="openAdminWindow('clients')" class="w-full text-right bg-white hover:bg-blue-50/50 text-slate-800 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-blue-500 shadow-sm">
+                <button onclick="openAdminWindow('clients')" class="w-full text-right bg-blue-50/70 hover:bg-blue-100 text-blue-900 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-blue-500 shadow-sm">
                     <div class="flex items-center gap-3">
-                        <div class="bg-blue-100 text-blue-700 w-10 h-10 rounded-xl flex items-center justify-center font-bold">
+                        <div class="bg-blue-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold">
                             <i class="fa-solid fa-address-book"></i>
                         </div>
-                        <span>قائمة الحوانت المسجلة لدي (تعديل الأكواد والـ Historique)</span>
+                        <span class="text-sm font-black">قائمة الحوانت المسجلة لدي (تعديل الأكواد والـ Historique)</span>
                     </div>
                     <i class="fa-solid fa-chevron-left text-blue-600 text-xs"></i>
                 </button>
 
-                <button onclick="openAdminWindow('invoice')" class="w-full text-right bg-white hover:bg-purple-50/50 text-slate-800 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-purple-500 shadow-sm">
+                <button onclick="openAdminWindow('invoice')" class="w-full text-right bg-purple-50/70 hover:bg-purple-100 text-purple-900 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-purple-500 shadow-sm">
                     <div class="flex items-center gap-3">
-                        <div class="bg-purple-100 text-purple-700 w-10 h-10 rounded-xl flex items-center justify-center font-bold">
+                        <div class="bg-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold">
                             <i class="fa-solid fa-file-invoice-dollar"></i>
                         </div>
-                        <span>إدخال فاتورة شراء ستوك جديد والفواتير السابقة</span>
+                        <span class="text-sm font-black">إدخال فاتورة شراء ستوك جديد والفواتير السابقة</span>
                     </div>
                     <i class="fa-solid fa-chevron-left text-purple-600 text-xs"></i>
                 </button>
 
-                <button onclick="openAdminWindow('stock')" class="w-full text-right bg-white hover:bg-teal-50/50 text-slate-800 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-teal-500 shadow-sm">
+                <button onclick="openAdminWindow('stock')" class="w-full text-right bg-teal-50/70 hover:bg-teal-100 text-teal-900 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-teal-500 shadow-sm">
                     <div class="flex items-center gap-3">
-                        <div class="bg-teal-100 text-teal-700 w-10 h-10 rounded-xl flex items-center justify-center font-bold">
+                        <div class="bg-teal-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold">
                             <i class="fa-solid fa-warehouse"></i>
                         </div>
-                        <span>الستوك النهائي (إنفونتير المخزون وقيمته المالية)</span>
+                        <span class="text-sm font-black">الستوك النهائي (إنفونتير المخزون وقيمته المالية)</span>
                     </div>
                     <i class="fa-solid fa-chevron-left text-teal-600 text-xs"></i>
                 </button>
 
-                <!-- زر الروسيت الجديد -->
-                <button onclick="openRecetteModal()" class="w-full text-right bg-white hover:bg-amber-50/50 text-slate-800 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-amber-500 shadow-sm">
+                <button onclick="openRecetteModal()" class="w-full text-right bg-amber-50/70 hover:bg-amber-100 text-amber-900 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-amber-500 shadow-sm">
                     <div class="flex items-center gap-3">
-                        <div class="bg-amber-100 text-amber-700 w-10 h-10 rounded-xl flex items-center justify-center font-bold">
+                        <div class="bg-amber-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold">
                             <i class="fa-solid fa-chart-line"></i>
                         </div>
-                        <span>الروسيت والمداخيل والمرابيح</span>
+                        <span class="text-sm font-black">الروسيت والمداخيل والمرابيح</span>
                     </div>
                     <i class="fa-solid fa-chevron-left text-amber-600 text-xs"></i>
                 </button>
 
-                <button onclick="openAdminWindow('stats')" class="w-full text-right bg-white hover:bg-rose-50/50 text-slate-800 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-rose-500 shadow-sm">
+                <button onclick="openAdminWindow('stats')" class="w-full text-right bg-rose-50/70 hover:bg-rose-100 text-rose-900 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-rose-500 shadow-sm">
                     <div class="flex items-center gap-3">
-                        <div class="bg-rose-100 text-rose-700 w-10 h-10 rounded-xl flex items-center justify-center font-bold">
+                        <div class="bg-rose-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold">
                             <i class="fa-solid fa-chart-pie"></i>
                         </div>
-                        <span>إحصائيات المبيعات حسب التجار</span>
+                        <span class="text-sm font-black">إحصائيات المبيعات حسب التجار</span>
                     </div>
                     <i class="fa-solid fa-chevron-left text-rose-600 text-xs"></i>
                 </button>
             </div>
         </div>
     </main>
+
+    <!-- نافذة إشعار احترافية تشبه اللوجيسيال (مبدل الـ alert) -->
+    <div id="systemNotificationModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
+        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-sm w-full space-y-4 text-center">
+            <div id="sysNotifIcon" class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h4 id="sysNotifTitle" class="font-black text-lg text-slate-900">تم الحفظ بنجاح</h4>
+            <p id="sysNotifText" class="text-xs text-slate-500">تم حفظ فاتورة الستوك بنجاح وشكرا لك.</p>
+            <button onclick="closeSystemNotification()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl font-bold text-xs shadow-sm transition">موافق</button>
+        </div>
+    </div>
 
     <!-- نافذة إضافة حانوت جديد -->
     <div id="addClientModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
@@ -222,15 +236,14 @@
         </div>
     </div>
 
-    <!-- نافذة الروسيت المحدثة (زرين: اليوم والشهر مع الجداول المنظمة) -->
+    <!-- نافذة الروسيت والمداخيل -->
     <div id="recetteModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-chart-line text-emerald-600 ml-2"></i> الروسيت والمداخيل والمرابيح</h3>
+                <h3 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-chart-line text-amber-600 ml-2"></i> الروسيت والمداخيل والمرابيح</h3>
                 <button onclick="closeRecetteModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
             </div>
 
-            <!-- ملخص سريع -->
             <div class="grid grid-cols-2 gap-3">
                 <div class="bg-emerald-50 p-3 rounded-2xl border border-emerald-200">
                     <span class="text-xs text-emerald-700 font-bold">صافي الأرباح (المرابيح):</span>
@@ -242,13 +255,11 @@
                 </div>
             </div>
 
-            <!-- زرين للاختيار: الروسيت حسب الأيام (اليوم) وحسب الشهر -->
             <div class="flex bg-slate-100 p-1.5 rounded-2xl gap-2">
-                <button onclick="switchRecetteTab('days')" id="tabBtnRecetteDays" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-emerald-700 shadow-sm transition">روسيت الأيام (اليوم)</button>
+                <button onclick="switchRecetteTab('days')" id="tabBtnRecetteDays" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-amber-700 shadow-sm transition">روسيت الأيام</button>
                 <button onclick="switchRecetteTab('months')" id="tabBtnRecetteMonths" class="flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600 transition">روسيت الشهور</button>
             </div>
 
-            <!-- جدول روسيت الأيام -->
             <div id="sectionRecetteDays" class="space-y-2">
                 <h5 class="font-bold text-xs text-slate-700">تفاصيل الروسيت يوم بيوم:</h5>
                 <div class="overflow-x-auto max-h-60 overflow-y-auto border rounded-2xl">
@@ -266,7 +277,6 @@
                 </div>
             </div>
 
-            <!-- جدول روسيت الشهور -->
             <div id="sectionRecetteMonths" class="space-y-2 hidden">
                 <h5 class="font-bold text-xs text-slate-700">تفاصيل الروسيت شهر بشهر (جانفي، فيفري...):</h5>
                 <div class="overflow-x-auto max-h-60 overflow-y-auto border rounded-2xl">
@@ -566,6 +576,16 @@
 
         window.currentVendeur = JSON.parse(localStorage.getItem('currentVendeur') || 'null');
 
+        // دالة عرض نافذة الإشعارات الاحترافية (لوجيسيال)
+        window.showSystemNotification = function(title, text) {
+            document.getElementById('sysNotifTitle').innerText = title;
+            document.getElementById('sysNotifText').innerText = text;
+            document.getElementById('systemNotificationModal').classList.remove('hidden');
+        };
+        window.closeSystemNotification = function() {
+            document.getElementById('systemNotificationModal').classList.add('hidden');
+        };
+
         window.tariffs = [
             { id: 'Ooredoo_1', operator: 'Ooredoo', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 },
             { id: 'Ooredoo_5', operator: 'Ooredoo', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 },
@@ -589,7 +609,7 @@
         window.checkVendeurAuth = function() {
             if (window.currentVendeur) {
                 document.getElementById('authScreen').classList.add('hidden');
-                document.getElementById('headerVendeurName').innerText = `البائع: ${window.currentVendeur.name}`;
+                document.getElementById('headerVendeurName').innerText = window.currentVendeur.name || "مراد";
                 fetchVendeurData();
                 renderInvoiceForm();
             } else {
@@ -620,7 +640,7 @@
                 const docRef = await addDoc(collection(db, "vendeurs"), { name, phone, password });
                 window.currentVendeur = { id: docRef.id, name, phone };
                 localStorage.setItem('currentVendeur', JSON.stringify(window.currentVendeur));
-                alert('تم إنشاء الحساب بنجاح!');
+                window.showSystemNotification("تم التسجيل", "تم إنشاء الحساب بنجاح وشكرا!");
                 window.checkVendeurAuth();
             } catch (e) { alert('خطأ في التسجيل.'); }
         };
@@ -647,7 +667,7 @@
             location.reload();
         };
 
-        window.openAddClientModal = () => document.getElementById('addClientModal').classList.remove('hidden');
+        window.openAddClientModal = () => document.getElementById('addClientModal').classList.add('hidden') || document.getElementById('addClientModal').classList.remove('hidden');
         window.closeAddClientModal = () => document.getElementById('addClientModal').classList.add('hidden');
 
         window.saveNewClientByVendeur = async function() {
@@ -664,7 +684,7 @@
                     vendeurId: window.currentVendeur.id,
                     createdAt: new Date().toISOString()
                 });
-                alert('تم إضافة الحانوت بنجاح وأصبح له حساب دخول!');
+                window.showSystemNotification("إضافة حانوت", "تم إضافة الحانوت بنجاح وشكرا!");
                 window.closeAddClientModal();
                 fetchVendeurData();
             } catch (e) { alert('حدث خطأ أثناء الحفظ.'); }
@@ -687,7 +707,7 @@
             try {
                 const clientRef = doc(db, "clients", window.currentEditingClientId);
                 await updateDoc(clientRef, { password: newPass });
-                alert('تم تغيير كلمة المرور بنجاح!');
+                window.showSystemNotification("تغيير الكود", "تم تغيير كلمة المرور بنجاح وشكرا!");
                 window.closeEditPasswordModal();
                 fetchVendeurData();
             } catch (e) { alert('خطأ أثناء تحديث كلمة المرور.'); }
@@ -804,7 +824,6 @@
             }
         };
 
-        // تبديل التبويبات في نافذة الروسيت (اليوم / الأيام مقابل الشهور)
         window.switchRecetteTab = function(tab) {
             const secDays = document.getElementById('sectionRecetteDays');
             const secMonths = document.getElementById('sectionRecetteMonths');
@@ -814,12 +833,12 @@
             if (tab === 'days') {
                 secDays.classList.remove('hidden');
                 secMonths.classList.add('hidden');
-                btnDays.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-emerald-700 shadow-sm transition';
+                btnDays.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-amber-700 shadow-sm transition';
                 btnMonths.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600 transition';
             } else {
                 secDays.classList.add('hidden');
                 secMonths.classList.remove('hidden');
-                btnMonths.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-emerald-700 shadow-sm transition';
+                btnMonths.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-amber-700 shadow-sm transition';
                 btnDays.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600 transition';
             }
         };
@@ -885,7 +904,7 @@
                     totalCost: totalInvoiceCost,
                     date: new Date().toISOString()
                 });
-                alert('تم حفظ فاتورة شراء الستوك بنجاح!');
+                window.showSystemNotification("نجاح الحفظ", "تم حفظ فاتورة الستوك بنجاح وشكرا لك!");
                 renderInvoiceForm();
                 calcInvoiceTotal();
                 window.closeAdminWindow('invoice');
@@ -1000,7 +1019,7 @@
                     paidAmount: paidAmount,
                     creditAmount: creditAmount
                 });
-                alert('تم تأكيد الطلبية بنجاح واختفت من الطلبات الجديدة!');
+                window.showSystemNotification("تأكيد الطلبية", "تم تأكيد الطلبية بنجاح وشكرا لك!");
                 window.closeOrderDetailModal();
             } catch (e) { alert('خطأ أثناء تأكيد الطلبية.'); }
         };
@@ -1033,14 +1052,12 @@
 
             window.allOrders.forEach(o => {
                 let isCompleted = o.status === 'مكتمل ومؤكد';
-                let orderDateStr = o.date ? o.date.slice(0, 10) : ''; // YYYY-MM-DD
-                let orderMonthStr = o.date ? o.date.slice(0, 7) : '';   // YYYY-MM
+                let orderDateStr = o.date ? o.date.slice(0, 10) : ''; 
+                let orderMonthStr = o.date ? o.date.slice(0, 7) : '';   
 
                 if (isCompleted) {
                     if (o.paidAmount && o.paidAmount > 0) {
-                        // تجميع الأيام
                         daysRecetteMap[orderDateStr] = (daysRecetteMap[orderDateStr] || 0) + o.paidAmount;
-                        // تجميع الشهور
                         monthsRecetteMap[orderMonthStr] = (monthsRecetteMap[orderMonthStr] || 0) + o.paidAmount;
                     }
                     if (o.benefice) totalBenefice += o.benefice;
@@ -1080,7 +1097,6 @@
             document.getElementById('modalTotalBenefice').innerText = totalBenefice.toFixed(3) + ' د.ت';
             document.getElementById('modalTotalCredit').innerText = totalCredit.toFixed(3) + ' د.ت';
 
-            // تعبئة جدول روسيت الأيام
             let daysHtml = '';
             let sortedDays = Object.keys(daysRecetteMap).sort().reverse();
             sortedDays.forEach(day => {
@@ -1094,7 +1110,6 @@
             const daysTbody = document.getElementById('recetteDaysTableBody');
             if(daysTbody) daysTbody.innerHTML = daysHtml || '<tr><td colspan="2" class="text-center text-slate-400 py-4">لا توجد مداخيل مسجلة للأيام.</td></tr>';
 
-            // تعبئة جدول روسيت الشهور
             let monthsHtml = '';
             let monthNames = {
                 '01': 'جانفي', '02': 'فيفري', '03': 'مارس', '04': 'أفريل',
@@ -1103,7 +1118,7 @@
             };
             let sortedMonths = Object.keys(monthsRecetteMap).sort().reverse();
             sortedMonths.forEach(m => {
-                let parts = m.split('-'); // YYYY-MM
+                let parts = m.split('-'); 
                 let mName = monthNames[parts[1]] || parts[1];
                 let displayStr = `${mName} ${parts[0]}`;
                 monthsHtml += `
@@ -1244,7 +1259,7 @@
                     creditAmount: paymentStatus === 'Payé' ? 0 : totalSell,
                     date: new Date().toISOString(), status: 'مكتمل ومؤكد'
                 });
-                alert('تم البيع بنجاح!');
+                window.showSystemNotification("عملية بيع", "تم إتمام البيع بنجاح وشكرا لك!");
                 window.posCart = {};
                 window.closeAdminWindow('pos');
             } catch (e) { alert('خطأ أثناء الحفظ.'); }
