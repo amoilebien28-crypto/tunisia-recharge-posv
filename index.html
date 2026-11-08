@@ -80,7 +80,7 @@
         <!-- واجهة الاختيار الرئيسية -->
         <div id="mainChoicesSection" class="space-y-4">
             <div class="text-center space-y-2 mb-6">
-                <h2 class="text-2xl font-black text-slate-900">لوحة تحكم البائع مراد</h2>
+                <h2 class="text-2xl font-black text-slate-900">لوحة تحكم البائع</h2>
                 <p class="text-sm text-slate-700 font-bold">اختر القسم المناسب لإدارة عملك بكل احترافية:</p>
             </div>
 
@@ -682,7 +682,7 @@
         </div>
     </div>
 
-    <!-- السكربت والربط بالمليمتر (مع إصلاح الأزرار الثلاثة لتعمل فوراً) -->
+    <!-- السكربت والربط بقاعدة البيانات (مع إصلاح استعلامات تسجيل الدخول) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -708,7 +708,6 @@
         window.posCart = {};
         window.customDirectTariffs = {};
 
-        // تصحيح استجابة الأزرار الرئيسية الثلاثة عند الضغط عليها بالمليمتر
         window.selectMainChoice = function(choice) {
             if (choice === 'pos') {
                 window.openAdminWindow('pos');
@@ -729,19 +728,13 @@
 
         window.openAdminWindow = function(name) {
             document.querySelectorAll('.admin-window').forEach(el => el.classList.add('hidden'));
-            const w = document.getElementById(`window${name.charAt(0).toUpperCase() + name.slice(1)}`);
-            if (w) w.classList.remove('hidden');
-        };
-
-        window.closeAdminWindow = function(name) {
-            const w = document.getElementById(`window${name.charAt(0).toUpperCase() + name.slice(1)}`);
+            const w = document.getElementById(`window${name.charAt(0).toUpperCase() + name.slice(1)}`); if (w) w.classList.remove('hidden'); };  window.closeAdminWindow = function(name) { const w = document.getElementById(`window${name.charAt(0).toUpperCase() + name.slice(1)}`);
             if (w) w.classList.add('hidden');
         };
 
         window.openRecetteModal = () => document.getElementById('recetteModal').classList.remove('hidden');
         window.closeRecetteModal = () => document.getElementById('recetteModal').classList.add('hidden');
 
-        // ربط الإشعارات والتبديل
         window.switchAuthMode = function(mode) {
             const loginForm = document.getElementById('loginForm');
             const registerForm = document.getElementById('registerForm');
@@ -777,21 +770,33 @@
             } catch (e) { alert('خطأ في التسجيل: ' + e.message); }
         };
 
+        // تم إصلاح الدالة لتجنب تعليق الاستعلام بالاعتماد على رقم الهاتف والتحقق من كلمة المرور بسلاسة
         window.handleVendeurLogin = async function() {
             const phone = document.getElementById('loginPhone').value.trim();
             const password = document.getElementById('loginPassword').value.trim();
             if (!phone || !password) { alert('الرجاء إدخال رقم الهاتف وكلمة المرور.'); return; }
             try {
-                const q = query(collection(db, "vendeurs"), where("phone", "==", phone), where("password", "==", password));
+                const q = query(collection(db, "vendeurs"), where("phone", "==", phone));
                 const querySnapshot = await getDocs(q);
+                
                 if (!querySnapshot.empty) {
-                    let vData;
-                    querySnapshot.forEach(d => vData = { id: d.id, ...d.data() });
-                    window.currentVendeur = vData;
-                    localStorage.setItem('currentVendeur', JSON.stringify(window.currentVendeur));
-                    window.checkVendeurAuth();
+                    let vData = null;
+                    querySnapshot.forEach(d => {
+                        let data = d.data();
+                        if (data.password === password) {
+                            vData = { id: d.id, ...data };
+                        }
+                    });
+
+                    if (vData) {
+                        window.currentVendeur = vData;
+                        localStorage.setItem('currentVendeur', JSON.stringify(window.currentVendeur));
+                        window.checkVendeurAuth();
+                    } else {
+                        alert('كلمة المرور غير صحيحة.');
+                    }
                 } else { 
-                    alert('رقم الهاتف أو كلمة المرور غير صحيحة.'); 
+                    alert('رقم الهاتف غير مسجل.'); 
                 }
             } catch (e) { 
                 alert('خطأ في الاتصال بقاعدة البيانات: ' + e.message); 
@@ -820,76 +825,12 @@
             let tbody = document.getElementById(tbodyId);
             if (!tbody) return;
             let win = window.open('', '_blank');
-            win.document.write(`<html lang="ar" dir="rtl"><head><title>${title}</title><style>body{font-family:Tahoma;padding:20px;text-align:right;}table{width:100%;border-collapse:collapse;}th,td{border:1px solid #cbd5e1;padding:10px;font-size:13px;}</style></head><body><h2>${title}</h2><table><tbody>${tbody.innerHTML}</tbody></table><script>window.print()<\/script></body></html>`);
-            win.document.close();
-        };
-
-        window.exportTableToWhatsApp = function(tbodyId, reportTitle) {
-            let tbody = document.getElementById(tbodyId);
-            if (!tbody) return;
-            let rows = tbody.querySelectorAll('tr');
-            let text = `*${reportTitle} - Tunisie Recharge*\n\n`;
+            win.document.write(`<html lang="ar" dir="rtl"><head><title>${title}</title><style>body{font-family:Tahoma;padding:20px;text-align:right;}table{width:100\%;border-collapse:collapse;}th,td{border:1px solid #cbd5e1;padding:10px;font-size:13px;}</style></head><body><h2>${title}</h2><table><tbody>${tbody.innerHTML}</tbody></table><script>window.print()<\/script></body></html>`); win.document.close(); };  window.exportTableToWhatsApp = function(tbodyId, reportTitle) { let tbody = document.getElementById(tbodyId); if (!tbody) return; let rows = tbody.querySelectorAll('tr'); let text = `*${reportTitle} - Tunisie Recharge*\n\n`;
             rows.forEach((row) => {
                 let cols = row.querySelectorAll('td');
                 if (cols.length >= 2) text += `- ${cols[0].innerText.trim()}: *${cols[1].innerText.trim()}*\n`;
             });
-            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-        };
-
-        window.showSystemNotification = function(title, text) {
-            document.getElementById('sysNotifTitle').innerText = title;
-            document.getElementById('sysNotifText').innerText = text;
-            document.getElementById('systemNotificationModal').classList.remove('hidden');
-        };
-        window.closeSystemNotification = function() {
-            document.getElementById('systemNotificationModal').classList.add('hidden');
-        };
-
-        window.tariffs = [
-            { id: 'Ooredoo_1', operator: 'Ooredoo', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 },
-            { id: 'Ooredoo_5', operator: 'Ooredoo', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 },
-            { id: 'Ooredoo_10', operator: 'Ooredoo', name: 'بطاقة 10 د.ت', buy: 9.500, sell: 10.000 },
-            { id: 'Ooredoo_25', operator: 'Ooredoo', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 },
-            { id: 'Ooredoo_Recharge', operator: 'Ooredoo', name: 'شحن مباشر (Floussi)', buy: 0.960, sell: 1.000 },
-            { id: 'Telecom_1', operator: 'Telecom', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 },
-            { id: 'Telecom_5', operator: 'Telecom', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 },
-            { id: 'Telecom_10', operator: 'Telecom', name: 'بطاقة 10 د.ت', buy: 9.500, sell: 10.000 },
-            { id: 'Telecom_25', operator: 'Telecom', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 },
-            { id: 'Telecom_Recharge', operator: 'Telecom', name: 'شحن مباشر (E-recharge)', buy: 0.960, sell: 1.000 },
-            { id: 'Orange_1', operator: 'Orange', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 },
-            { id: 'Orange_5', operator: 'Orange', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 },
-            { id: 'Orange_10', operator: 'Orange', name: 'بطاقة 10 د.ت', buy: 9.500, sell: 10.000 },
-            { id: 'Orange_25', operator: 'Orange', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 },
-            { id: 'Orange_Recharge', operator: 'Orange', name: 'شحن مباشر (E-recharge)', buy: 0.960, sell: 1.000 }
-        ];
-
-        window.openAddClientModal = () => document.getElementById('addClientModal').classList.remove('hidden');
-        window.closeAddClientModal = () => document.getElementById('addClientModal').classList.add('hidden');
-
-        window.saveNewClientByVendeur = async function() {
-            const name = document.getElementById('newClientName').value.trim();
-            const phone = document.getElementById('newClientPhone').value.trim();
-            const password = document.getElementById('newClientPassword').value.trim();
-            const address = document.getElementById('newClientAddress').value.trim();
-
-            if (!name || !phone || !password) { alert('الرجاء إدخال اسم الحانوت، رقم الهاتف، وكلمة المرور.'); return; }
-
-            try {
-                await addDoc(collection(db, "clients"), {
-                    name, phone, password, address,
-                    vendeurId: window.currentVendeur.id,
-                    createdAt: new Date().toISOString()
-                });
-                window.showSystemNotification("إضافة حانوت", "تم إضافة الحانوت بنجاح وشكرا!");
-                window.closeAddClientModal();
-                fetchVendeurData();
-            } catch (e) { alert('حدث خطأ أثناء الحفظ.'); }
-        };
-
-        window.currentEditingClientId = null;
-        window.openEditPasswordModal = function(clientId, clientName) {
-            window.currentEditingClientId = clientId;
-            document.getElementById('editClientNameTitle').innerText = `الحانوت: ${clientName}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank'); };  window.showSystemNotification = function(title, text) { document.getElementById('sysNotifTitle').innerText = title; document.getElementById('sysNotifText').innerText = text; document.getElementById('systemNotificationModal').classList.remove('hidden'); }; window.closeSystemNotification = function() { document.getElementById('systemNotificationModal').classList.add('hidden'); };  window.tariffs = [ { id: 'Ooredoo_1', operator: 'Ooredoo', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 }, { id: 'Ooredoo_5', operator: 'Ooredoo', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 }, { id: 'Ooredoo_10', operator: 'Ooredoo', name: 'بطاقة 10 د.ت', buy: 9.500, sell: 10.000 }, { id: 'Ooredoo_25', operator: 'Ooredoo', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 }, { id: 'Ooredoo_Recharge', operator: 'Ooredoo', name: 'شحن مباشر (Floussi)', buy: 0.960, sell: 1.000 }, { id: 'Telecom_1', operator: 'Telecom', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 }, { id: 'Telecom_5', operator: 'Telecom', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 }, { id: 'Telecom_10', operator: 'Telecom', name: 'بطاقة 10 د.ت', buy: 9.500, sell: 10.000 }, { id: 'Telecom_25', operator: 'Telecom', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 }, { id: 'Telecom_Recharge', operator: 'Telecom', name: 'شحن مباشر (E-recharge)', buy: 0.960, sell: 1.000 }, { id: 'Orange_1', operator: 'Orange', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 }, { id: 'Orange_5', operator: 'Orange', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 }, { id: 'Orange_10', operator: 'Orange', name: 'بطاقة 10 د.ت', buy: 9.500, sell: 10.000 }, { id: 'Orange_25', operator: 'Orange', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 }, { id: 'Orange_Recharge', operator: 'Orange', name: 'شحن مباشر (E-recharge)', buy: 0.960, sell: 1.000 } ];  window.openAddClientModal = () => document.getElementById('addClientModal').classList.remove('hidden'); window.closeAddClientModal = () => document.getElementById('addClientModal').classList.add('hidden');  window.saveNewClientByVendeur = async function() { const name = document.getElementById('newClientName').value.trim(); const phone = document.getElementById('newClientPhone').value.trim(); const password = document.getElementById('newClientPassword').value.trim(); const address = document.getElementById('newClientAddress').value.trim();  if (!name \vert{}\vert{} !phone \vert{}\vert{} !password) { alert('الرجاء إدخال اسم الحانوت، رقم الهاتف، وكلمة المرور.'); return; }  try { await addDoc(collection(db, "clients"), { name, phone, password, address, vendeurId: window.currentVendeur.id, createdAt: new Date().toISOString() }); window.showSystemNotification("إضافة حانوت", "تم إضافة الحانوت بنجاح وشكرا!"); window.closeAddClientModal(); fetchVendeurData(); } catch (e) { alert('حدث خطأ أثناء الحفظ.'); } };  window.currentEditingClientId = null; window.openEditPasswordModal = function(clientId, clientName) { window.currentEditingClientId = clientId; document.getElementById('editClientNameTitle').innerText = `الحانوت: ${clientName}`;
             document.getElementById('newClientPasswordInput').value = '';
             document.getElementById('editClientPasswordModal').classList.remove('hidden');
         };
@@ -949,7 +890,7 @@
             if (o.items && Array.isArray(o.items)) {
                 o.items.forEach(i => {
                     itemsHtml += `<li class="flex justify-between items-center text-xs font-bold text-slate-800 border-b pb-1.5 border-slate-200">
-                        <span><i class="fa-solid fa-tag text-emerald-600 ml-1"></i> ${i.operator || ''} - ${i.name}</span>
+                        <span><i class="fa-solid fa-tag text-emerald-600 ml-1"></i> ${i.operator \vert{}\vert{} ''} -${i.name}</span>
                         <span class="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded border border-indigo-200">الكمية: ${i.qty}</span>
                     </li>`;
                 });
@@ -969,9 +910,28 @@
             document.getElementById('historyOrderDetailModal').classList.add('hidden');
         };
 
-        window.allClients = [];
-        window.allOrders = [];
-        window.allInvoices = [];
+        function updateClientsUI() {
+            let optionsHtml = '<option value="">اختر الحانوت...</option>';
+            let listHtml = '';
+            window.allClients.forEach(c => {
+                optionsHtml += `<option value="${c.name}">${c.name} (${c.address || ''})</option>`;
+                listHtml += `
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-300 flex justify-between items-center text-xs">
+                        <div onclick="openClientHistoryModal('${c.name}')" class="cursor-pointer flex-1">
+                            <p class="font-bold text-slate-900"><i class="fa-solid fa-store text-emerald-600 ml-1"></i> ${c.name}</p>
+                            <p class="text-[10px] text-slate-500">الهاتف: ${c.phone} \vert{} العنوان: ${c.address || 'بدون'} (انقر لعرض السجل)</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" onclick="openEditPasswordModal('${c.id}', '${c.name}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-xl font-bold border border-indigo-200">تغيير الكود</button>
+                        </div>
+                    </div>
+                `;
+            });
+            const selectEl = document.getElementById('posRegisteredClientSelect');
+            if (selectEl) selectEl.innerHTML = optionsHtml;
+            const containerEl = document.getElementById('clientsListContainer');
+            if (containerEl) containerEl.innerHTML = listHtml || '<p class="text-slate-400 text-center py-4">لا توجد حوانت مسجلة بعد.</p>';
+        }
 
         async function fetchVendeurData() {
             if (!window.currentVendeur) return;
@@ -1042,7 +1002,7 @@
             window.tariffs.forEach(t => {
                 html += `
                     <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-300 grid grid-cols-1 md:grid-cols-3 gap-2 items-center text-xs">
-                        <div><span class="font-bold text-slate-900">${t.operator} - ${t.name}</span></div>
+                        <div><span class="font-bold text-slate-900">${t.operator} -${t.name}</span></div>
                         <div>
                             <label class="block text-[10px] text-slate-500 mb-0.5">سعر الشراء:</label>
                             <input type="number" step="0.001" value="${t.buy}" id="inv_buy_${t.id}" oninput="calcInvoiceTotal()" class="w-full border border-slate-300 p-2 rounded-xl text-center font-bold bg-white">
@@ -1061,8 +1021,7 @@
         window.calcInvoiceTotal = function() {
             let total = 0;
             window.tariffs.forEach(t => {
-                let qtyInput = document.getElementById(`inv_qty_${t.id}`);
-                let buyInput = document.getElementById(`inv_buy_${t.id}`);
+                let qtyInput = document.getElementById(`inv_qty_${t.id}`); let buyInput = document.getElementById(`inv_buy_${t.id}`);
                 if (qtyInput && buyInput) {
                     let qty = parseInt(qtyInput.value) || 0;
                     let buyPrice = parseFloat(buyInput.value) || 0;
@@ -1076,8 +1035,7 @@
             let itemsToSave = [];
             let totalInvoiceCost = 0;
             window.tariffs.forEach(t => {
-                let qtyInput = document.getElementById(`inv_qty_${t.id}`);
-                let buyInput = document.getElementById(`inv_buy_${t.id}`);
+                let qtyInput = document.getElementById(`inv_qty_${t.id}`); let buyInput = document.getElementById(`inv_buy_${t.id}`);
                 if (qtyInput && buyInput) {
                     let qty = parseInt(qtyInput.value) || 0;
                     let buyPrice = parseFloat(buyInput.value) || t.buy;
@@ -1132,7 +1090,7 @@
                 inv.items.forEach(item => {
                     itemsHtml += `
                         <div class="flex justify-between items-center text-xs font-bold text-slate-800 border-b pb-1.5 border-slate-200">
-                            <span><i class="fa-solid fa-tag text-indigo-600 ml-1"></i> ${item.operator || ''} - ${item.name}</span>
+                            <span><i class="fa-solid fa-tag text-indigo-600 ml-1"></i> ${item.operator \vert{}\vert{} ''} -${item.name}</span>
                             <div class="flex gap-2">
                                 <span class="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded border border-indigo-200">الكمية: ${item.qty}</span>
                                 <span class="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-emerald-200">السعر: ${item.buy} د.ت</span>
@@ -1276,7 +1234,7 @@
             if (o.items && Array.isArray(o.items)) {
                 o.items.forEach(item => {
                     itemsHtml += `<div class="flex justify-between items-center text-xs font-bold text-slate-800 border-b pb-1 border-slate-200">
-                        <span><i class="fa-solid fa-tag text-emerald-600 ml-1"></i> ${item.operator || ''} - ${item.name}</span>
+                        <span><i class="fa-solid fa-tag text-emerald-600 ml-1"></i> ${item.operator \vert{}\vert{} ''} -${item.name}</span>
                         <span class="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded border border-indigo-200">الكمية: ${item.qty}</span>
                     </div>`;
                 });
@@ -1358,7 +1316,7 @@
             window.allOrders.forEach(o => {
                 let isCompleted = o.status === 'مكتمل ومؤكد';
                 let orderDateStr = o.date ? o.date.slice(0, 10) : ''; 
-                let orderMonthStr = o.date ? o.date.slice(0, 7) : '';   
+                let orderMonthStr = o.date ? o.date.slice(0, 7) : '';    
 
                 if (isCompleted) {
                     if (o.paidAmount && o.paidAmount > 0) {
@@ -1411,182 +1369,4 @@
                 let val = daysRecetteMap[dayKey] || 0;
                 daysHtml += `
                     <tr class="border-b border-slate-300 hover:bg-slate-50">
-                        <td class="p-3 font-bold text-slate-800 border-l border-slate-300">${dayKey}</td>
-                        <td class="p-3 font-black text-emerald-600">${val.toFixed(3)} د.ت</td>
-                    </tr>
-                `;
-            }
-            const daysTbody = document.getElementById('recetteDaysTableBody');
-            if(daysTbody) daysTbody.innerHTML = daysHtml;
-
-            let monthsHtml = '';
-            let monthNames = {
-                '01': 'جانفي', '02': 'فيفري', '03': 'مارس', '04': 'أفريل',
-                '05': 'ماي', '06': 'جوان', '07': 'جويلية', '08': 'أوت',
-                '09': 'سبتمبر', '10': 'أكتوبر', '11': 'نوفمبر', '12': 'ديسمبر'
-            };
-            
-            let allMonthsList = [];
-            for (let m = 1; m <= 12; m++) {
-                let mFormatted = m < 10 ? '0' + m : '' + m;
-                let key = `${year}-${mFormatted}`;
-                allMonthsList.push(key);
-            }
-            allMonthsList.sort().reverse();
-
-            allMonthsList.forEach(m => {
-                let parts = m.split('-'); 
-                let mName = monthNames[parts[1]] || parts[1];
-                let displayStr = `${mName} ${parts[0]}`;
-                let val = monthsRecetteMap[m] || 0;
-                monthsHtml += `
-                    <tr class="border-b border-slate-300 hover:bg-slate-50">
-                        <td class="p-3 font-bold text-slate-800 border-l border-slate-300">${displayStr}</td>
-                        <td class="p-3 font-black text-indigo-600">${val.toFixed(3)} د.ت</td>
-                    </tr>
-                `;
-            });
-            const monthsTbody = document.getElementById('recetteMonthsTableBody');
-            if(monthsTbody) monthsTbody.innerHTML = monthsHtml;
-            
-            const oContainer = document.getElementById('ordersListContainer');
-            if (oContainer) oContainer.innerHTML = ordersHtml || '<p class="text-slate-400 text-center py-4">لا توجد طلبات جديدة قيد الانتظار.</p>';
-
-            let statsHtml = '';
-            for (let clientName in clientSalesMap) {
-                let stat = clientSalesMap[clientName];
-                statsHtml += `
-                    <tr class="border-b border-slate-300 text-sm hover:bg-slate-50">
-                        <td class="p-3 font-bold text-slate-800 border-l border-slate-300"><i class="fa-solid fa-store text-emerald-600 ml-1"></i> ${clientName}</td>
-                        <td class="p-3 text-indigo-600 font-bold border-l border-slate-300">${stat.count} طلبات</td>
-                        <td class="p-3 font-black text-emerald-600">${stat.totalSpent.toFixed(3)} د.ت</td>
-                    </tr>
-                `;
-            }
-            const statsTable = document.getElementById('salesStatsTableBody');
-            if (statsTable) statsTable.innerHTML = statsHtml || '<tr><td colspan="3" class="text-center text-slate-400 py-4">لا توجد مبيعات مؤكدة للتجار بعد.</td></tr>';
-
-            let stockHtml = '';
-            let totalStockFinancialValue = 0;
-            for (let k in stockMap) {
-                let st = stockMap[k];
-                let finalStock = st.purchased - st.sold;
-                let lineValue = finalStock * st.buy;
-                if (finalStock > 0) totalStockFinancialValue += lineValue;
-
-                stockHtml += `
-                    <tr class="border-b border-slate-300 text-xs hover:bg-slate-50">
-                        <td class="p-3 font-bold text-slate-700 border-l border-slate-300">${st.operator}</td>
-                        <td class="p-3 border-l border-slate-300">${st.name}</td>
-                        <td class="p-3 text-slate-500 border-l border-slate-300">${st.buy.toFixed(3)} د.ت</td>
-                        <td class="p-3 font-bold text-indigo-600 border-l border-slate-300">${st.purchased}</td>
-                        <td class="p-3 font-black text-emerald-600 text-sm">${finalStock} قطعة</td>
-                    </tr>
-                `;
-            }
-            const stockTable = document.getElementById('stockTableBody');
-            if (stockTable) stockTable.innerHTML = stockHtml || '<tr><td colspan="5" class="text-center text-slate-400 py-4">لا توجد بيانات ستوك.</td></tr>';
-            
-            const totalStockEl = document.getElementById('totalStockValue');
-            if (totalStockEl) totalStockEl.innerText = totalStockFinancialValue.toFixed(3) + ' د.ت';
-        }
-
-        window.selectPosOperator = function(op) {
-            window.selectedPosOp = op;
-            document.getElementById('posProductsSection').classList.remove('hidden');
-            document.getElementById('posSelectedOperatorTitle').innerText = `اختر للبيع: ${op}`;
-            let html = '';
-            window.tariffs.filter(t => t.operator === op).forEach(t => {
-                let qty = window.posCart[t.id] || 0;
-                let cardColor = op === 'Ooredoo' ? 'bg-red-50 text-red-700 border-red-300' : (op === 'Telecom' ? 'bg-blue-50 text-blue-700 border-blue-300' : 'bg-orange-50 text-orange-700 border-orange-300');
-                html += `
-                    <div onclick="addPosCardQty('${t.id}')" class="border-2 p-3 rounded-xl cursor-pointer hover:shadow transition ${cardColor}">
-                        <h4 class="font-bold text-xs">${t.name}</h4>
-                        <p class="text-xs mt-1 font-bold">${t.sell} د.ت</p>
-                        <div class="mt-2 text-center bg-white py-1 rounded font-bold text-xs text-slate-900 border border-slate-200" id="pos_qty_${t.id}">${qty}</div>
-                    </div>
-                `;
-            });
-            document.getElementById('posCardsGrid').innerHTML = html;
-        };
-
-        window.addPosCardQty = (id) => {
-            window.posCart[id] = (window.posCart[id] || 0) + 1;
-            document.getElementById(`pos_qty_${id}`).innerText = window.posCart[id];
-            calcPosTotal();
-        };
-
-        window.addPosDirectRecharge = function() {
-            let val = parseFloat(document.getElementById('posDirectRechargeInput').value) || 0;
-            if (val <= 0) { alert('أدخل مبلغ صحيح للشحن المباشر.'); return; }
-            if (!window.selectedPosOp) { alert('اختر المشغل أولاً.'); return; }
-
-            let key = `${window.selectedPosOp}_Direct_${val}`;
-            window.posCart[key] = (window.posCart[key] || 0) + 1;
-            if (!window.customDirectTariffs) window.customDirectTariffs = {};
-            window.customDirectTariffs[key] = { id: key, operator: window.selectedPosOp, name: `شحن مباشر ${val} د.ت`, buy: val * 0.960, sell: val };
-
-            document.getElementById('posDirectRechargeInput').value = '';
-            alert('تم إضافة الشحن المباشر بنجاح!');
-            calcPosTotal();
-        };
-
-        function calcPosTotal() {
-            let total = 0;
-            for (let id in window.posCart) {
-                let item = window.tariffs.find(t => t.id === id) || (window.customDirectTariffs && window.customDirectTariffs[id]);
-                if (item) total += item.sell * window.posCart[id];
-            }
-            document.getElementById('posCartTotal').innerText = total.toFixed(3) + ' د.ت';
-        }
-
-        window.submitPosOrder = async function() {
-            const clientName = document.getElementById('posRegisteredClientSelect').value;
-            const paymentStatus = document.getElementById('posPaymentStatus').value;
-            if (!clientName) { alert('اختر الحانوت.'); return; }
-            
-            let items = [], totalSell = 0, totalBuy = 0;
-            for (let id in window.posCart) {
-                if (window.posCart[id] > 0) {
-                    let item = window.tariffs.find(t => t.id === id) || (window.customDirectTariffs && window.customDirectTariffs[id]);
-                    items.push({ ...item, qty: window.posCart[id] });
-                    totalSell += item.sell * window.posCart[id];
-                    totalBuy += item.buy * window.posCart[id];
-                }
-            }
-            if (items.length === 0) { alert('اختر منتج.'); return; }
-
-            let paidAmount = 0, creditAmount = 0;
-            if (paymentStatus === 'Payé') {
-                paidAmount = totalSell;
-                creditAmount = 0;
-            } else if (paymentStatus === 'Crédit') {
-                paidAmount = 0;
-                creditAmount = totalSell;
-            } else if (paymentStatus === 'Partiel') {
-                paidAmount = parseFloat(document.getElementById('posPaidAmountInput').value) || 0;
-                creditAmount = totalSell - paidAmount;
-                if (paidAmount <= 0 || paidAmount >= totalSell) { alert('الرجاء إدخال مبلغ مدفوع جزئي صحيح.'); return; }
-            }
-
-            try {
-                await addDoc(collection(db, "orders"), {
-                    clientName, 
-                    vendeurId: window.currentVendeur.id,
-                    items, totalSell, totalBuy, benefice: totalSell - totalBuy,
-                    paymentStatus: paymentStatus === 'Payé' ? 'Payé' : (paymentStatus === 'Crédit' ? 'Crédit' : 'جزئي'),
-                    paidAmount: paidAmount,
-                    creditAmount: creditAmount,
-                    date: new Date().toISOString(), status: 'مكتمل ومؤكد'
-                });
-                window.showSystemNotification("عملية بيع", "تم إتمام البيع بنجاح وشكرا لك!");
-                window.posCart = {};
-                window.customDirectTariffs = {};
-                window.closeAdminWindow('pos');
-            } catch (e) { alert('خطأ أثناء الحفظ: ' + e.message); }
-        };
-
-        window.checkVendeurAuth();
-    </script>
-</body>
-</html>
+                        <td class="p-3 font-bold text-slate-800 border-l border-slate-300">${day
