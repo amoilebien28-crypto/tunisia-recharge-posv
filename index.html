@@ -131,13 +131,12 @@
                 </button>
 
                 <button onclick="openAdminWindow('clients')" class="w-full text-right bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 p-4 rounded-2xl font-bold flex justify-between items-center transition">
-                    <span><i class="fa-solid fa-address-book ml-2 text-blue-600"></i> قائمة الحوانت المسجلة لدي (Relevés & Crédit)</span>
+                    <span><i class="fa-solid fa-address-book ml-2 text-blue-600"></i> قائمة الحوانت المسجلة لدي (تعديل الأكواد والـ Historique)</span>
                     <i class="fa-solid fa-chevron-left text-xs text-slate-400"></i>
                 </button>
 
-                <!-- زران منفصلان لإدارة المخزون كما طلبت بالمليمتر -->
                 <button onclick="openAdminWindow('invoice')" class="w-full text-right bg-indigo-50 hover:bg-indigo-100 text-indigo-900 p-4 rounded-2xl font-bold flex justify-between items-center transition border border-indigo-200">
-                    <span><i class="fa-solid fa-file-invoice-dollar ml-2 text-indigo-600"></i> إدخال فاتورة شراء ستوك جديد</span>
+                    <span><i class="fa-solid fa-file-invoice-dollar ml-2 text-indigo-600"></i> إدخال فاتورة شراء ستوك جديد والفواتير السابقة</span>
                     <i class="fa-solid fa-plus text-xs text-indigo-600"></i>
                 </button>
 
@@ -180,6 +179,72 @@
                 </div>
             </div>
             <button onclick="saveNewClientByVendeur()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold text-sm shadow-sm">حفظ الحانوت الجديد</button>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل كلمة مرور التاجر -->
+    <div id="editClientPasswordModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
+        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-sm w-full space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h4 class="font-bold text-base text-slate-900"><i class="fa-solid fa-key text-indigo-600 ml-2"></i> تغيير كلمة المرور للتاجر</h4>
+                <button onclick="closeEditPasswordModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+            </div>
+            <div class="space-y-3">
+                <p id="editClientNameTitle" class="text-xs font-bold text-slate-600"></p>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">كلمة المرور الجديدة:</label>
+                    <input type="text" id="newClientPasswordInput" placeholder="أدخل الكود الجديد..." class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
+                </div>
+            </div>
+            <button onclick="saveNewClientPassword()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold text-xs shadow-sm transition">حفظ الكود الجديد</button>
+        </div>
+    </div>
+
+    <!-- نافذة سجل التاجر (Historique & Crédit) -->
+    <div id="clientDetailHistoryModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
+        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h4 id="historyModalTitle" class="font-bold text-lg text-slate-900"><i class="fa-solid fa-address-book text-blue-600 ml-2"></i> سجل معاملات الحانوت</h4>
+                <button onclick="closeClientHistoryModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+            </div>
+
+            <!-- بطاقة إجمالي الكريدي لهذا التاجر -->
+            <div class="bg-rose-50 border border-rose-200 p-4 rounded-2xl flex justify-between items-center">
+                <span class="text-xs font-bold text-rose-800">إجمالي ديون الكريدي الحالية على هذا التاجر:</span>
+                <span id="historyClientTotalCredit" class="text-xl font-black text-rose-600">0.000 د.ت</span>
+            </div>
+
+            <!-- قائمة الطلبيات السابقة (سطر بسطر) -->
+            <div class="space-y-2" id="clientHistoryOrdersList">
+                <!-- تعبئة ديناميكية -->
+            </div>
+
+            <button onclick="closeClientHistoryModal()" class="w-full bg-slate-100 text-slate-700 py-2.5 rounded-xl font-bold text-sm">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- نافذة تفاصيل فاتورة أو طلبية داخل الـ Historique -->
+    <div id="historyOrderDetailModal" class="fixed inset-0 bg-black/70 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
+        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-md w-full space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h4 class="font-bold text-base text-slate-900"><i class="fa-solid fa-file-invoice text-emerald-600 ml-2"></i> تفاصيل الطلبية</h4>
+                <button onclick="closeHistoryOrderDetail()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+            </div>
+            <div id="historyOrderDetailContent" class="space-y-3 text-xs"></div>
+            <button onclick="closeHistoryOrderDetail()" class="w-full bg-slate-800 text-white py-2.5 rounded-xl font-bold text-xs">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- نافذة قائمة الحوانت المسجلة -->
+    <div id="windowClients" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
+        <div class="bg-white p-6 rounded-3xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-address-book text-blue-600 ml-2"></i> قائمة الحوانت المسجلة لدي</h4>
+                <button onclick="closeAdminWindow('clients')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+            </div>
+            <p class="text-xs text-slate-500">انقر على اسم الحانوت لعرض الـ Historique والديون، أو انقر على (تغيير الكود) لتعديل كلمة المرور:</p>
+            <div id="clientsListContainer" class="space-y-2"></div>
+            <button onclick="closeAdminWindow('clients')" class="w-full bg-slate-100 text-slate-700 py-2.5 rounded-xl font-bold text-sm">إغلاق</button>
         </div>
     </div>
 
@@ -252,31 +317,54 @@
         </div>
     </div>
 
-    <!-- نافذة إدخال فاتورة شراء ستوك جديد (كل المنتجات والبطاقات والشحن) -->
+    <!-- نافذة إدارة الفواتير وشراء الستوك -->
     <div id="windowInvoice" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto space-y-6">
             <div class="flex justify-between items-center border-b pb-3">
-                <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-file-invoice-dollar text-indigo-600 ml-2"></i> إدخال فاتورة شراء ستوك جديد</h4>
+                <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-file-invoice-dollar text-indigo-600 ml-2"></i> إدارة فواتير الشراء</h4>
                 <button onclick="closeAdminWindow('invoice')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
             </div>
-            
-            <p class="text-xs text-slate-500">قم بإدخال الكميات المشتراة تحت كل منتج، ثم اضغط على (حفظ الفاتورة) أسفل الصفحة:</p>
 
-            <div class="space-y-4" id="invoiceProductsListContainer">
-                <!-- تعبئة ديناميكية لكل المنتجات والبطاقات والشحن -->
+            <div class="flex bg-slate-100 p-1.5 rounded-2xl gap-2">
+                <button onclick="switchInvoiceTab('new')" id="tabBtnNewInvoice" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-indigo-700 shadow-sm transition">إدخال فاتورة جديدة</button>
+                <button onclick="switchInvoiceTab('list')" id="tabBtnListInvoice" class="flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600 transition">قائمة الفواتير السابقة</button>
             </div>
 
-            <div class="bg-slate-50 p-4 rounded-2xl border flex justify-between items-center sticky bottom-0 bg-white shadow-md">
-                <div>
-                    <span class="text-xs text-slate-600">المجموع الجملي لفاتورة الشراء:</span>
-                    <span id="invoiceTotalBuyCost" class="text-xl font-black text-indigo-600 mr-2">0.000 د.ت</span>
+            <div id="sectionNewInvoice" class="space-y-4">
+                <p class="text-xs text-slate-500">يمكنك تعديل (سعر الشراء) لكل منتج حسب الحاجة، ثم إدخال الكمية والضغط على حفظ الفاتورة:</p>
+                <div class="space-y-3 max-h-96 overflow-y-auto pr-1" id="invoiceProductsListContainer"></div>
+
+                <div class="bg-slate-50 p-4 rounded-2xl border flex justify-between items-center sticky bottom-0 bg-white shadow-md">
+                    <div>
+                        <span class="text-xs text-slate-600">المجموع الجملي لفاتورة الشراء:</span>
+                        <span id="invoiceTotalBuyCost" class="text-xl font-black text-indigo-600 mr-2">0.000 د.ت</span>
+                    </div>
+                    <button onclick="saveNewStockInvoiceBatch()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-sm transition">حفظ الفاتورة وإضافة للستوك</button>
                 </div>
-                <button onclick="saveNewStockInvoiceBatch()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-sm transition">حفظ الفاتورة وإضافة للستوك</button>
             </div>
+
+            <div id="sectionListInvoice" class="space-y-3 hidden">
+                <h5 class="font-bold text-xs text-slate-700">سجل فواتير الشراء السابقة:</h5>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right border-collapse">
+                        <thead>
+                            <tr class="border-b bg-slate-50 text-slate-600 text-xs">
+                                <th class="p-3">رقم الفاتورة / التاريخ</th>
+                                <th class="p-3">إجمالي مبلغ الفاتورة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoicesHistoryTableBody">
+                            <tr><td colspan="2" class="text-center text-slate-400 py-4">لا توجد فواتير مسجلة بعد.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <button onclick="closeAdminWindow('invoice')" class="w-full bg-slate-100 text-slate-700 py-2.5 rounded-xl font-bold text-sm">إغلاق</button>
         </div>
     </div>
 
-    <!-- نافذة الستوك النهائي (إنفونتير المخزون وقيمته الجملية) -->
+    <!-- نافذة الستوك النهائي (إنفونتير المخزون) -->
     <div id="windowStock" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto space-y-6">
             <div class="flex justify-between items-center border-b pb-3">
@@ -290,14 +378,13 @@
                         <tr class="border-b bg-slate-50 text-slate-600 text-xs">
                             <th class="p-3">المشغل</th>
                             <th class="p-3">المنتج / البطاقة / الشحن</th>
-                            <th class="p-3">سعر الشراء</th>
+                            <th class="p-3">سعر الشراء الحالي</th>
                             <th class="p-3">المشتريات</th>
-                            <th class="p-3">المبيعات</th>
                             <th class="p-3">الستوك النهائي</th>
                         </tr>
                     </thead>
                     <tbody id="stockTableBody">
-                        <tr><td colspan="6" class="text-center text-slate-400 py-4">جاري حساب الستوك...</td></tr>
+                        <tr><td colspan="5" class="text-center text-slate-400 py-4">جاري حساب الستوك...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -333,18 +420,6 @@
                 </table>
             </div>
             <button onclick="closeAdminWindow('stats')" class="w-full bg-slate-100 text-slate-700 py-2.5 rounded-xl font-bold text-sm">إغلاق</button>
-        </div>
-    </div>
-
-    <!-- نافذة الحوانت المسجلة -->
-    <div id="windowClients" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-address-book text-blue-600 ml-2"></i> قائمة الحوانت المسجلة لدي</h4>
-                <button onclick="closeAdminWindow('clients')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
-            </div>
-            <div id="clientsListContainer" class="space-y-2"></div>
-            <button onclick="closeAdminWindow('clients')" class="w-full bg-slate-100 text-slate-700 py-2.5 rounded-xl font-bold text-sm">إغلاق</button>
         </div>
     </div>
 
@@ -419,13 +494,12 @@
 
         window.currentVendeur = JSON.parse(localStorage.getItem('currentVendeur') || 'null');
 
-        // قائمة المنتجات والبطاقات والشحن كاملة بكل تفاصيلها
         window.tariffs = [
             { id: 'Ooredoo_1', operator: 'Ooredoo', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 },
             { id: 'Ooredoo_5', operator: 'Ooredoo', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 },
             { id: 'Ooredoo_10', operator: 'Ooredoo', name: 'بطاقة 10 د.ت', buy: 9.500, sell: 10.000 },
             { id: 'Ooredoo_25', operator: 'Ooredoo', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 },
-            { id: 'Ooredoo_Recharge', operator: 'Ooredoo', name: 'شحن مباشر (Floussi/E-recharge)', buy: 0.960, sell: 1.000 },
+            { id: 'Ooredoo_Recharge', operator: 'Ooredoo', name: 'شحن مباشر (Floussi)', buy: 0.960, sell: 1.000 },
             
             { id: 'Telecom_1', operator: 'Telecom', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 },
             { id: 'Telecom_5', operator: 'Telecom', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 },
@@ -435,8 +509,8 @@
 
             { id: 'Orange_1', operator: 'Orange', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 },
             { id: 'Orange_5', operator: 'Orange', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 },
-            { id: 'Orange_10', operator: 'Orange', name: '10 د.ت', buy: 9.500, sell: 10.000 },
-            { id: 'Orange_25', operator: 'Orange', name: '25 د.ت', buy: 23.750, sell: 25.000 },
+            { id: 'Orange_10', operator: 'Orange', name: 'بطاقة 10 د.ت', buy: 9.500, sell: 10.000 },
+            { id: 'Orange_25', operator: 'Orange', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 },
             { id: 'Orange_Recharge', operator: 'Orange', name: 'شحن مباشر (E-recharge)', buy: 0.960, sell: 1.000 }
         ];
 
@@ -469,19 +543,14 @@
             const name = document.getElementById('regName').value.trim();
             const phone = document.getElementById('regPhone').value.trim();
             const password = document.getElementById('regPassword').value.trim();
-            if (!name || !phone || !password) {
-                alert('الرجاء ملء كل البيانات.');
-                return;
-            }
+            if (!name || !phone || !password) { alert('الرجاء ملء كل البيانات.'); return; }
             try {
                 const docRef = await addDoc(collection(db, "vendeurs"), { name, phone, password });
                 window.currentVendeur = { id: docRef.id, name, phone };
                 localStorage.setItem('currentVendeur', JSON.stringify(window.currentVendeur));
                 alert('تم إنشاء الحساب بنجاح!');
                 window.checkVendeurAuth();
-            } catch (e) {
-                alert('خطأ في التسجيل.');
-            }
+            } catch (e) { alert('خطأ في التسجيل.'); }
         };
 
         window.handleVendeurLogin = async function() {
@@ -496,12 +565,8 @@
                     window.currentVendeur = vData;
                     localStorage.setItem('currentVendeur', JSON.stringify(window.currentVendeur));
                     window.checkVendeurAuth();
-                } else {
-                    alert('رقم الهاتف أو كلمة المرور غير صحيحة.');
-                }
-            } catch (e) {
-                alert('خطأ في الاتصال.');
-            }
+                } else { alert('رقم الهاتف أو كلمة المرور غير صحيحة.'); }
+            } catch (e) { alert('خطأ في الاتصال.'); }
         };
 
         window.logoutVendeur = function() {
@@ -519,10 +584,7 @@
             const password = document.getElementById('newClientPassword').value.trim();
             const address = document.getElementById('newClientAddress').value.trim();
 
-            if (!name || !phone || !password) {
-                alert('الرجاء إدخال اسم الحانوت، رقم الهاتف، وكلمة المرور.');
-                return;
-            }
+            if (!name || !phone || !password) { alert('الرجاء إدخال اسم الحانوت، رقم الهاتف، وكلمة المرور.'); return; }
 
             try {
                 await addDoc(collection(db, "clients"), {
@@ -533,9 +595,94 @@
                 alert('تم إضافة الحانوت بنجاح وأصبح له حساب دخول!');
                 window.closeAddClientModal();
                 fetchVendeurData();
-            } catch (e) {
-                alert('حدث خطأ أثناء الحفظ.');
+            } catch (e) { alert('حدث خطأ أثناء الحفظ.'); }
+        };
+
+        // إدارة تغيير كلمة المرور للتاجر
+        window.currentEditingClientId = null;
+        window.openEditPasswordModal = function(clientId, clientName) {
+            window.currentEditingClientId = clientId;
+            document.getElementById('editClientNameTitle').innerText = `الحانوت: ${clientName}`;
+            document.getElementById('newClientPasswordInput').value = '';
+            document.getElementById('editClientPasswordModal').classList.remove('hidden');
+        };
+        window.closeEditPasswordModal = function() {
+            document.getElementById('editClientPasswordModal').classList.add('hidden');
+            window.currentEditingClientId = null;
+        };
+        window.saveNewClientPassword = async function() {
+            const newPass = document.getElementById('newClientPasswordInput').value.trim();
+            if (!newPass) { alert('الرجاء إدخال كلمة المرور الجديدة.'); return; }
+            try {
+                const clientRef = doc(db, "clients", window.currentEditingClientId);
+                await updateDoc(clientRef, { password: newPass });
+                alert('تم تغيير كلمة المرور بنجاح!');
+                window.closeEditPasswordModal();
+                fetchVendeurData();
+            } catch (e) { alert('خطأ أثناء تحديث كلمة المرور.'); }
+        };
+
+        // عرض الـ Historique والديون للتاجر المحدد
+        window.openClientHistoryModal = function(clientName) {
+            document.getElementById('historyModalTitle').innerHTML = `<i class="fa-solid fa-address-book text-blue-600 ml-2"></i> سجل معاملات وحانوت: ${clientName}`;
+            
+            let clientOrders = window.allOrders.filter(o => o.clientName === clientName);
+            let totalCredit = 0;
+            let ordersHtml = '';
+
+            clientOrders.forEach(o => {
+                if (o.creditAmount) totalCredit += o.creditAmount;
+                let dateStr = o.date ? new Date(o.date).toLocaleDateString() : '';
+                let statusBadge = o.status === 'مكتمل ومؤكد' ? '<span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">مؤكد</span>' : '<span class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold">قيد الانتظار</span>';
+
+                ordersHtml += `
+                    <div onclick="openHistoryOrderDetail('${o.id}')" class="bg-slate-50 hover:bg-slate-100 cursor-pointer p-3 rounded-xl border flex justify-between items-center transition">
+                        <div>
+                            <p class="font-bold text-xs text-slate-900">تاريخ: ${dateStr} | المجموع: <strong class="text-emerald-600">${o.totalSell} د.ت</strong></p>
+                            <p class="text-[10px] text-slate-500 mt-0.5">الحالة: ${o.paymentStatus || 'عادي'} (انقر لعرض التفاصيل)</p>
+                        </div>
+                        <div>${statusBadge}</div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('historyClientTotalCredit').innerText = totalCredit.toFixed(3) + ' د.ت';
+            const listContainer = document.getElementById('clientHistoryOrdersList');
+            if (listContainer) listContainer.innerHTML = ordersHtml || '<p class="text-slate-400 text-xs text-center py-4">لا توجد طلبيات سابقة لهذا الحانوت.</p>';
+
+            document.getElementById('clientDetailHistoryModal').classList.remove('hidden');
+        };
+
+        window.closeClientHistoryModal = function() {
+            document.getElementById('clientDetailHistoryModal').classList.add('hidden');
+        };
+
+        window.openHistoryOrderDetail = function(orderId) {
+            let o = window.allOrders.find(item => item.id === orderId);
+            if (!o) return;
+
+            let itemsHtml = '<ul class="space-y-1 bg-slate-50 p-3 rounded-xl border">';
+            if (o.items && Array.isArray(o.items)) {
+                o.items.forEach(i => {
+                    itemsHtml += `<li class="flex justify-between items-center text-xs font-bold text-slate-800 border-b pb-1">
+                        <span><i class="fa-solid fa-tag text-emerald-600 ml-1"></i> ${i.operator || ''} - ${i.name}</span>
+                        <span class="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded">الكمية: ${i.qty}</span>
+                    </li>`;
+                });
             }
+            itemsHtml += '</ul>';
+
+            document.getElementById('historyOrderDetailContent').innerHTML = `
+                <p class="font-bold text-slate-900">الحانوت: ${o.clientName}</p>
+                <p class="text-slate-500">التاريخ: ${new Date(o.date).toLocaleString()}</p>
+                <p class="font-black text-emerald-600 text-sm mt-1">المجموع الجملي: ${o.totalSell} د.ت</p>
+                <div class="mt-2"><p class="font-bold text-slate-700 mb-1">تفاصيل القطع:</p>${itemsHtml}</div>
+            `;
+            document.getElementById('historyOrderDetailModal').classList.remove('hidden');
+        };
+
+        window.closeHistoryOrderDetail = function() {
+            document.getElementById('historyOrderDetailModal').classList.add('hidden');
         };
 
         window.allClients = [];
@@ -553,6 +700,7 @@
                     window.allInvoices = [];
                     snap.forEach(d => window.allInvoices.push({ id: d.id, ...d.data() }));
                     processAdminStatsAndStock();
+                    renderInvoicesHistory();
                 });
 
                 onSnapshot(query(collection(db, "orders"), where("vendeurId", "==", window.currentVendeur.id)), (snap) => {
@@ -564,23 +712,41 @@
                 });
 
                 updateClientsUI();
-            } catch (e) {
-                console.error(e);
-            }
+            } catch (e) { console.error(e); }
         }
 
-        // عرض قائمة كل المنتجات والبطاقات والشحن لإدخال فاتورة الشراء دفعة واحدة
+        window.switchInvoiceTab = function(tab) {
+            const secNew = document.getElementById('sectionNewInvoice');
+            const secList = document.getElementById('sectionListInvoice');
+            const btnNew = document.getElementById('tabBtnNewInvoice');
+            const btnList = document.getElementById('tabBtnListInvoice');
+
+            if (tab === 'new') {
+                secNew.classList.remove('hidden');
+                secList.classList.add('hidden');
+                btnNew.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-indigo-700 shadow-sm transition';
+                btnList.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600 transition';
+            } else {
+                secNew.classList.add('hidden');
+                secList.classList.remove('hidden');
+                btnList.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-indigo-700 shadow-sm transition';
+                btnNew.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600 transition';
+            }
+        };
+
         function renderInvoiceForm() {
             let html = '';
             window.tariffs.forEach(t => {
                 html += `
-                    <div class="bg-slate-50 p-3 rounded-2xl border flex justify-between items-center text-xs">
+                    <div class="bg-slate-50 p-3 rounded-2xl border grid grid-cols-1 md:grid-cols-3 gap-2 items-center text-xs">
+                        <div><span class="font-bold text-slate-900">${t.operator} - ${t.name}</span></div>
                         <div>
-                            <span class="font-bold text-slate-900">${t.operator} - ${t.name}</span>
-                            <p class="text-[10px] text-slate-500">سعر الشراء: ${t.buy.toFixed(3)} د.ت</p>
+                            <label class="block text-[10px] text-slate-500 mb-0.5">سعر الشراء (قابل للتعديل):</label>
+                            <input type="number" step="0.001" value="${t.buy}" id="inv_buy_${t.id}" oninput="calcInvoiceTotal()" class="w-full border p-1.5 rounded-xl text-center font-bold bg-white">
                         </div>
-                        <div class="w-32">
-                            <input type="number" min="0" value="0" id="inv_qty_${t.id}" oninput="calcInvoiceTotal()" class="w-full border p-2 rounded-xl text-center font-bold bg-white">
+                        <div>
+                            <label class="block text-[10px] text-slate-500 mb-0.5">الكمية:</label>
+                            <input type="number" min="0" value="0" id="inv_qty_${t.id}" oninput="calcInvoiceTotal()" class="w-full border p-1.5 rounded-xl text-center font-bold bg-white">
                         </div>
                     </div>
                 `;
@@ -592,10 +758,12 @@
         window.calcInvoiceTotal = function() {
             let total = 0;
             window.tariffs.forEach(t => {
-                let input = document.getElementById(`inv_qty_${t.id}`);
-                if (input) {
-                    let qty = parseInt(input.value) || 0;
-                    total += qty * t.buy;
+                let qtyInput = document.getElementById(`inv_qty_${t.id}`);
+                let buyInput = document.getElementById(`inv_buy_${t.id}`);
+                if (qtyInput && buyInput) {
+                    let qty = parseInt(qtyInput.value) || 0;
+                    let buyPrice = parseFloat(buyInput.value) || 0;
+                    total += qty * buyPrice;
                 }
             });
             document.getElementById('invoiceTotalBuyCost').innerText = total.toFixed(3) + ' د.ت';
@@ -603,25 +771,28 @@
 
         window.saveNewStockInvoiceBatch = async function() {
             let itemsToSave = [];
+            let totalInvoiceCost = 0;
+
             window.tariffs.forEach(t => {
-                let input = document.getElementById(`inv_qty_${t.id}`);
-                if (input) {
-                    let qty = parseInt(input.value) || 0;
+                let qtyInput = document.getElementById(`inv_qty_${t.id}`);
+                let buyInput = document.getElementById(`inv_buy_${t.id}`);
+                if (qtyInput && buyInput) {
+                    let qty = parseInt(qtyInput.value) || 0;
+                    let buyPrice = parseFloat(buyInput.value) || t.buy;
                     if (qty > 0) {
-                        itemsToSave.push({ ...t, qty });
+                        itemsToSave.push({ ...t, buy: buyPrice, qty });
+                        totalInvoiceCost += qty * buyPrice;
                     }
                 }
             });
 
-            if (itemsToSave.length === 0) {
-                alert('الرجاء إدخال كمية لمنتج واحد على الأقل.');
-                return;
-            }
+            if (itemsToSave.length === 0) { alert('الرجاء إدخال كمية لمنتج واحد على الأقل.'); return; }
 
             try {
                 await addDoc(collection(db, "invoices"), {
                     vendeurId: window.currentVendeur.id,
                     items: itemsToSave,
+                    totalCost: totalInvoiceCost,
                     date: new Date().toISOString()
                 });
                 alert('تم حفظ فاتورة شراء الستوك بنجاح!');
@@ -629,11 +800,26 @@
                 calcInvoiceTotal();
                 window.closeAdminWindow('invoice');
                 fetchVendeurData();
-            } catch (e) {
-                alert('خطأ أثناء حفظ الفاتورة.');
-            }
+            } catch (e) { alert('خطأ أثناء حفظ الفاتورة.'); }
         };
 
+        function renderInvoicesHistory() {
+            let html = '';
+            window.allInvoices.forEach((inv, index) => {
+                let dateStr = inv.date ? new Date(inv.date).toLocaleString() : 'تاريخ غير محدد';
+                let total = inv.totalCost || 0;
+                html += `
+                    <tr class="border-b text-xs">
+                        <td class="p-3 font-bold text-slate-800"><i class="fa-solid fa-file-invoice text-indigo-600 ml-1"></i> فاتورة #${index + 1} (${dateStr})</td>
+                        <td class="p-3 font-black text-indigo-600">${total.toFixed(3)} د.ت</td>
+                    </tr>
+                `;
+            });
+            const tbody = document.getElementById('invoicesHistoryTableBody');
+            if (tbody) tbody.innerHTML = html || '<tr><td colspan="2" class="text-center text-slate-400 py-4">لا توجد فواتير سابقة.</td></tr>';
+        }
+
+        // تحديث واجهة قائمة الحوانت المسجلة مع إضافة زر Historique وتغيير الكود
         function updateClientsUI() {
             let selectHtml = '<option value="">اختر الحانوت...</option>';
             let listHtml = '';
@@ -641,11 +827,13 @@
                 selectHtml += `<option value="${c.name}">${c.name} (${c.phone})</option>`;
                 listHtml += `
                     <div class="bg-slate-50 p-4 rounded-2xl border flex justify-between items-center">
-                        <div>
-                            <h4 class="font-bold text-slate-900">${c.name}</h4>
-                            <p class="text-xs text-slate-500">الهاتف: ${c.phone} | العنوان: ${c.address || 'غير محدد'}</p>
+                        <div class="cursor-pointer flex-1" onclick="openClientHistoryModal('${c.name}')">
+                            <h4 class="font-bold text-slate-900 hover:text-indigo-600 transition"><i class="fa-solid fa-store text-emerald-600 ml-1"></i> ${c.name} <span class="text-xs text-indigo-600 font-normal">(عرض الـ Historique)</span></h4>
+                            <p class="text-xs text-slate-500">الهاتف: ${c.phone} | الكود الحالي: <strong class="text-slate-800">${c.password}</strong></p>
                         </div>
-                        <span class="text-xs bg-indigo-50 text-indigo-700 px-3 py-1 rounded-xl font-bold">كلمة المرور: ${c.password}</span>
+                        <button onclick="openEditPasswordModal('${c.id}', '${c.name}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1">
+                            <i class="fa-solid fa-key"></i> تغيير الكود
+                        </button>
                     </div>
                 `;
             });
@@ -696,11 +884,7 @@
             if (e.target && e.target.id === 'validerPaymentStatus') {
                 const val = e.target.value;
                 const partDiv = document.getElementById('partielAmountDiv');
-                if (val === 'Partiel') {
-                    partDiv.classList.remove('hidden');
-                } else {
-                    partDiv.classList.add('hidden');
-                }
+                if (val === 'Partiel') { partDiv.classList.remove('hidden'); } else { partDiv.classList.add('hidden'); }
             }
         });
 
@@ -711,19 +895,12 @@
             let creditAmount = 0;
             let total = window.selectedOrderForAction.totalSell;
 
-            if (payStatus === 'Payé') {
-                paidAmount = total;
-                creditAmount = 0;
-            } else if (payStatus === 'Crédit') {
-                paidAmount = 0;
-                creditAmount = total;
-            } else if (payStatus === 'Partiel') {
+            if (payStatus === 'Payé') { paidAmount = total; creditAmount = 0; }
+            else if (payStatus === 'Crédit') { paidAmount = 0; creditAmount = total; }
+            else if (payStatus === 'Partiel') {
                 paidAmount = parseFloat(document.getElementById('validerPaidAmount').value) || 0;
                 creditAmount = total - paidAmount;
-                if (paidAmount <= 0 || paidAmount >= total) {
-                    alert('الرجاء إدخال مبلغ مدفوع جزئي صحيح.');
-                    return;
-                }
+                if (paidAmount <= 0 || paidAmount >= total) { alert('الرجاء إدخال مبلغ مدفوع جزئي صحيح.'); return; }
             }
 
             try {
@@ -736,10 +913,7 @@
                 });
                 alert('تم تأكيد الطلبية بنجاح واختفت من الطلبات الجديدة!');
                 window.closeOrderDetailModal();
-            } catch (e) {
-                console.error(e);
-                alert('خطأ أثناء تأكيد الطلبية.');
-            }
+            } catch (e) { alert('خطأ أثناء تأكيد الطلبية.'); }
         };
 
         function processAdminStatsAndStock() {
@@ -751,12 +925,10 @@
             let clientSalesMap = {};
             let stockMap = {};
 
-            // تهيئة الخريطة بجميع المنتجات الموجودة في tariffs
             window.tariffs.forEach(t => {
                 stockMap[t.id] = { operator: t.operator, name: t.name, buy: t.buy, purchased: 0, sold: 0 };
             });
 
-            // حساب المشتريات من الفواتير
             window.allInvoices.forEach(inv => {
                 if (inv.items && Array.isArray(inv.items)) {
                     inv.items.forEach(item => {
@@ -765,6 +937,7 @@
                             stockMap[key] = { operator: item.operator, name: item.name, buy: item.buy, purchased: 0, sold: 0 };
                         }
                         stockMap[key].purchased += item.qty;
+                        stockMap[key].buy = item.buy;
                     });
                 }
             });
@@ -849,13 +1022,12 @@
                         <td class="p-3">${st.name}</td>
                         <td class="p-3 text-slate-500">${st.buy.toFixed(3)} د.ت</td>
                         <td class="p-3 font-bold text-indigo-600">${st.purchased}</td>
-                        <td class="p-3 font-bold text-rose-600">${st.sold}</td>
                         <td class="p-3 font-black text-emerald-600 text-sm">${finalStock} قطعة</td>
                     </tr>
                 `;
             }
             const stockTable = document.getElementById('stockTableBody');
-            if (stockTable) stockTable.innerHTML = stockHtml || '<tr><td colspan="6" class="text-center text-slate-400 py-4">لا توجد بيانات ستوك.</td></tr>';
+            if (stockTable) stockTable.innerHTML = stockHtml || '<tr><td colspan="5" class="text-center text-slate-400 py-4">لا توجد بيانات ستوك.</td></tr>';
             
             const totalStockEl = document.getElementById('totalStockValue');
             if (totalStockEl) totalStockEl.innerText = totalStockFinancialValue.toFixed(3) + ' د.ت';
@@ -950,9 +1122,7 @@
                 alert('تم البيع بنجاح!');
                 window.posCart = {};
                 window.closeAdminWindow('pos');
-            } catch (e) {
-                alert('خطأ أثناء الحفظ.');
-            }
+            } catch (e) { alert('خطأ أثناء الحفظ.'); }
         };
 
         window.checkVendeurAuth();
