@@ -12,7 +12,7 @@
 <body class="bg-slate-300 min-h-screen font-sans pb-12 text-slate-800">
 
     <!-- شاشة تسجيل الدخول / التسجيل للبائع -->
-    <div id="authScreen" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div id="authScreen" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full space-y-6 border border-slate-300">
             <div class="text-center space-y-2">
                 <div class="bg-indigo-50 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto text-indigo-600 text-2xl font-bold border border-indigo-200">
@@ -101,7 +101,7 @@
                 <i class="fa-solid fa-chevron-left text-lg"></i>
             </button>
 
-            <!-- 2. يوميات البيع -->
+            <!-- 2. يوميات البيع (Journal des Ventes) -->
             <button type="button" id="journalChoiceBtn" class="w-full text-right bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-md border border-cyan-500/30">
                 <div class="flex items-center gap-4">
                     <div class="bg-white/20 p-4 rounded-2xl text-2xl border border-white/20">
@@ -150,7 +150,7 @@
                     <i class="fa-solid fa-plus text-emerald-700 text-sm font-bold"></i>
                 </button>
 
-                <button type="button" onclick="openAdminWindow('orders')" class="w-full text-right bg-indigo-100 hover:bg-indigo-200 text-indigo-950 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-indigo-500 shadow-sm">
+                <button type="button" id="ordersWindowBtn" class="w-full text-right bg-indigo-100 hover:bg-indigo-200 text-indigo-950 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-indigo-500 shadow-sm">
                     <div class="flex items-center gap-3">
                         <div class="bg-indigo-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold shadow-2xs">
                             <i class="fa-solid fa-box-archive"></i>
@@ -160,7 +160,7 @@
                     <i class="fa-solid fa-chevron-left text-indigo-700 text-xs"></i>
                 </button>
 
-                <button type="button" onclick="openAdminWindow('clients')" class="w-full text-right bg-blue-100 hover:bg-blue-200 text-blue-950 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-blue-500 shadow-sm">
+                <button type="button" id="clientsWindowBtn" class="w-full text-right bg-blue-100 hover:bg-blue-200 text-blue-950 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-blue-500 shadow-sm">
                     <div class="flex items-center gap-3">
                         <div class="bg-blue-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold shadow-2xs">
                             <i class="fa-solid fa-address-book"></i>
@@ -170,7 +170,7 @@
                     <i class="fa-solid fa-chevron-left text-blue-700 text-xs"></i>
                 </button>
 
-                <button type="button" onclick="openAdminWindow('invoice')" class="w-full text-right bg-purple-100 hover:bg-purple-200 text-purple-950 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-purple-500 shadow-sm">
+                <button type="button" id="invoiceWindowBtn" class="w-full text-right bg-purple-100 hover:bg-purple-200 text-purple-950 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-purple-500 shadow-sm">
                     <div class="flex items-center gap-3">
                         <div class="bg-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold shadow-2xs">
                             <i class="fa-solid fa-file-invoice-dollar"></i>
@@ -180,7 +180,7 @@
                     <i class="fa-solid fa-chevron-left text-purple-700 text-xs"></i>
                 </button>
 
-                <button type="button" onclick="openAdminWindow('stock')" class="w-full text-right bg-teal-100 hover:bg-teal-200 text-teal-950 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-teal-500 shadow-sm">
+                <button type="button" id="stockWindowBtn" class="w-full text-right bg-teal-100 hover:bg-teal-200 text-teal-950 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-teal-500 shadow-sm">
                     <div class="flex items-center gap-3">
                         <div class="bg-teal-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold shadow-2xs">
                             <i class="fa-solid fa-warehouse"></i>
@@ -190,7 +190,7 @@
                     <i class="fa-solid fa-chevron-left text-teal-700 text-xs"></i>
                 </button>
 
-                <button type="button" onclick="openRecetteModal()" class="w-full text-right bg-amber-100 hover:bg-amber-200 text-amber-950 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-amber-500 shadow-sm">
+                <button type="button" id="recetteModalBtn" class="w-full text-right bg-amber-100 hover:bg-amber-200 text-amber-950 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-amber-500 shadow-sm">
                     <div class="flex items-center gap-3">
                         <div class="bg-amber-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold shadow-2xs">
                             <i class="fa-solid fa-chart-line"></i>
@@ -200,7 +200,7 @@
                     <i class="fa-solid fa-chevron-left text-amber-700 text-xs"></i>
                 </button>
 
-                <button type="button" onclick="openAdminWindow('stats')" class="w-full text-right bg-rose-100 hover:bg-rose-200 text-rose-950 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-rose-500 shadow-sm">
+                <button type="button" id="statsWindowBtn" class="w-full text-right bg-rose-100 hover:bg-rose-200 text-rose-950 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-rose-500 shadow-sm">
                     <div class="flex items-center gap-3">
                         <div class="bg-rose-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold shadow-2xs">
                             <i class="fa-solid fa-chart-pie"></i>
@@ -600,7 +600,7 @@
         </div>
     </div>
 
-    <!-- السكربت والربط بقاعدة البيانات (مضبوط بـ Event Listeners كاملة لضمان عمل كل الأزرار) -->
+    <!-- السكربت والربط بقاعدة البيانات (مع ربط كامل للأزرار عبر DOMContentLoaded لكي لا تتوقف أي وظيفة) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -626,7 +626,7 @@
         window.posCart = {};
         window.customDirectTariffs = {};
 
-        // ربط أزرار الواجهة عبر DOM لضمان الاستجابة التامة
+        // ربط جميع الأزرار والوظائف عبر DOMContentLoaded لضمان عدم توقف أي زر نهائياً
         document.addEventListener('DOMContentLoaded', () => {
             const loginTabBtn = document.getElementById('loginTabBtn');
             const registerTabBtn = document.getElementById('registerTabBtn');
@@ -640,7 +640,20 @@
             if (registerBtn) registerBtn.addEventListener('click', () => window.handleVendeurRegister());
             if (logoutBtn) logoutBtn.addEventListener('click', () => window.logoutVendeur());
 
-            // إغلاق النوافذ
+            // أزرار القائمة الرئيسية وإدارة الحوانت
+            const posChoiceBtn = document.getElementById('posChoiceBtn');
+            const journalChoiceBtn = document.getElementById('journalChoiceBtn');
+            const managementChoiceBtn = document.getElementById('managementChoiceBtn');
+            const backToMainBtn = document.getElementById('backToMainBtn');
+            const addClientModalBtn = document.getElementById('addClientModalBtn');
+
+            if (posChoiceBtn) posChoiceBtn.addEventListener('click', () => window.openAdminWindow('pos'));
+            if (journalChoiceBtn) journalChoiceBtn.addEventListener('click', () => window.openJournalModal());
+            if (managementChoiceBtn) managementChoiceBtn.addEventListener('click', () => window.selectMainChoice('management'));
+            if (backToMainBtn) backToMainBtn.addEventListener('click', () => window.backToMainChoices());
+            if (addClientModalBtn) addClientModalBtn.addEventListener('click', () => window.openAddClientModal());
+
+            // ربط أزرار النوافذ
             const closeBtns = {
                 'closeSysNotifBtn': 'systemNotificationModal',
                 'closeJournalBtn': 'journalVentesModal',
@@ -669,12 +682,27 @@
                 'closeStatsWindowBtn': 'windowStats',
                 'closeStatsWindowBtn2': 'windowStats',
                 'closePosWindowBtn': 'windowPos',
-                'closePosWindowBtn2': 'windowPos'
+                'closePosWindowBtn2': 'windowPos',
+                'ordersWindowBtn': 'windowOrders',
+                'clientsWindowBtn': 'windowClients',
+                'invoiceWindowBtn': 'windowInvoice',
+                'stockWindowBtn': 'windowStock',
+                'recetteModalBtn': 'recetteModal',
+                'statsWindowBtn': 'windowStats'
             };
 
             for (let id in closeBtns) {
                 let el = document.getElementById(id);
-                if (el) el.addEventListener('click', () => document.getElementById(closeBtns[id]).classList.add('hidden'));
+                if (el) {
+                    el.addEventListener('click', () => {
+                        let targetId = closeBtns[id];
+                        if (targetId.startsWith('window') || targetId === 'recetteModal') {
+                            window.openAdminWindow ? window.openAdminWindow(targetId.replace('window', '').toLowerCase()) : null;
+                        }
+                        const modal = document.getElementById(targetId);
+                        if (modal) modal.classList.toggle('hidden');
+                    });
+                }
             }
 
             const saveInvoiceBtn = document.getElementById('saveInvoiceBtn');
@@ -843,7 +871,10 @@
             document.getElementById('newClientPasswordInput').value = '';
             document.getElementById('editClientPasswordModal').classList.remove('hidden');
         };
-
+        window.closeEditPasswordModal = function() {
+            document.getElementById('editClientPasswordModal').classList.add('hidden');
+            window.currentEditingClientId = null;
+        };
         window.saveNewClientPassword = async function() {
             const newPass = document.getElementById('newClientPasswordInput').value.trim();
             if (!newPass) { alert('الرجاء إدخال كلمة المرور الجديدة.'); return; }
@@ -881,6 +912,7 @@
             document.getElementById('historyClientTotalCredit').innerText = totalCredit.toFixed(3) + ' د.ت';
             const listContainer = document.getElementById('clientHistoryOrdersList');
             if (listContainer) listContainer.innerHTML = ordersHtml || '<p class="text-slate-400 text-xs text-center py-4">لا توجد طلبيات سابقة لهذا الحانوت.</p>';
+
             document.getElementById('clientDetailHistoryModal').classList.remove('hidden');
         };
 
@@ -923,7 +955,9 @@
 
                 onSnapshot(query(collection(db, "orders"), where("vendeurId", "==", window.currentVendeur.id)), (snap) => {
                     window.allOrders = [];
-                    snap.forEach(d => window.allOrders.push({ id: d.id, ...d.data() }));
+                    snap.forEach(d => {
+                        window.allOrders.push({ id: d.id, ...d.data() });
+                    });
                     processAdminStatsAndStock();
                 });
 
@@ -936,6 +970,7 @@
             const secList = document.getElementById('sectionListInvoice');
             const btnNew = document.getElementById('tabBtnNewInvoice');
             const btnList = document.getElementById('tabBtnListInvoice');
+
             if (tab === 'new') {
                 secNew.classList.remove('hidden');
                 secList.classList.add('hidden');
@@ -954,6 +989,7 @@
             const secMonths = document.getElementById('sectionRecetteMonths');
             const btnDays = document.getElementById('tabBtnRecetteDays');
             const btnMonths = document.getElementById('tabBtnRecetteMonths');
+
             if (tab === 'days') {
                 secDays.classList.remove('hidden');
                 secMonths.classList.add('hidden');
@@ -974,10 +1010,12 @@
                     <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-300 grid grid-cols-1 md:grid-cols-3 gap-2 items-center text-xs">
                         <div><span class="font-bold text-slate-900">${t.operator} - ${t.name}</span></div>
                         <div>
-                            <input type="number" step="0.001" value="${t.buy}" id="inv_buy_${t.id}" oninput="calcInvoiceTotal()" class="w-full border border-slate-300 p-2 rounded-xl text-center font-bold bg-white" placeholder="سعر الشراء">
+                            <label class="block text-[10px] text-slate-500 mb-0.5">سعر الشراء:</label>
+                            <input type="number" step="0.001" value="${t.buy}" id="inv_buy_${t.id}" oninput="calcInvoiceTotal()" class="w-full border border-slate-300 p-2 rounded-xl text-center font-bold bg-white">
                         </div>
                         <div>
-                            <input type="number" min="0" value="0" id="inv_qty_${t.id}" oninput="calcInvoiceTotal()" class="w-full border border-slate-300 p-2 rounded-xl text-center font-bold bg-white" placeholder="الكمية">
+                            <label class="block text-[10px] text-slate-500 mb-0.5">الكمية:</label>
+                            <input type="number" min="0" value="0" id="inv_qty_${t.id}" oninput="calcInvoiceTotal()" class="w-full border border-slate-300 p-2 rounded-xl text-center font-bold bg-white">
                         </div>
                     </div>
                 `;
@@ -1023,7 +1061,7 @@
                     totalCost: totalInvoiceCost,
                     date: new Date().toISOString()
                 });
-                window.showSystemNotification("نجاح الحفظ", "تم حفظ فاتورة الستوك بنجاح!");
+                window.showSystemNotification("نجاح الحفظ", "تم حفظ فاتورة الستوك بنجاح وشكرا لك!");
                 renderInvoiceForm();
                 calcInvoiceTotal();
                 document.getElementById('windowInvoice').classList.add('hidden');
@@ -1053,67 +1091,87 @@
             let inv = window.allInvoices.find(i => i.id === invoiceId);
             if (!inv) return;
             window.currentSelectedInvoice = inv;
-            let dateStr = inv.date ? new Date(inv.date).toLocaleString() : '';
+
+            let dateStr = inv.date ? new Date(inv.date).toLocaleString() : 'تاريخ غير محدد';
             let itemsHtml = '<div class="space-y-2 bg-slate-50 p-3 rounded-2xl border border-slate-300 max-h-48 overflow-y-auto">';
-            if (inv.items) {
+            if (inv.items && Array.isArray(inv.items)) {
                 inv.items.forEach(item => {
-                    itemsHtml += `<div class="flex justify-between items-center text-xs font-bold border-b pb-1"><span>${item.operator} - ${item.name}</span><span>الكمية: ${item.qty} | السعر: ${item.buy} د.ت</span></div>`;
+                    itemsHtml += `
+                        <div class="flex justify-between items-center text-xs font-bold text-slate-800 border-b pb-1.5 border-slate-200">
+                            <span><i class="fa-solid fa-tag text-indigo-600 ml-1"></i> ${item.operator || ''} - ${item.name}</span>
+                            <div class="flex gap-2">
+                                <span class="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded border border-indigo-200">الكمية: ${item.qty}</span>
+                                <span class="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-indigo-200">السعر: ${item.buy} د.ت</span>
+                            </div>
+                        </div>
+                    `;
                 });
             }
             itemsHtml += '</div>';
-            document.getElementById('invoiceDetailModalTitle').innerHTML = `تفاصيل الفاتورة (${dateStr})`;
-            document.getElementById('invoiceDetailModalContent').innerHTML = `<p class="font-black text-indigo-600">المجموع: ${inv.totalCost.toFixed(3)} د.ت</p>${itemsHtml}`;
+
+            document.getElementById('invoiceDetailModalTitle').innerHTML = `<i class="fa-solid fa-file-invoice text-indigo-600 ml-2"></i> تفاصيل الفاتورة (${dateStr})`;
+            document.getElementById('invoiceDetailModalContent').innerHTML = `
+                <div class="bg-slate-100 p-3.5 rounded-2xl border border-slate-300 space-y-1">
+                    <p class="font-bold text-slate-900">إجمالي مبلغ الفاتورة:</p>
+                    <p class="text-lg font-black text-indigo-600">${inv.totalCost.toFixed(3)} د.ت</p>
+                </div>
+                <div><p class="text-xs font-bold text-slate-700 mb-1">القطع والبطاقات المطلوبة في هذه الفاتورة:</p>${itemsHtml}</div>
+            `;
             document.getElementById('invoiceDetailModal').classList.remove('hidden');
         };
 
-        window.closeInvoiceDetailModal = () => document.getElementById('invoiceDetailModal').classList.add('hidden');
+        window.closeInvoiceDetailModal = function() {
+            document.getElementById('invoiceDetailModal').classList.add('hidden');
+            window.currentSelectedInvoice = null;
+        };
 
         window.printSingleInvoice = function() {
             if (!window.currentSelectedInvoice) return;
             let inv = window.currentSelectedInvoice;
+            let dateStr = inv.date ? new Date(inv.date).toLocaleString() : '';
             let win = window.open('', '_blank');
             let rowsHtml = '';
             if (inv.items) {
-                inv.items.forEach(i => { rowsHtml += `<tr><td>${i.operator} - ${i.name}</td><td>${i.qty}</td><td>${i.buy} د.ت</td><td>${(i.qty * i.buy).toFixed(3)} د.ت</td></tr>`; });
+                inv.items.forEach(i => {
+                    rowsHtml += `<tr><td>${i.operator || ''} - ${i.name}</td><td>${i.qty}</td><td>${i.buy} د.ت</td><td>${(i.qty * i.buy).toFixed(3)} د.ت</td></tr>`;
+                });
             }
-            win.document.write(`<html lang="ar" dir="rtl"><head><title>فاتورة شراء</title><style>body{font-family:Tahoma;padding:20px;text-align:right;}table{width:100%;border-collapse:collapse;}th,td{border:1px solid #cbd5e1;padding:10px;font-size:13px;}</style></head><body><h2>فاتورة شراء ستوك</h2><table><thead><tr><th>المنتج</th><th>الكمية</th><th>السعر</th><th>المجموع</th></tr></thead><tbody>${rowsHtml}</tbody></table><h3>المجموع: ${inv.totalCost.toFixed(3)} د.ت</h3><script>window.print()<\/script></body></html>`);
+            win.document.write(`
+                <html lang="ar" dir="rtl">
+                <head>
+                    <title>فاتورة شراء - Tunisie Recharge</title>
+                    <style>
+                        body { font-family: Tahoma, sans-serif; padding: 25px; text-align: right; direction: rtl; color: #1e293b; }
+                        h2 { color: #0f172a; margin-bottom: 5px; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+                        th, td { border: 1px solid #cbd5e1; padding: 10px; font-size: 13px; text-align: right; }
+                        th { background-color: #f1f5f9; color: #334155; }
+                        .total { margin-top: 15px; font-size: 16px; font-weight: bold; color: #4f46e5; }
+                    </style>
+                </head>
+                <body>
+                    <h2>فاتورة شراء ستوك - Tunisie Recharge</h2>
+                    <p style="font-size: 12px; color: #64748b;">التاريخ: ${dateStr}</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>المنتج / البطاقة</th>
+                                <th>الكمية</th>
+                                <th>سعر الوحدة</th>
+                                <th>المجموع</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rowsHtml}
+                        </tbody>
+                    </table>
+                    <div class="total">المجموع الجملي للفاتورة: ${inv.totalCost.toFixed(3)} د.ت</div>
+                    <script>window.onload = function() { window.print(); }</script>
+                </body>
+                </html>
+            `);
             win.document.close();
         };
-
-        window.openJournalModal = function() {
-            let daysMap = {};
-            window.allOrders.forEach(o => {
-                if (o.status === 'مكتمل ومؤكد' && o.date) {
-                    let dStr = o.date.slice(0, 10);
-                    if (!daysMap[dStr]) daysMap[dStr] = { count: 0, total: 0 };
-                    daysMap[dStr].count += 1;
-                    daysMap[dStr].total += o.totalSell;
-                }
-            });
-            let html = '';
-            Object.keys(daysMap).sort().reverse().forEach(day => {
-                let data = daysMap[day];
-                html += `<tr onclick="openJournalDayDetail('${day}')" class="border-b text-xs cursor-pointer hover:bg-slate-50"><td class="p-3 font-bold border-l">${day}</td><td class="p-3 border-l">${data.count} عمليات</td><td class="p-3 font-black text-emerald-600">${data.total.toFixed(3)} د.ت</td></tr>`;
-            });
-            document.getElementById('journalDaysTableBody').innerHTML = html || '<tr><td colspan="3" class="text-center text-slate-400 py-4">لا توجد مبيعات.</td></tr>';
-            document.getElementById('journalVentesModal').classList.remove('hidden');
-        };
-
-        window.closeJournalModal = () => document.getElementById('journalVentesModal').classList.add('hidden');
-
-        window.openJournalDayDetail = function(dayStr) {
-            let dayOrders = window.allOrders.filter(o => o.status === 'مكتمل ومؤكد' && o.date && o.date.slice(0, 10) === dayStr);
-            let contentHtml = `<p class="font-bold mb-2">تاريخ اليوم: ${dayStr} (عدد العمليات: ${dayOrders.length})</p><div class="space-y-2 max-h-60 overflow-y-auto">`;
-            dayOrders.forEach(o => {
-                contentHtml += `<div class="bg-slate-50 p-3 rounded-xl border flex justify-between items-center text-xs"><span>الحانوت: ${o.clientName}</span><span class="font-bold text-emerald-600">${o.totalSell} د.ت</span></div>`;
-            });
-            contentHtml += `</div>`;
-            document.getElementById('journalDayDetailTitle').innerText = `تفاصيل مبيعات يوم: ${dayStr}`;
-            document.getElementById('journalDayDetailContent').innerHTML = contentHtml;
-            document.getElementById('journalDayDetailModal').classList.remove('hidden');
-        };
-
-        window.closeJournalDayDetail = () => document.getElementById('journalDayDetailModal').classList.add('hidden');
 
         window.updateClientsUI = function() {
             let selectHtml = '<option value="">اختر الحانوت...</option>';
@@ -1123,10 +1181,12 @@
                 listHtml += `
                     <div class="bg-slate-50 p-4 rounded-2xl border border-slate-300 flex justify-between items-center shadow-2xs">
                         <div class="cursor-pointer flex-1" onclick="openClientHistoryModal('${c.name}')">
-                            <h4 class="font-bold text-slate-900">${c.name}</h4>
-                            <p class="text-xs text-slate-500">الهاتف: ${c.phone} | الكود: ${c.password}</p>
+                            <h4 class="font-bold text-slate-900 hover:text-indigo-600 transition"><i class="fa-solid fa-store text-emerald-600 ml-1"></i> ${c.name} <span class="text-xs text-indigo-600 font-normal">(عرض الـ Historique)</span></h4>
+                            <p class="text-xs text-slate-500">الهاتف: ${c.phone} | الكود الحالي: <strong class="text-slate-800">${c.password}</strong></p>
                         </div>
-                        <button type="button" onclick="openEditPasswordModal('${c.id}', '${c.name}')" class="bg-indigo-50 text-indigo-700 px-3 py-2 rounded-xl text-xs font-bold border">تغيير الكود</button>
+                        <button type="button" onclick="openEditPasswordModal('${c.id}', '${c.name}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 border border-indigo-200">
+                            <i class="fa-solid fa-key"></i> تغيير الكود
+                        </button>
                     </div>
                 `;
             });
@@ -1137,66 +1197,138 @@
         }
 
         window.selectedOrderForAction = null;
+
         window.openOrderDetailModal = function(orderId) {
             window.selectedOrderForAction = window.allOrders.find(o => o.id === orderId);
             if (!window.selectedOrderForAction) return;
+
             let o = window.selectedOrderForAction;
-            let itemsHtml = '<div class="space-y-2 bg-slate-50 p-3 rounded-2xl border max-h-48 overflow-y-auto">';
-            if (o.items) o.items.forEach(item => { itemsHtml += `<div class="flex justify-between text-xs font-bold border-b pb-1"><span>${item.operator} - ${item.name}</span><span>الكمية: ${item.qty}</span></div>`; });
+            let itemsHtml = '<div class="space-y-2 bg-slate-50 p-3 rounded-2xl border border-slate-300 max-h-48 overflow-y-auto">';
+            if (o.items && Array.isArray(o.items)) {
+                o.items.forEach(item => {
+                    itemsHtml += `<div class="flex justify-between items-center text-xs font-bold text-slate-800 border-b pb-1 border-slate-200">
+                        <span><i class="fa-solid fa-tag text-emerald-600 ml-1"></i> ${item.operator || ''} - ${item.name}</span>
+                        <span class="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded border border-indigo-200">الكمية: ${item.qty}</span>
+                    </div>`;
+                });
+            }
             itemsHtml += '</div>';
-            document.getElementById('modalOrderContent').innerHTML = `<div class="bg-slate-100 p-3 rounded-2xl"><p class="font-bold">الحانوت: ${o.clientName}</p><p class="text-sm font-black text-emerald-600">المجموع: ${o.totalSell} د.ت</p></div><div><p class="text-xs font-bold mb-1">القطع:</p>${itemsHtml}</div>`;
+
+            document.getElementById('modalOrderContent').innerHTML = `
+                <div class="bg-slate-100 p-3.5 rounded-2xl border border-slate-300 space-y-1">
+                    <p class="font-bold text-slate-900">الحانوت: ${o.clientName}</p>
+                    <p class="text-xs text-slate-500">التاريخ: ${new Date(o.date).toLocaleString()}</p>
+                    <p class="text-sm font-black text-emerald-600 mt-1">المجموع الجملي: ${o.totalSell} د.ت</p>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-slate-700 mb-1">تفاصيل القطع المطلوبة للتحضير:</p>
+                    ${itemsHtml}
+                </div>
+            `;
             document.getElementById('orderDetailModal').classList.remove('hidden');
         };
 
-        window.closeOrderDetailModal = () => document.getElementById('orderDetailModal').classList.add('hidden');
+        window.closeOrderDetailModal = function() {
+            document.getElementById('orderDetailModal').classList.add('hidden');
+            window.selectedOrderForAction = null;
+        };
 
         window.confirmAndValidateOrder = async function() {
             if (!window.selectedOrderForAction) return;
             const payStatus = document.getElementById('validerPaymentStatus').value;
             let total = window.selectedOrderForAction.totalSell;
-            let paidAmount = payStatus === 'Payé' ? total : (payStatus === 'Crédit' ? 0 : parseFloat(document.getElementById('validerPaidAmount').value) || 0);
-            let creditAmount = total - paidAmount;
+            let paidAmount = 0, creditAmount = 0;
+
+            if (payStatus === 'Payé') { paidAmount = total; creditAmount = 0; }
+            else if (payStatus === 'Crédit') { paidAmount = 0; creditAmount = total; }
+            else if (payStatus === 'Partiel') {
+                paidAmount = parseFloat(document.getElementById('validerPaidAmount').value) || 0;
+                creditAmount = total - paidAmount;
+                if (paidAmount <= 0 || paidAmount >= total) { alert('الرجاء إدخال مبلغ مدفوع جزئي صحيح.'); return; }
+            }
+
             try {
-                await updateDoc(doc(db, "orders", window.selectedOrderForAction.id), { status: 'مكتمل ومؤكد', paymentStatus: payStatus, paidAmount, creditAmount });
-                window.showSystemNotification("تأكيد الطلبية", "تمت إتمام الطلبية بنجاح!");
+                const orderRef = doc(db, "orders", window.selectedOrderForAction.id);
+                await updateDoc(orderRef, {
+                    status: 'مكتمل ومؤكد',
+                    paymentStatus: payStatus === 'Payé' ? 'Payé' : (payStatus === 'Crédit' ? 'Crédit' : 'جزئي'),
+                    paidAmount: paidAmount,
+                    creditAmount: creditAmount
+                });
+                window.showSystemNotification("تأكيد الطلبية", "تم تأكيد الطلبية بنجاح وشكرا لك!");
                 window.closeOrderDetailModal();
-            } catch (e) { alert('خطأ في التأكيد.'); }
+            } catch (e) { alert('خطأ أثناء تأكيد الطلبية.'); }
         };
 
         function processAdminStatsAndStock() {
             let totalBenefice = 0, totalCredit = 0;
             let ordersHtml = '';
+            
             let clientSalesMap = {};
             let stockMap = {};
             let daysRecetteMap = {};
             let monthsRecetteMap = {};
 
-            window.tariffs.forEach(t => { stockMap[t.id] = { operator: t.operator, name: t.name, buy: t.buy, purchased: 0, sold: 0 }; });
+            window.tariffs.forEach(t => {
+                stockMap[t.id] = { operator: t.operator, name: t.name, buy: t.buy, purchased: 0, sold: 0 };
+            });
+
             window.allInvoices.forEach(inv => {
-                if (inv.items) inv.items.forEach(item => { if (stockMap[item.id]) { stockMap[item.id].purchased += item.qty; stockMap[item.id].buy = item.buy; } });
+                if (inv.items && Array.isArray(inv.items)) {
+                    inv.items.forEach(item => {
+                        let key = item.id;
+                        if (!stockMap[key]) {
+                            stockMap[key] = { operator: item.operator, name: item.name, buy: item.buy, purchased: 0, sold: 0 };
+                        }
+                        stockMap[key].purchased += item.qty;
+                        stockMap[key].buy = item.buy;
+                    });
+                }
             });
 
             window.allOrders.forEach(o => {
                 let isCompleted = o.status === 'مكتمل ومؤكد';
+                let orderDateStr = o.date ? o.date.slice(0, 10) : ''; 
+                let orderMonthStr = o.date ? o.date.slice(0, 7) : '';   
+
                 if (isCompleted) {
-                    if (o.paidAmount) {
-                        daysRecetteMap[o.date.slice(0, 10)] = (daysRecetteMap[o.date.slice(0, 10)] || 0) + o.paidAmount;
-                        monthsRecetteMap[o.date.slice(0, 7)] = (monthsRecetteMap[o.date.slice(0, 7)] || 0) + o.paidAmount;
+                    if (o.paidAmount && o.paidAmount > 0) {
+                        daysRecetteMap[orderDateStr] = (daysRecetteMap[orderDateStr] || 0) + o.paidAmount;
+                        monthsRecetteMap[orderMonthStr] = (monthsRecetteMap[orderMonthStr] || 0) + o.paidAmount;
                     }
                     if (o.benefice) totalBenefice += o.benefice;
                     if (o.creditAmount) totalCredit += o.creditAmount;
-                    if (!clientSalesMap[o.clientName]) clientSalesMap[o.clientName] = { count: 0, totalSpent: 0 };
+
+                    if (!clientSalesMap[o.clientName]) {
+                        clientSalesMap[o.clientName] = { count: 0, totalSpent: 0 };
+                    }
                     clientSalesMap[o.clientName].count += 1;
                     clientSalesMap[o.clientName].totalSpent += o.totalSell;
-                    if (o.items) o.items.forEach(item => { if (stockMap[item.id]) stockMap[item.id].sold += (item.qty || 1); });
+
+                    if (o.items && Array.isArray(o.items)) {
+                        o.items.forEach(item => {
+                            let key = item.id;
+                            if (!stockMap[key]) {
+                                stockMap[key] = { operator: item.operator || 'أخرى', name: item.name, buy: item.buy || 0, purchased: 0, sold: 0 };
+                            }
+                            stockMap[key].sold += (item.qty || 1);
+                        });
+                    }
                 } else {
-                    ordersHtml += `<div onclick="openOrderDetailModal('${o.id}')" class="bg-slate-50 hover:bg-slate-100 cursor-pointer p-4 rounded-2xl border flex justify-between items-center"><span class="font-bold text-sm">${o.clientName} (${o.totalSell} د.ت)</span><span class="text-xs bg-amber-100 text-amber-800 px-2.5 py-1 rounded font-bold">قيد الانتظار</span></div>`;
+                    ordersHtml += `
+                        <div onclick="openOrderDetailModal('${o.id}')" class="bg-slate-50 hover:bg-slate-100 cursor-pointer p-4 rounded-2xl border border-slate-300 flex justify-between items-center transition shadow-2xs">
+                            <div class="space-y-1">
+                                <span class="font-bold text-slate-900 text-sm"><i class="fa-solid fa-store text-emerald-600 ml-1"></i> ${o.clientName}</span>
+                                <p class="text-xs text-slate-500">المجموع: <strong class="text-emerald-600">${o.totalSell} د.ت</strong></p>
+                            </div>
+                            <span class="text-xs px-2.5 py-1 rounded-lg font-bold bg-amber-100 text-amber-800 border border-amber-300">قيد الانتظار</span>
+                        </div>
+                    `;
                 }
             });
 
             document.getElementById('modalTotalBenefice').innerText = totalBenefice.toFixed(3) + ' د.ت';
             document.getElementById('modalTotalCredit').innerText = totalCredit.toFixed(3) + ' د.ت';
-            document.getElementById('ordersListContainer').innerHTML = ordersHtml || '<p class="text-slate-400 text-center py-4">لا توجد طلبات جديدة.</p>';
 
             let daysHtml = '';
             let now = new Date();
@@ -1207,36 +1339,87 @@
                 let dStr = d < 10 ? '0' + d : '' + d;
                 let mStr = month < 10 ? '0' + month : '' + month;
                 let dayKey = `${year}-${mStr}-${dStr}`;
-                daysHtml += `<tr class="border-b"><td class="p-3 font-bold border-l">${dayKey}</td><td class="p-3 font-black text-emerald-600">${(daysRecetteMap[dayKey] || 0).toFixed(3)} د.ت</td></tr>`;
+                let val = daysRecetteMap[dayKey] || 0;
+                daysHtml += `
+                    <tr class="border-b border-slate-300 hover:bg-slate-50">
+                        <td class="p-3 font-bold text-slate-800 border-l border-slate-300">${dayKey}</td>
+                        <td class="p-3 font-black text-emerald-600">${val.toFixed(3)} د.ت</td>
+                    </tr>
+                `;
             }
-            document.getElementById('recetteDaysTableBody').innerHTML = daysHtml;
+            const daysTbody = document.getElementById('recetteDaysTableBody');
+            if(daysTbody) daysTbody.innerHTML = daysHtml;
 
             let monthsHtml = '';
-            let monthNames = {'01': 'جانفي', '02': 'فيفري', '03': 'مارس', '04': 'أفريل', '05': 'ماي', '06': 'جوان', '07': 'جويلية', '08': 'أوت', '09': 'سبتمبر', '10': 'أكتوبر', '11': 'نوفمبر', '12': 'ديسمبر'};
+            let monthNames = {
+                '01': 'جانفي', '02': 'فيفري', '03': 'مارس', '04': 'أفريل',
+                '05': 'ماي', '06': 'جوان', '07': 'جويلية', '08': 'أوت',
+                '09': 'سبتمبر', '10': 'أكتوبر', '11': 'نوفمبر', '12': 'ديسمبر'
+            };
+            
+            let allMonthsList = [];
             for (let m = 1; m <= 12; m++) {
                 let mFormatted = m < 10 ? '0' + m : '' + m;
                 let key = `${year}-${mFormatted}`;
-                monthsHtml += `<tr class="border-b"><td class="p-3 font-bold border-l">${monthNames[mFormatted]} ${year}</td><td class="p-3 font-black text-indigo-600">${(monthsRecetteMap[key] || 0).toFixed(3)} د.ت</td></tr>`;
+                allMonthsList.push(key);
             }
-            document.getElementById('recetteMonthsTableBody').innerHTML = monthsHtml;
+            allMonthsList.sort().reverse();
+
+            allMonthsList.forEach(m => {
+                let parts = m.split('-'); 
+                let mName = monthNames[parts[1]] || parts[1];
+                let displayStr = `${mName} ${parts[0]}`;
+                let val = monthsRecetteMap[m] || 0;
+                monthsHtml += `
+                    <tr class="border-b border-slate-300 hover:bg-slate-50">
+                        <td class="p-3 font-bold text-slate-800 border-l border-slate-300">${displayStr}</td>
+                        <td class="p-3 font-black text-indigo-600">${val.toFixed(3)} د.ت</td>
+                    </tr>
+                `;
+            });
+            const monthsTbody = document.getElementById('recetteMonthsTableBody');
+            if(monthsTbody) monthsTbody.innerHTML = monthsHtml;
+            
+            const oContainer = document.getElementById('ordersListContainer');
+            if (oContainer) oContainer.innerHTML = ordersHtml || '<p class="text-slate-400 text-center py-4">لا توجد طلبات جديدة قيد الانتظار.</p>';
 
             let statsHtml = '';
             for (let clientName in clientSalesMap) {
                 let stat = clientSalesMap[clientName];
-                statsHtml += `<tr class="border-b text-sm"><td class="p-3 font-bold border-l">${clientName}</td><td class="p-3 border-l">${stat.count} طلبات</td><td class="p-3 font-black text-emerald-600">${stat.totalSpent.toFixed(3)} د.ت</td></tr>`;
+                statsHtml += `
+                    <tr class="border-b border-slate-300 text-sm hover:bg-slate-50">
+                        <td class="p-3 font-bold text-slate-800 border-l border-slate-300"><i class="fa-solid fa-store text-emerald-600 ml-1"></i> ${clientName}</td>
+                        <td class="p-3 text-indigo-600 font-bold border-l border-slate-300">${stat.count} طلبات</td>
+                        <td class="p-3 font-black text-emerald-600">${stat.totalSpent.toFixed(3)} د.ت</td>
+                    </tr>
+                `;
             }
-            document.getElementById('salesStatsTableBody').innerHTML = statsHtml || '<tr><td colspan="3" class="text-center text-slate-400 py-4">لا توجد إحصائيات.</td></tr>';
+            const statsTable = document.getElementById('salesStatsTableBody');
+            if (statsTable) statsTable.innerHTML = statsHtml || '<tr><td colspan="3" class="text-center text-slate-400 py-4">لا توجد مبيعات مؤكدة للتجار بعد.</td></tr>';
 
             let stockHtml = '';
-            let totalStockVal = 0;
+            let totalStockFinancialValue = 0;
             for (let k in stockMap) {
                 let st = stockMap[k];
                 let finalStock = st.purchased - st.sold;
-                if (finalStock > 0) totalStockVal += finalStock * st.buy;
-                stockHtml += `<tr class="border-b text-xs"><td class="p-3 font-bold border-l">${st.operator}</td><td class="p-3 border-l">${st.name}</td><td class="p-3 border-l">${st.buy.toFixed(3)} د.ت</td><td class="p-3 border-l">${st.purchased}</td><td class="p-3 font-black text-emerald-600">${finalStock} قطعة</td></tr>`;
+                let lineValue = finalStock * st.buy;
+                if (finalStock > 0) totalStockFinancialValue += lineValue;
+
+                stockHtml += `
+                    <tr class="border-b border-slate-300 text-xs hover:bg-slate-50">
+                        <td class="p-3 font-bold text-slate-700 border-l border-slate-300">${st.operator}</td>
+                        <td class="p-3 border-l border-slate-300">${st.name}</td>
+                        <td class="p-3 text-slate-500 border-l border-slate-300">${st.buy.toFixed(3)} د.ت</td>
+                        <td class="p-3 font-bold text-indigo-600 border-l border-slate-300">${st.purchased}</td>
+                        <td class="p-3 font-black text-emerald-600 text-sm">${finalStock} قطعة</td>
+                    </tr>
+                `;
             }
-            document.getElementById('stockTableBody').innerHTML = stockHtml || '<tr><td colspan="5" class="text-center text-slate-400 py-4">لا توجد بيانات.</td></tr>';
-            document.getElementById('totalStockValue').innerText = totalStockVal.toFixed(3) + ' د.ت';
+            const stockTable = document.getElementById('stockTableBody');
+            if (stockTable) stockTable.innerHTML = stockHtml || '<tr><td colspan="5" class="text-center text-slate-400 py-4">لا توجد بيانات ستوك.</td></tr>';
+            
+            const totalStockEl = document.getElementById('totalStockValue');
+            if (totalStockEl) totalStockEl.innerText = totalStockFinancialValue.toFixed(3) + ' د.ت';
         }
 
         window.selectMainChoice = function(choice) {
@@ -1252,18 +1435,21 @@
             document.getElementById('mainChoicesSection').classList.remove('hidden');
         };
 
-        window.openAdminWindow = (name) => {
+        window.openAdminWindow = function(name) {
             document.querySelectorAll('.admin-window').forEach(el => el.classList.add('hidden'));
             const w = document.getElementById(`window${name.charAt(0).toUpperCase() + name.slice(1)}`);
             if (w) w.classList.remove('hidden');
         };
 
-        window.closeAdminWindow = (name) => document.getElementById(`window${name.charAt(0).toUpperCase() + name.slice(1)}`).classList.add('hidden');
+        window.closeAdminWindow = function(name) {
+            const w = document.getElementById(`window${name.charAt(0).toUpperCase() + name.slice(1)}`);
+            if (w) w.classList.add('hidden');
+        };
+
         window.openRecetteModal = () => document.getElementById('recetteModal').classList.remove('hidden');
         window.closeRecetteModal = () => document.getElementById('recetteModal').classList.add('hidden');
 
         window.posCart = {};
-        window.customDirectTariffs = {};
 
         window.selectPosOperator = function(op) {
             window.selectedPosOp = op;
@@ -1273,7 +1459,13 @@
             window.tariffs.filter(t => t.operator === op).forEach(t => {
                 let qty = window.posCart[t.id] || 0;
                 let cardColor = op === 'Ooredoo' ? 'bg-red-50 text-red-700 border-red-300' : (op === 'Telecom' ? 'bg-blue-50 text-blue-700 border-blue-300' : 'bg-orange-50 text-orange-700 border-orange-300');
-                html += `<div onclick="addPosCardQty('${t.id}')" class="border-2 p-3 rounded-xl cursor-pointer ${cardColor}"><h4 class="font-bold text-xs">${t.name}</h4><p class="text-xs font-bold mt-1">${t.sell} د.ت</p><div class="mt-2 text-center bg-white py-1 rounded font-bold text-xs text-slate-900 border" id="pos_qty_${t.id}">${qty}</div></div>`;
+                html += `
+                    <div onclick="addPosCardQty('${t.id}')" class="border-2 p-3 rounded-xl cursor-pointer hover:shadow transition ${cardColor}">
+                        <h4 class="font-bold text-xs">${t.name}</h4>
+                        <p class="text-xs mt-1 font-bold">${t.sell} د.ت</p>
+                        <div class="mt-2 text-center bg-white py-1 rounded font-bold text-xs text-slate-900 border border-slate-200" id="pos_qty_${t.id}">${qty}</div>
+                    </div>
+                `;
             });
             document.getElementById('posCardsGrid').innerHTML = html;
         };
@@ -1288,9 +1480,12 @@
             let val = parseFloat(document.getElementById('posDirectRechargeInput').value) || 0;
             if (val <= 0) { alert('أدخل مبلغ صحيح للشحن المباشر.'); return; }
             if (!window.selectedPosOp) { alert('اختر المشغل أولاً.'); return; }
+
             let key = `${window.selectedPosOp}_Direct_${val}`;
             window.posCart[key] = (window.posCart[key] || 0) + 1;
+            if (!window.customDirectTariffs) window.customDirectTariffs = {};
             window.customDirectTariffs[key] = { id: key, operator: window.selectedPosOp, name: `شحن مباشر ${val} د.ت`, buy: val * 0.960, sell: val };
+
             document.getElementById('posDirectRechargeInput').value = '';
             alert('تم إضافة الشحن المباشر بنجاح!');
             calcPosTotal();
@@ -1299,7 +1494,7 @@
         function calcPosTotal() {
             let total = 0;
             for (let id in window.posCart) {
-                let item = window.tariffs.find(t => t.id === id) || window.customDirectTariffs[id];
+                let item = window.tariffs.find(t => t.id === id) || (window.customDirectTariffs && window.customDirectTariffs[id]);
                 if (item) total += item.sell * window.posCart[id];
             }
             document.getElementById('posCartTotal').innerText = total.toFixed(3) + ' د.ت';
@@ -1309,10 +1504,11 @@
             const clientName = document.getElementById('posRegisteredClientSelect').value;
             const paymentStatus = document.getElementById('posPaymentStatus').value;
             if (!clientName) { alert('اختر الحانوت.'); return; }
+            
             let items = [], totalSell = 0, totalBuy = 0;
             for (let id in window.posCart) {
                 if (window.posCart[id] > 0) {
-                    let item = window.tariffs.find(t => t.id === id) || window.customDirectTariffs[id];
+                    let item = window.tariffs.find(t => t.id === id) || (window.customDirectTariffs && window.customDirectTariffs[id]);
                     items.push({ ...item, qty: window.posCart[id] });
                     totalSell += item.sell * window.posCart[id];
                     totalBuy += item.buy * window.posCart[id];
@@ -1321,9 +1517,13 @@
             if (items.length === 0) { alert('اختر منتج.'); return; }
 
             let paidAmount = 0, creditAmount = 0;
-            if (paymentStatus === 'Payé') { paidAmount = totalSell; creditAmount = 0; }
-            else if (paymentStatus === 'Crédit') { paidAmount = 0; creditAmount = totalSell; }
-            else if (paymentStatus === 'Partiel') {
+            if (paymentStatus === 'Payé') {
+                paidAmount = totalSell;
+                creditAmount = 0;
+            } else if (paymentStatus === 'Crédit') {
+                paidAmount = 0;
+                creditAmount = totalSell;
+            } else if (paymentStatus === 'Partiel') {
                 paidAmount = parseFloat(document.getElementById('posPaidAmountInput').value) || 0;
                 creditAmount = totalSell - paidAmount;
                 if (paidAmount <= 0 || paidAmount >= totalSell) { alert('الرجاء إدخال مبلغ مدفوع جزئي صحيح.'); return; }
@@ -1331,18 +1531,22 @@
 
             try {
                 await addDoc(collection(db, "orders"), {
-                    clientName, vendeurId: window.currentVendeur.id, items, totalSell, totalBuy, benefice: totalSell - totalBuy,
+                    clientName, 
+                    vendeurId: window.currentVendeur.id,
+                    items, totalSell, totalBuy, benefice: totalSell - totalBuy,
                     paymentStatus: paymentStatus === 'Payé' ? 'Payé' : (paymentStatus === 'Crédit' ? 'Crédit' : 'جزئي'),
-                    paidAmount, creditAmount, date: new Date().toISOString(), status: 'مكتمل ومؤكد'
+                    paidAmount: paidAmount,
+                    creditAmount: creditAmount,
+                    date: new Date().toISOString(), status: 'مكتمل ومؤكد'
                 });
                 window.showSystemNotification("عملية بيع", "تم إتمام البيع بنجاح وشكرا لك!");
                 window.posCart = {};
                 window.customDirectTariffs = {};
-                document.getElementById('windowPos').classList.add('hidden');
+                window.closeAdminWindow('pos');
             } catch (e) { alert('خطأ أثناء الحفظ: ' + e.message); }
         };
 
-        // تفعيل المصادقة الفورية بالمليمتر
+        // تفعيل المصادقة فوراً بالمليمتر
         window.checkVendeurAuth();
     </script>
 </body>
