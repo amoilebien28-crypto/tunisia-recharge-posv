@@ -55,7 +55,7 @@
 
     <main class="container mx-auto px-4 py-6 max-w-4xl space-y-6">
 
-        <!-- الأزرار الأربعة الرئيسية الموصوفة -->
+        <!-- الأزرار الأربعة الرئيسية -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- الزر الأول: واجهة البيع السريع -->
             <button onclick="openModal('posModal')" class="bg-white hover:bg-emerald-50/50 p-6 rounded-3xl shadow-sm border border-slate-300 hover:border-emerald-500 transition text-right group flex items-center gap-4">
@@ -128,20 +128,20 @@
         </div>
     </div>
 
-    <!-- نافذة 2: إدارة التجار (إدخال تاجر جديد + قائمة التجار) -->
+    <!-- نافذة 2: إدارة التجار (مطابقة تماماً لحقول قاعدة البيانات clients) -->
     <div id="clientsModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
                 <h4 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-store text-indigo-600 ml-2"></i> إدارة التجار (الحوانت)</h4>
                 <button onclick="closeModal('clientsModal')" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
             </div>
-            <!-- فورم إضافة تاجر جديد -->
+            <!-- فورم إضافة تاجر جديد متطابق مع الحقول: name, phone, password, address, vendeurId, createdAt -->
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-300 space-y-3">
                 <h5 class="font-bold text-xs text-slate-800">إضافة تاجر جديد وتفعيل حسابه:</h5>
-                <input type="text" id="newClientName" placeholder="اسم الحانوت / التاجر..." class="w-full border border-slate-300 p-2.5 rounded-xl text-xs bg-white font-bold">
-                <input type="text" id="newClientPhone" placeholder="رقم الهاتف (الذي سيسجل به)..." class="w-full border border-slate-300 p-2.5 rounded-xl text-xs bg-white font-bold">
-                <input type="password" id="newClientPassword" placeholder="كلمة المرور للتاجر..." class="w-full border border-slate-300 p-2.5 rounded-xl text-xs bg-white font-bold">
-                <input type="text" id="newClientState" placeholder="الولاية (مثال: سوسة، تونس...)" class="w-full border border-slate-300 p-2.5 rounded-xl text-xs bg-white font-bold">
+                <input type="text" id="newClientName" placeholder="اسم الحانوت / التاجر (name)..." class="w-full border border-slate-300 p-2.5 rounded-xl text-xs bg-white font-bold">
+                <input type="text" id="newClientPhone" placeholder="رقم الهاتف (phone)..." class="w-full border border-slate-300 p-2.5 rounded-xl text-xs bg-white font-bold">
+                <input type="password" id="newClientPassword" placeholder="كلمة المرور (password)..." class="w-full border border-slate-300 p-2.5 rounded-xl text-xs bg-white font-bold">
+                <input type="text" id="newClientAddress" placeholder="العنوان / المنطقة (address)..." class="w-full border border-slate-300 p-2.5 rounded-xl text-xs bg-white font-bold">
                 <button onclick="addNewClient()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-bold text-xs">حفظ وإعطاء الكود للتاجر</button>
             </div>
             <!-- قائمة التجار المسجلين -->
@@ -230,7 +230,7 @@
         </div>
     </div>
 
-    <!-- السكربت والربط بـ Firebase لنظام الموزع -->
+    <!-- السكربت والربط بـ Firebase مطبقاً بالحقول المطلوبة تماماً -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, onSnapshot, query, where, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -293,7 +293,6 @@
                     localStorage.setItem('currentVendeur', JSON.stringify(vData));
                     window.checkVendeurAuth();
                 } else {
-                    // إذا لم يوجد، نقوم بإنشائه تلقائياً للتجربة السريعة
                     const docRef = await addDoc(collection(db, "vendeurs"), { name: "الموزع الرئيسي", phone, password: pass });
                     window.currentVendeur = { id: docRef.id, name: "الموزع الرئيسي", phone };
                     localStorage.setItem('currentVendeur', JSON.stringify(window.currentVendeur));
@@ -311,7 +310,6 @@
         window.openModal = (id) => document.getElementById(id).classList.remove('hidden');
         window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
 
-        // إعداد واجهة البيع السريع (السبحة)
         function renderPosGrid() {
             let html = '';
             window.tariffsList.forEach(t => {
@@ -377,25 +375,29 @@
             } catch (e) { alert('خطأ أثناء تسجيل البيع.'); }
         };
 
-        // إدارة التجار (إضافة تاجر وعرضهم)
+        // إضافة تاجر جديد بالحقول المتطابقة تماماً مع قاعدة البيانات (name, phone, password, address, vendeurId, createdAt)
         window.addNewClient = async function() {
             let name = document.getElementById('newClientName').value.trim();
             let phone = document.getElementById('newClientPhone').value.trim();
             let password = document.getElementById('newClientPassword').value.trim();
-            let state = document.getElementById('newClientState').value.trim();
+            let address = document.getElementById('newClientAddress').value.trim();
 
             if (!name || !phone || !password) { alert('الرجاء إدخال الاسم ورقم الهاتف وكلمة المرور.'); return; }
 
             try {
                 await addDoc(collection(db, "clients"), {
                     vendeurId: window.currentVendeur.id,
-                    name, phone, password, state, date: new Date().toISOString()
+                    name: name,
+                    phone: phone,
+                    password: password,
+                    address: address,
+                    createdAt: new Date().toISOString()
                 });
                 alert(`تمت إضافة التاجر (${name}) بنجاح! سيتمكن من الدخول من رابطه برقم هاتفه وكلمة المرور.`);
                 document.getElementById('newClientName').value = '';
                 document.getElementById('newClientPhone').value = '';
                 document.getElementById('newClientPassword').value = '';
-                document.getElementById('newClientState').value = '';
+                document.getElementById('newClientAddress').value = '';
                 fetchClientsList();
             } catch (e) { alert('خطأ أثناء إضافة التاجر.'); }
         };
@@ -404,15 +406,13 @@
             if (!window.currentVendeur) return;
             onSnapshot(query(collection(db, "clients"), where("vendeurId", "==", window.currentVendeur.id)), (snap) => {
                 let html = '';
-                let clientsCountMap = {};
                 snap.forEach(d => {
                     let c = d.data();
-                    clientsCountMap[c.name] = 0;
                     html += `
                         <div class="bg-slate-50 p-3 rounded-xl border border-slate-300 flex justify-between items-center text-xs">
                             <div>
                                 <span class="font-bold text-slate-900 block"><i class="fa-solid fa-store text-indigo-600 ml-1"></i> ${c.name}</span>
-                                <span class="text-slate-500">هاتف: ${c.phone} | الولاية: ${c.state || 'غير محددة'}</span>
+                                <span class="text-slate-500">هاتف: ${c.phone} | العنوان: ${c.address || 'غير محدد'}</span>
                             </div>
                             <span class="bg-emerald-100 text-emerald-800 px-2 py-1 rounded font-bold">مفعل</span>
                         </div>
@@ -422,7 +422,6 @@
             });
         }
 
-        // طلبيات التجار الواردة
         function fetchVendeurOrders() {
             if (!window.currentVendeur) return;
             onSnapshot(query(collection(db, "orders"), where("vendeurId", "==", window.currentVendeur.id)), (snap) => {
@@ -464,11 +463,9 @@
 
                 document.getElementById('vendeurOrdersList').innerHTML = html || '<p class="text-xs text-slate-400 text-center py-4">لا توجد طلبيات واردة.</p>';
 
-                // حساب أفضل تاجر
                 let bestClient = Object.keys(bestClientMap).reduce((a, b) => bestClientMap[a] > bestClientMap[b] ? a : b, 'لا توجد بيانات');
                 document.getElementById('bestClientDisplay').innerText = bestClient !== 'undefined' ? bestClient : 'لا توجد بيانات بعد';
 
-                // إحصائيات المبيعات والأرباح
                 document.getElementById('todayStatsDisplay').innerText = `${todayTotal.toFixed(3)} د.ت (ربح: ${todayProf.toFixed(3)})`;
                 document.getElementById('monthStatsDisplay').innerText = `${monthTotal.toFixed(3)} د.ت (ربح: ${monthProf.toFixed(3)})`;
             });
@@ -476,7 +473,6 @@
 
         window.openVendeurOrderDetail = async function(orderId) {
             window.activeOrderId = orderId;
-            // جلب تفاصيل الطلبية من الكاش أو Firestore
             const snap = await getDocs(query(collection(db, "orders")));
             let orderData;
             snap.forEach(d => { if (d.id === orderId) orderData = d.data(); });
