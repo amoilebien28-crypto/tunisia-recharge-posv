@@ -22,10 +22,10 @@
                 <p class="text-xs text-slate-500">الرجاء تسجيل الدخول أو إنشاء حساب جديد للبدء</p>
             </div>
 
-            <!-- أزرار التبديل منظمة ومعدلة بالمليمتر -->
-            <div class="grid grid-cols-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 gap-1">
-                <button type="button" onclick="switchAuthMode('login')" id="loginTabBtn" class="py-2.5 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-2xs transition">دخول</button>
-                <button type="button" onclick="switchAuthMode('register')" id="registerTabBtn" class="py-2.5 rounded-xl text-xs font-bold text-slate-500 transition">حساب جديد</button>
+            <!-- أزرار التبديل -->
+            <div class="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200 gap-1">
+                <button type="button" onclick="switchAuthMode('login')" id="loginTabBtn" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-2xs transition">دخول</button>
+                <button type="button" onclick="switchAuthMode('register')" id="registerTabBtn" class="flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-500 transition">حساب جديد</button>
             </div>
 
             <!-- نموذج تسجيل الدخول -->
@@ -529,7 +529,7 @@
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
                 <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-chart-pie text-amber-500 ml-2"></i> إحصائيات المبيعات حسب التجار (الحوانت)</h4>
-                <button type="button" onclick="closeAdminWindow('stats')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+                <button type="button" onclick="closeAdminWindow('stats')" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
             </div>
             <div class="overflow-x-auto border-2 border-slate-300 rounded-2xl shadow-inner bg-white">
                 <table class="w-full text-right border-collapse text-xs">
@@ -620,7 +620,7 @@
 
         window.currentVendeur = JSON.parse(localStorage.getItem('currentVendeur') || 'null');
 
-        // تعريف الدوال المتاحة عامة لتعمل الأزرار بسلاسة
+        // جعل الدوال متاحة عالمياً في النافذة (Window scope) لكي تستجيب الأزرار فوراً
         window.switchAuthMode = function(mode) {
             const loginForm = document.getElementById('loginForm');
             const registerForm = document.getElementById('registerForm');
@@ -670,7 +670,7 @@
                     localStorage.setItem('currentVendeur', JSON.stringify(window.currentVendeur));
                     window.checkVendeurAuth();
                 } else { 
-                    alert('رقم الهاتف أو كلمة المرور غير صحيحة. الرجاء التأكد أو إنشاء حساب جديد.'); 
+                    alert('رقم الهاتف أو كلمة المرور غير صحيحة.'); 
                 }
             } catch (e) { 
                 alert('خطأ في الاتصال بقاعدة البيانات: ' + e.message); 
@@ -685,14 +685,13 @@
 
         window.checkVendeurAuth = function() {
             const authScreen = document.getElementById('authScreen');
-            if (!authScreen) return;
             if (window.currentVendeur && window.currentVendeur.id) {
-                authScreen.classList.add('hidden');
+                if (authScreen) authScreen.classList.add('hidden');
                 document.getElementById('headerVendeurName').innerText = window.currentVendeur.name || "مراد";
                 fetchVendeurData();
                 renderInvoiceForm();
             } else {
-                authScreen.classList.remove('hidden');
+                if (authScreen) authScreen.classList.remove('hidden');
             }
         };
 
@@ -700,38 +699,7 @@
             let tbody = document.getElementById(tbodyId);
             if (!tbody) return;
             let win = window.open('', '_blank');
-            win.document.write(`
-                <html lang="ar" dir="rtl">
-                <head>
-                    <title>${title}</title>
-                    <style>
-                        body { font-family: Tahoma, sans-serif; padding: 20px; text-align: right; direction: rtl; color: #1e293b; }
-                        h2 { text-align: center; color: #0f172a; margin-bottom: 20px; }
-                        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-                        th, td { border: 1px solid #cbd5e1; padding: 10px; font-size: 13px; text-align: right; }
-                        th { background-color: #f1f5f9; color: #334155; }
-                    </style>
-                </head>
-                <body>
-                    <h2>${title} - Tunisie Recharge</h2>
-                    <p style="font-size: 11px; color: #64748b; text-align: center;">تاريخ التقرير: ${new Date().toLocaleString()}</p>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>البيان / التاريخ</th>
-                                <th>القيمة / المجموع</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${tbody.innerHTML}
-                        </tbody>
-                    </table>
-                    <script>
-                        window.onload = function() { window.print(); }
-                    </script>
-                </body>
-                </html>
-            `);
+            win.document.write(`<html lang="ar" dir="rtl"><head><title>${title}</title><style>body{font-family:Tahoma;padding:20px;text-align:right;}table{width:100%;border-collapse:collapse;}th,td{border:1px solid #cbd5e1;padding:10px;font-size:13px;}</style></head><body><h2>${title}</h2><table><tbody>${tbody.innerHTML}</tbody></table><script>window.print()<\/script></body></html>`);
             win.document.close();
         };
 
@@ -740,16 +708,11 @@
             if (!tbody) return;
             let rows = tbody.querySelectorAll('tr');
             let text = `*${reportTitle} - Tunisie Recharge*\n\n`;
-            
             rows.forEach((row) => {
                 let cols = row.querySelectorAll('td');
-                if (cols.length >= 2) {
-                    text += `- ${cols[0].innerText.trim()}: *${cols[1].innerText.trim()}*\n`;
-                }
+                if (cols.length >= 2) text += `- ${cols[0].innerText.trim()}: *${cols[1].innerText.trim()}*\n`;
             });
-
-            let encoded = encodeURIComponent(text);
-            window.open(`https://wa.me/?text=${encoded}`, '_blank');
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
         };
 
         window.showSystemNotification = function(title, text) {
@@ -767,13 +730,11 @@
             { id: 'Ooredoo_10', operator: 'Ooredoo', name: 'بطاقة 10 د.ت', buy: 9.500, sell: 10.000 },
             { id: 'Ooredoo_25', operator: 'Ooredoo', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 },
             { id: 'Ooredoo_Recharge', operator: 'Ooredoo', name: 'شحن مباشر (Floussi)', buy: 0.960, sell: 1.000 },
-            
             { id: 'Telecom_1', operator: 'Telecom', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 },
             { id: 'Telecom_5', operator: 'Telecom', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 },
             { id: 'Telecom_10', operator: 'Telecom', name: 'بطاقة 10 د.ت', buy: 9.500, sell: 10.000 },
             { id: 'Telecom_25', operator: 'Telecom', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 },
             { id: 'Telecom_Recharge', operator: 'Telecom', name: 'شحن مباشر (E-recharge)', buy: 0.960, sell: 1.000 },
-
             { id: 'Orange_1', operator: 'Orange', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 },
             { id: 'Orange_5', operator: 'Orange', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 },
             { id: 'Orange_10', operator: 'Orange', name: 'بطاقة 10 د.ت', buy: 9.500, sell: 10.000 },
@@ -829,7 +790,6 @@
 
         window.openClientHistoryModal = function(clientName) {
             document.getElementById('historyModalTitle').innerHTML = `<i class="fa-solid fa-address-book text-blue-600 ml-2"></i> سجل معاملات وحانوت: ${clientName}`;
-            
             let clientOrders = window.allOrders.filter(o => o.clientName === clientName);
             let totalCredit = 0;
             let ordersHtml = '';
@@ -864,7 +824,6 @@
         window.openHistoryOrderDetail = function(orderId) {
             let o = window.allOrders.find(item => item.id === orderId);
             if (!o) return;
-
             let itemsHtml = '<ul class="space-y-1.5 bg-slate-50 p-3 rounded-2xl border border-slate-300">';
             if (o.items && Array.isArray(o.items)) {
                 o.items.forEach(i => {
@@ -995,7 +954,6 @@
         window.saveNewStockInvoiceBatch = async function() {
             let itemsToSave = [];
             let totalInvoiceCost = 0;
-
             window.tariffs.forEach(t => {
                 let qtyInput = document.getElementById(`inv_qty_${t.id}`);
                 let buyInput = document.getElementById(`inv_buy_${t.id}`);
@@ -1008,9 +966,7 @@
                     }
                 }
             });
-
             if (itemsToSave.length === 0) { alert('الرجاء إدخال كمية لمنتج واحد على الأقل.'); return; }
-
             try {
                 await addDoc(collection(db, "invoices"), {
                     vendeurId: window.currentVendeur.id,
@@ -1066,11 +1022,9 @@
         }
 
         window.selectedOrderForAction = null;
-
         window.openOrderDetailModal = function(orderId) {
             window.selectedOrderForAction = window.allOrders.find(o => o.id === orderId);
             if (!window.selectedOrderForAction) return;
-
             let o = window.selectedOrderForAction;
             let itemsHtml = '<div class="space-y-2 bg-slate-50 p-3 rounded-2xl border border-slate-300 max-h-48 overflow-y-auto">';
             if (o.items && Array.isArray(o.items)) {
@@ -1082,17 +1036,13 @@
                 });
             }
             itemsHtml += '</div>';
-
             document.getElementById('modalOrderContent').innerHTML = `
                 <div class="bg-slate-100 p-3.5 rounded-2xl border border-slate-300 space-y-1">
                     <p class="font-bold text-slate-900">الحانوت: ${o.clientName}</p>
                     <p class="text-xs text-slate-500">التاريخ: ${new Date(o.date).toLocaleString()}</p>
                     <p class="text-sm font-black text-emerald-600 mt-1">المجموع الجملي: ${o.totalSell} د.ت</p>
                 </div>
-                <div>
-                    <p class="text-xs font-bold text-slate-700 mb-1">تفاصيل القطع المطلوبة للتحضير:</p>
-                    ${itemsHtml}
-                </div>
+                <div><p class="text-xs font-bold text-slate-700 mb-1">تفاصيل القطع المطلوبة للتحضير:</p>${itemsHtml}</div>
             `;
             document.getElementById('orderDetailModal').classList.remove('hidden');
         };
@@ -1113,10 +1063,8 @@
         window.confirmAndValidateOrder = async function() {
             if (!window.selectedOrderForAction) return;
             const payStatus = document.getElementById('validerPaymentStatus').value;
-            let paidAmount = 0;
-            let creditAmount = 0;
+            let paidAmount = 0, creditAmount = 0;
             let total = window.selectedOrderForAction.totalSell;
-
             if (payStatus === 'Payé') { paidAmount = total; creditAmount = 0; }
             else if (payStatus === 'Crédit') { paidAmount = 0; creditAmount = total; }
             else if (payStatus === 'Partiel') {
@@ -1124,14 +1072,10 @@
                 creditAmount = total - paidAmount;
                 if (paidAmount <= 0 || paidAmount >= total) { alert('الرجاء إدخال مبلغ مدفوع جزئي صحيح.'); return; }
             }
-
             try {
-                const orderRef = doc(db, "orders", window.selectedOrderForAction.id);
-                await updateDoc(orderRef, {
-                    status: 'مكتمل ومؤكد',
-                    paymentStatus: payStatus === 'Payé' ? 'Payé' : (payStatus === 'Crédit' ? 'Crédit' : 'جزئي'),
-                    paidAmount: paidAmount,
-                    creditAmount: creditAmount
+                await updateDoc(doc(db, "orders", window.selectedOrderForAction.id), {
+                    status: 'مكتمل ومؤكد', paymentStatus: payStatus === 'Payé' ? 'Payé' : (payStatus === 'Crédit' ? 'Crédit' : 'جزئي'),
+                    paidAmount, creditAmount
                 });
                 window.showSystemNotification("تأكيد الطلبية", "تم تأكيد الطلبية بنجاح وشكرا لك!");
                 window.closeOrderDetailModal();
@@ -1141,68 +1085,39 @@
         function processAdminStatsAndStock() {
             let totalBenefice = 0, totalCredit = 0;
             let ordersHtml = '';
-            
             let clientSalesMap = {};
             let stockMap = {};
             let daysRecetteMap = {};
             let monthsRecetteMap = {};
 
-            window.tariffs.forEach(t => {
-                stockMap[t.id] = { operator: t.operator, name: t.name, buy: t.buy, purchased: 0, sold: 0 };
-            });
-
+            window.tariffs.forEach(t => { stockMap[t.id] = { operator: t.operator, name: t.name, buy: t.buy, purchased: 0, sold: 0 }; });
             window.allInvoices.forEach(inv => {
-                if (inv.items && Array.isArray(inv.items)) {
-                    inv.items.forEach(item => {
-                        let key = item.id;
-                        if (!stockMap[key]) {
-                            stockMap[key] = { operator: item.operator, name: item.name, buy: item.buy, purchased: 0, sold: 0 };
-                        }
-                        stockMap[key].purchased += item.qty;
-                        stockMap[key].buy = item.buy;
-                    });
-                }
+                if (inv.items) inv.items.forEach(item => {
+                    if (stockMap[item.id]) { stockMap[item.id].purchased += item.qty; stockMap[item.id].buy = item.buy; }
+                });
             });
 
             window.allOrders.forEach(o => {
                 let isCompleted = o.status === 'مكتمل ومؤكد';
-                let orderDateStr = o.date ? o.date.slice(0, 10) : ''; 
-                let orderMonthStr = o.date ? o.date.slice(0, 7) : '';   
-
                 if (isCompleted) {
-                    if (o.paidAmount && o.paidAmount > 0) {
-                        daysRecetteMap[orderDateStr] = (daysRecetteMap[orderDateStr] || 0) + o.paidAmount;
-                        monthsRecetteMap[orderMonthStr] = (monthsRecetteMap[orderMonthStr] || 0) + o.paidAmount;
+                    if (o.paidAmount) {
+                        daysRecetteMap[o.date.slice(0, 10)] = (daysRecetteMap[o.date.slice(0, 10)] || 0) + o.paidAmount;
+                        monthsRecetteMap[o.date.slice(0, 7)] = (monthsRecetteMap[o.date.slice(0, 7)] || 0) + o.paidAmount;
                     }
                     if (o.benefice) totalBenefice += o.benefice;
                     if (o.creditAmount) totalCredit += o.creditAmount;
-
-                    if (!clientSalesMap[o.clientName]) {
-                        clientSalesMap[o.clientName] = { count: 0, totalSpent: 0 };
-                    }
+                    if (!clientSalesMap[o.clientName]) clientSalesMap[o.clientName] = { count: 0, totalSpent: 0 };
                     clientSalesMap[o.clientName].count += 1;
                     clientSalesMap[o.clientName].totalSpent += o.totalSell;
-
-                    if (o.items && Array.isArray(o.items)) {
-                        o.items.forEach(item => {
-                            let key = item.id;
-                            if (!stockMap[key]) {
-                                stockMap[key] = { operator: item.operator || 'أخرى', name: item.name, buy: item.buy || 0, purchased: 0, sold: 0 };
-                            }
-                            stockMap[key].sold += (item.qty || 1);
-                        });
-                    }
+                    if (o.items) o.items.forEach(item => { if (stockMap[item.id]) stockMap[item.id].sold += (item.qty || 1); });
                 } else {
                     ordersHtml += `
                         <div onclick="openOrderDetailModal('${o.id}')" class="bg-slate-50 hover:bg-slate-100 cursor-pointer p-4 rounded-2xl border border-slate-300 flex justify-between items-center transition shadow-2xs">
                             <div class="space-y-1">
                                 <span class="font-bold text-slate-900 text-sm"><i class="fa-solid fa-store text-emerald-600 ml-1"></i> ${o.clientName}</span>
-                                <p class="text-xs text-slate-500">المجموع: <strong class="text-emerald-600">${o.totalSell} د.ت</strong> | التاريخ: ${new Date(o.date).toLocaleDateString()}</p>
+                                <p class="text-xs text-slate-500">المجموع: <strong class="text-emerald-600">${o.totalSell} د.ت</strong></p>
                             </div>
-                            <div class="text-left">
-                                <span class="text-xs px-2.5 py-1 rounded-lg font-bold bg-amber-100 text-amber-800 border border-amber-300">قيد الانتظار</span>
-                                <p class="text-[10px] text-indigo-600 mt-1 font-bold">انقر للتفاصيل والـ Valider <i class="fa-solid fa-chevron-left"></i></p>
-                            </div>
+                            <span class="text-xs px-2.5 py-1 rounded-lg font-bold bg-amber-100 text-amber-800 border border-amber-300">قيد الانتظار</span>
                         </div>
                     `;
                 }
@@ -1221,86 +1136,39 @@
                 let mStr = month < 10 ? '0' + month : '' + month;
                 let dayKey = `${year}-${mStr}-${dStr}`;
                 let val = daysRecetteMap[dayKey] || 0;
-                daysHtml += `
-                    <tr class="border-b border-slate-300 hover:bg-slate-50">
-                        <td class="p-3 font-bold text-slate-800 border-l border-slate-300">${dayKey}</td>
-                        <td class="p-3 font-black text-emerald-600">${val.toFixed(3)} د.ت</td>
-                    </tr>
-                `;
+                daysHtml += `<tr class="border-b border-slate-300"><td class="p-3 font-bold border-l">${dayKey}</td><td class="p-3 font-black text-emerald-600">${val.toFixed(3)} د.ت</td></tr>`;
             }
-            const daysTbody = document.getElementById('recetteDaysTableBody');
-            if(daysTbody) daysTbody.innerHTML = daysHtml;
+            document.getElementById('recetteDaysTableBody').innerHTML = daysHtml;
 
             let monthsHtml = '';
-            let monthNames = {
-                '01': 'جانفي', '02': 'فيفري', '03': 'مارس', '04': 'أفريل',
-                '05': 'ماي', '06': 'جوان', '07': 'جويلية', '08': 'أوت',
-                '09': 'سبتمبر', '10': 'أكتوبر', '11': 'نوفمبر', '12': 'ديسمبر'
-            };
-            
-            let allMonthsList = [];
+            let monthNames = {'01': 'جانفي', '02': 'فيفري', '03': 'مارس', '04': 'أفريل', '05': 'ماي', '06': 'جوان', '07': 'جويلية', '08': 'أوت', '09': 'سبتمبر', '10': 'أكتوبر', '11': 'نوفمبر', '12': 'ديسمبر'};
             for (let m = 1; m <= 12; m++) {
                 let mFormatted = m < 10 ? '0' + m : '' + m;
                 let key = `${year}-${mFormatted}`;
-                allMonthsList.push(key);
+                let val = monthsRecetteMap[key] || 0;
+                monthsHtml += `<tr class="border-b border-slate-300"><td class="p-3 font-bold border-l">${monthNames[mFormatted]} ${year}</td><td class="p-3 font-black text-indigo-600">${val.toFixed(3)} د.ت</td></tr>`;
             }
-            allMonthsList.sort().reverse();
-
-            allMonthsList.forEach(m => {
-                let parts = m.split('-'); 
-                let mName = monthNames[parts[1]] || parts[1];
-                let displayStr = `${mName} ${parts[0]}`;
-                let val = monthsRecetteMap[m] || 0;
-                monthsHtml += `
-                    <tr class="border-b border-slate-300 hover:bg-slate-50">
-                        <td class="p-3 font-bold text-slate-800 border-l border-slate-300">${displayStr}</td>
-                        <td class="p-3 font-black text-indigo-600">${val.toFixed(3)} د.ت</td>
-                    </tr>
-                `;
-            });
-            const monthsTbody = document.getElementById('recetteMonthsTableBody');
-            if(monthsTbody) monthsTbody.innerHTML = monthsHtml;
-            
-            const oContainer = document.getElementById('ordersListContainer');
-            if (oContainer) oContainer.innerHTML = ordersHtml || '<p class="text-slate-400 text-center py-4">لا توجد طلبات جديدة قيد الانتظار.</p>';
+            document.getElementById('recetteMonthsTableBody').innerHTML = monthsHtml;
+            document.getElementById('ordersListContainer').innerHTML = ordersHtml || '<p class="text-slate-400 text-center py-4">لا توجد طلبات جديدة.</p>';
 
             let statsHtml = '';
             for (let clientName in clientSalesMap) {
                 let stat = clientSalesMap[clientName];
-                statsHtml += `
-                    <tr class="border-b border-slate-300 text-sm hover:bg-slate-50">
-                        <td class="p-3 font-bold text-slate-800 border-l border-slate-300"><i class="fa-solid fa-store text-emerald-600 ml-1"></i> ${clientName}</td>
-                        <td class="p-3 text-indigo-600 font-bold border-l border-slate-300">${stat.count} طلبات</td>
-                        <td class="p-3 font-black text-emerald-600">${stat.totalSpent.toFixed(3)} د.ت</td>
-                    </tr>
-                `;
+                statsHtml += `<tr class="border-b border-slate-300 text-sm"><td class="p-3 font-bold border-l">${clientName}</td><td class="p-3 border-l">${stat.count} طلبات</td><td class="p-3 font-black text-emerald-600">${stat.totalSpent.toFixed(3)} د.ت</td></tr>`;
             }
-            const statsTable = document.getElementById('salesStatsTableBody');
-            if (statsTable) statsTable.innerHTML = statsHtml || '<tr><td colspan="3" class="text-center text-slate-400 py-4">لا توجد مبيعات مؤكدة للتجار بعد.</td></tr>';
+            document.getElementById('salesStatsTableBody').innerHTML = statsHtml || '<tr><td colspan="3" class="text-center text-slate-400 py-4">لا توجد إحصائيات.</td></tr>';
 
             let stockHtml = '';
-            let totalStockFinancialValue = 0;
+            let totalStockVal = 0;
             for (let k in stockMap) {
                 let st = stockMap[k];
                 let finalStock = st.purchased - st.sold;
-                let lineValue = finalStock * st.buy;
-                if (finalStock > 0) totalStockFinancialValue += lineValue;
-
-                stockHtml += `
-                    <tr class="border-b border-slate-300 text-xs hover:bg-slate-50">
-                        <td class="p-3 font-bold text-slate-700 border-l border-slate-300">${st.operator}</td>
-                        <td class="p-3 border-l border-slate-300">${st.name}</td>
-                        <td class="p-3 text-slate-500 border-l border-slate-300">${st.buy.toFixed(3)} د.ت</td>
-                        <td class="p-3 font-bold text-indigo-600 border-l border-slate-300">${st.purchased}</td>
-                        <td class="p-3 font-black text-emerald-600 text-sm">${finalStock} قطعة</td>
-                    </tr>
-                `;
+                let lineVal = finalStock * st.buy;
+                if (finalStock > 0) totalStockVal += lineVal;
+                stockHtml += `<tr class="border-b border-slate-300 text-xs"><td class="p-3 font-bold border-l">${st.operator}</td><td class="p-3 border-l">${st.name}</td><td class="p-3 border-l">${st.buy.toFixed(3)} د.ت</td><td class="p-3 border-l">${st.purchased}</td><td class="p-3 font-black text-emerald-600">${finalStock} قطعة</td></tr>`;
             }
-            const stockTable = document.getElementById('stockTableBody');
-            if (stockTable) stockTable.innerHTML = stockHtml || '<tr><td colspan="5" class="text-center text-slate-400 py-4">لا توجد بيانات ستوك.</td></tr>';
-            
-            const totalStockEl = document.getElementById('totalStockValue');
-            if (totalStockEl) totalStockEl.innerText = totalStockFinancialValue.toFixed(3) + ' د.ت';
+            document.getElementById('stockTableBody').innerHTML = stockHtml || '<tr><td colspan="5" class="text-center text-slate-400 py-4">لا توجد بيانات ستوك.</td></tr>';
+            document.getElementById('totalStockValue').innerText = totalStockVal.toFixed(3) + ' د.ت';
         }
 
         window.selectMainChoice = function(choice) {
@@ -1311,27 +1179,23 @@
             }
         };
 
+        window.backType = function() {};
         window.backToMainChoices = function() {
             document.getElementById('detailedManagementSection').classList.add('hidden');
             document.getElementById('mainChoicesSection').classList.remove('hidden');
         };
 
-        window.openAdminWindow = function(name) {
+        window.openAdminWindow = (name) => {
             document.querySelectorAll('.admin-window').forEach(el => el.classList.add('hidden'));
             const w = document.getElementById(`window${name.charAt(0).toUpperCase() + name.slice(1)}`);
             if (w) w.classList.remove('hidden');
         };
 
-        window.closeAdminWindow = function(name) {
-            const w = document.getElementById(`window${name.charAt(0).toUpperCase() + name.slice(1)}`);
-            if (w) w.classList.add('hidden');
-        };
-
+        window.closeAdminWindow = (name) => document.getElementById(`window${name.charAt(0).toUpperCase() + name.slice(1)}`).classList.add('hidden');
         window.openRecetteModal = () => document.getElementById('recetteModal').classList.remove('hidden');
         window.closeRecetteModal = () => document.getElementById('recetteModal').classList.add('hidden');
 
         window.posCart = {};
-
         window.selectPosOperator = function(op) {
             document.getElementById('posProductsSection').classList.remove('hidden');
             document.getElementById('posSelectedOperatorTitle').innerText = `اختر للبيع: ${op}`;
@@ -1339,13 +1203,7 @@
             window.tariffs.filter(t => t.operator === op).forEach(t => {
                 let qty = window.posCart[t.id] || 0;
                 let cardColor = op === 'Ooredoo' ? 'bg-red-50 text-red-700 border-red-300' : (op === 'Telecom' ? 'bg-blue-50 text-blue-700 border-blue-300' : 'bg-orange-50 text-orange-700 border-orange-300');
-                html += `
-                    <div onclick="addPosCardQty('${t.id}')" class="border-2 p-3 rounded-xl cursor-pointer hover:shadow transition ${cardColor}">
-                        <h4 class="font-bold text-xs">${t.name}</h4>
-                        <p class="text-xs mt-1 font-bold">${t.sell} د.ت</p>
-                        <div class="mt-2 text-center bg-white py-1 rounded font-bold text-xs text-slate-900 border border-slate-200" id="pos_qty_${t.id}">${qty}</div>
-                    </div>
-                `;
+                html += `<div onclick="addPosCardQty('${t.id}')" class="border-2 p-3 rounded-xl cursor-pointer ${cardColor}"><h4 class="font-bold text-xs">${t.name}</h4><p class="text-xs font-bold mt-1">${t.sell} د.ت</p><div class="mt-2 text-center bg-white py-1 rounded font-bold text-xs text-slate-900 border" id="pos_qty_${t.id}">${qty}</div></div>`;
             });
             document.getElementById('posCardsGrid').innerHTML = html;
         };
@@ -1353,23 +1211,18 @@
         window.addPosCardQty = (id) => {
             window.posCart[id] = (window.posCart[id] || 0) + 1;
             document.getElementById(`pos_qty_${id}`).innerText = window.posCart[id];
-            calcPosTotal();
-        };
-
-        function calcPosTotal() {
             let total = 0;
-            for (let id in window.posCart) {
-                let item = window.tariffs.find(t => t.id === id);
-                if (item) total += item.sell * window.posCart[id];
+            for (let k in window.posCart) {
+                let item = window.tariffs.find(t => t.id === k);
+                if (item) total += item.sell * window.posCart[k];
             }
             document.getElementById('posCartTotal').innerText = total.toFixed(3) + ' د.ت';
-        }
+        };
 
         window.submitPosOrder = async function() {
             const clientName = document.getElementById('posRegisteredClientSelect').value;
             const paymentStatus = document.getElementById('posPaymentStatus').value;
             if (!clientName) { alert('اختر الحانوت.'); return; }
-            
             let items = [], totalSell = 0, totalBuy = 0;
             for (let id in window.posCart) {
                 if (window.posCart[id] > 0) {
@@ -1380,23 +1233,19 @@
                 }
             }
             if (items.length === 0) { alert('اختر منتج.'); return; }
-
             try {
                 await addDoc(collection(db, "orders"), {
-                    clientName, 
-                    vendeurId: window.currentVendeur.id,
-                    items, totalSell, totalBuy, benefice: totalSell - totalBuy,
-                    paymentStatus, paidAmount: paymentStatus === 'Payé' ? totalSell : 0,
-                    creditAmount: paymentStatus === 'Payé' ? 0 : totalSell,
+                    clientName, vendeurId: window.currentVendeur.id, items, totalSell, totalBuy, benefice: totalSell - totalBuy,
+                    paymentStatus, paidAmount: paymentStatus === 'Payé' ? totalSell : 0, creditAmount: paymentStatus === 'Payé' ? 0 : totalSell,
                     date: new Date().toISOString(), status: 'مكتمل ومؤكد'
                 });
-                window.showSystemNotification("عملية بيع", "تم إتمام البيع بنجاح وشكرا لك!");
+                window.showSystemNotification("بيع مباشر", "تم إتمام البيع بنجاح!");
                 window.posCart = {};
                 window.closeAdminWindow('pos');
-            } catch (e) { alert('خطأ أثناء الحفظ.'); }
+            } catch (e) { alert('خطأ في الحفظ.'); }
         };
 
-        // تفعيل التحقق الأولي عند التحميل
+        // التشغيل الفوري للتحقق من المصادقة
         window.checkVendeurAuth();
     </script>
 </body>
