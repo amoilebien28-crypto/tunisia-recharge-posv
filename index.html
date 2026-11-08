@@ -202,14 +202,14 @@
         </div>
     </div>
 
-    <!-- نافذة الطلبات (محدثة لضمان جلب الطلبات بالـ vendeurId مباشرة) -->
+    <!-- نافذة الطلبات (محدثة بحيث تعرض تفاصيل المنتجات والكميات مباشرة لكل طلب) -->
     <div id="windowOrders" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
                 <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-box-archive text-indigo-600 ml-2"></i> طلبات الحوانت التابعة لي</h4>
                 <button onclick="closeAdminWindow('orders')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
             </div>
-            <div id="ordersListContainer" class="space-y-2">
+            <div id="ordersListContainer" class="space-y-3">
                 <p class="text-slate-400 text-sm text-center py-4">لا توجد طلبات حالياً.</p>
             </div>
             <button onclick="closeAdminWindow('orders')" class="w-full bg-slate-100 text-slate-700 py-2.5 rounded-xl font-bold text-sm">إغلاق</button>
@@ -456,7 +456,6 @@
                 window.allClients = [];
                 clientsSnap.forEach(d => window.allClients.push({ id: d.id, ...d.data() }));
 
-                // جلب الطلبات المرتبطة حصرياً بهذا البائع عبر vendeurId مباشرة لضمان ظهورها
                 onSnapshot(query(collection(db, "orders"), where("vendeurId", "==", window.currentVendeur.id)), (snap) => {
                     window.allOrders = [];
                     snap.forEach(d => {
@@ -503,13 +502,29 @@
                 if (o.benefice) totalBenefice += o.benefice;
                 if (o.creditAmount) totalCredit += o.creditAmount;
 
+                // تنسيق تفاصيل المنتجات داخل كل طلب باش البائع يشوفها عيني عينك
+                let itemsListHtml = '<ul class="mt-2 space-y-1 bg-white p-3 rounded-xl border border-slate-200 text-xs">';
+                if (o.items && Array.isArray(o.items)) {
+                    o.items.forEach(item => {
+                        itemsListHtml += `<li class="flex justify-between items-center text-slate-700 font-bold">
+                            <span><i class="fa-solid fa-tag text-emerald-600 ml-1"></i> ${item.operator || ''} - ${item.name}</span>
+                            <span class="bg-slate-100 px-2 py-0.5 rounded text-indigo-600">الكمية: ${item.qty}</span>
+                        </li>`;
+                    });
+                }
+                itemsListHtml += '</ul>';
+
                 ordersHtml += `
-                    <div class="bg-slate-50 p-4 rounded-2xl border space-y-2">
+                    <div class="bg-slate-50 p-4 rounded-2xl border space-y-2 shadow-xs">
                         <div class="flex justify-between items-center">
-                            <span class="font-bold text-slate-900">${o.clientName}</span>
-                            <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-1 rounded-lg font-bold">${o.paymentStatus || o.status}</span>
+                            <span class="font-bold text-slate-900 text-sm"><i class="fa-solid fa-store text-emerald-600 ml-1"></i> ${o.clientName}</span>
+                            <span class="text-xs bg-amber-100 text-amber-800 px-2.5 py-1 rounded-lg font-bold">${o.status || 'قيد الانتظار'}</span>
                         </div>
-                        <p class="text-xs text-slate-500">المجموع: ${o.totalSell} د.ت | التاريخ: ${new Date(o.date).toLocaleDateString()}</p>
+                        <p class="text-xs text-slate-500">المجموع: <strong class="text-emerald-600">${o.totalSell} د.ت</strong> | التاريخ: ${new Date(o.date).toLocaleDateString()}</p>
+                        <div>
+                            <p class="text-xs font-bold text-slate-700 mt-2">تفاصيل الطلبية (القطع المطلوبة):</p>
+                            ${itemsListHtml}
+                        </div>
                     </div>
                 `;
 
@@ -635,7 +650,7 @@
 
         window.submitPosOrder = async function() {
             const clientName = document.getElementById('posRegisteredClientSelect').value;
-            const paymentStatus = document.getElementById('posPaymentStatus').value;
+            const paymentStatus = document.getElementById('posPaymentStatus5') || document.getElementById('posPaymentStatus').value;
             if (!clientName) { alert('اختر الحانوت.'); return; }
             
             let items = [], totalSell = 0, totalBuy = 0;
