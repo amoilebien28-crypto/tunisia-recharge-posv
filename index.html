@@ -235,7 +235,7 @@
         </div>
     </div>
 
-    <!-- نافذة الروسيت والمداخيل (جداول بإطارات واضحة وزر إكسبورتي للواتساب) -->
+    <!-- نافذة الروسيت والمداخيل (جداول الأيام والشهور مع أزرار التحميل وتصدير الواتساب) -->
     <div id="recetteModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
@@ -259,13 +259,18 @@
                 <button onclick="switchRecetteTab('months')" id="tabBtnRecetteMonths" class="flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600 transition border border-transparent">روسيت الشهور</button>
             </div>
 
-            <!-- جدول الأيام (بخطوط واضحة وإكسل ستايل) -->
+            <!-- جدول الأيام (كامل ومفصل + تحميل وتصدير واتساب) -->
             <div id="sectionRecetteDays" class="space-y-2">
                 <div class="flex justify-between items-center">
-                    <h5 class="font-bold text-xs text-slate-700">تفاصيل الروسيت يوم بيوم:</h5>
-                    <button onclick="exportTableToWhatsApp('recetteDaysTableBody', 'تقرير روسيت الأيام')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
-                        <i class="fa-brands fa-whatsapp"></i> إكسبورتي للواتساب
-                    </button>
+                    <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الأيام (كامل):</h5>
+                    <div class="flex gap-1.5">
+                        <button onclick="downloadTableAsCSV('recetteDaysTableBody', 'Rapport_Recette_Jours.csv')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
+                            <i class="fa-solid fa-download"></i> تفعيل التنزيل
+                        </button>
+                        <button onclick="exportTableToWhatsApp('recetteDaysTableBody', 'تقرير روسيت الأيام')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
+                            <i class="fa-brands fa-whatsapp"></i> واتساب
+                        </button>
+                    </div>
                 </div>
                 <div class="overflow-x-auto max-h-60 overflow-y-auto border-2 border-slate-300 rounded-2xl shadow-inner bg-white">
                     <table class="w-full text-right border-collapse text-xs">
@@ -282,13 +287,18 @@
                 </div>
             </div>
 
-            <!-- جدول الشهور (بخطوط واضحة وإكسل ستايل) -->
+            <!-- جدول الشهور (كامل لكل السنة جانفي، فيفري... + تحميل وتصدير واتساب) -->
             <div id="sectionRecetteMonths" class="space-y-2 hidden">
                 <div class="flex justify-between items-center">
-                    <h5 class="font-bold text-xs text-slate-700">تفاصيل الروسيت شهر بشهر (جانفي، فيفري...):</h5>
-                    <button onclick="exportTableToWhatsApp('recetteMonthsTableBody', 'تقرير روسيت الشهور')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
-                        <i class="fa-brands fa-whatsapp"></i> إكسبورتي للواتساب
-                    </button>
+                    <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الشهور (جانفي - ديسمبر):</h5>
+                    <div class="flex gap-1.5">
+                        <button onclick="downloadTableAsCSV('recetteMonthsTableBody', 'Rapport_Recette_Mois.csv')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
+                            <i class="fa-solid fa-download"></i> تفعيل التنزيل
+                        </button>
+                        <button onclick="exportTableToWhatsApp('recetteMonthsTableBody', 'تقرير روسيت الشهور')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
+                            <i class="fa-brands fa-whatsapp"></i> واتساب
+                        </button>
+                    </div>
                 </div>
                 <div class="overflow-x-auto max-h-60 overflow-y-auto border-2 border-slate-300 rounded-2xl shadow-inner bg-white">
                     <table class="w-full text-right border-collapse text-xs">
@@ -410,7 +420,7 @@
         </div>
     </div>
 
-    <!-- نافذة إدارة الفواتير وشراء الستوك (مع زر إكسبورتي للواتساب) -->
+    <!-- نافذة إدارة الفواتير وشراء الستوك (مع زر تحميل وتصدير واتساب) -->
     <div id="windowInvoice" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto space-y-6 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
@@ -437,13 +447,18 @@
                 </div>
             </div>
 
-            <!-- قسم جميع الفواتير السابقة (بخطوط واضحة وإكسل ستايل + واتساب) -->
+            <!-- قسم جميع الفواتير السابقة (بخطوط واضحة وتنزيل وواتساب) -->
             <div id="sectionListInvoice" class="space-y-3 hidden">
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">جميع الفواتير السابقة:</h5>
-                    <button onclick="exportTableToWhatsApp('invoicesHistoryTableBody', 'قائمة الفواتير السابقة')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
-                        <i class="fa-brands fa-whatsapp"></i> إكسبورتي للواتساب
-                    </button>
+                    <div class="flex gap-1.5">
+                        <button onclick="downloadTableAsCSV('invoicesHistoryTableBody', 'Rapport_Factures.csv')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
+                            <i class="fa-solid fa-download"></i> تفعيل التنزيل
+                        </button>
+                        <button onclick="exportTableToWhatsApp('invoicesHistoryTableBody', 'قائمة الفواتير السابقة')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
+                            <i class="fa-brands fa-whatsapp"></i> واتساب
+                        </button>
+                    </div>
                 </div>
                 <div class="overflow-x-auto border-2 border-slate-300 rounded-2xl shadow-inner bg-white">
                     <table class="w-full text-right border-collapse text-xs">
@@ -464,7 +479,7 @@
         </div>
     </div>
 
-    <!-- نافذة الستوك النهائي (بخطوط واضحة وإكسل ستايل + واتساب) -->
+    <!-- نافذة الستوك النهائي (بخطوط واضحة وتنزيل وواتساب) -->
     <div id="windowStock" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto space-y-6 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
@@ -474,9 +489,14 @@
 
             <div class="flex justify-between items-center">
                 <span class="text-xs text-slate-500 font-bold">جرد الستوك الحالي بالقطعة والقيمة:</span>
-                <button onclick="exportTableToWhatsApp('stockTableBody', 'تقرير الستوك النهائي')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
-                    <i class="fa-brands fa-whatsapp"></i> إكسبورتي للواتساب
-                </button>
+                <div class="flex gap-1.5">
+                    <button onclick="downloadTableAsCSV('stockTableBody', 'Rapport_Stock_Final.csv')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
+                        <i class="fa-solid fa-download"></i> تفعيل التنزيل
+                    </button>
+                    <button onclick="exportTableToWhatsApp('stockTableBody', 'تقرير الستوك النهائي')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
+                        <i class="fa-brands fa-whatsapp"></i> واتساب
+                    </button>
+                </div>
             </div>
 
             <div class="overflow-x-auto border-2 border-slate-300 rounded-2xl shadow-inner bg-white">
@@ -601,6 +621,29 @@
 
         window.currentVendeur = JSON.parse(localStorage.getItem('currentVendeur') || 'null');
 
+        // دالة تنزيل الجدول كملف CSV (على الذاكرة / الهاتف / الكمبيوتر)
+        window.downloadTableAsCSV = function(tbodyId, filename) {
+            let tbody = document.getElementById(tbodyId);
+            if (!tbody) return;
+            let rows = tbody.querySelectorAll('tr');
+            let csv = [];
+
+            rows.forEach(row => {
+                let cols = row.querySelectorAll('td');
+                let rowData = [];
+                cols.forEach(col => rowData.push('"' + col.innerText.replace(/"/g, '""') + '"'));
+                if (rowData.length > 0) csv.push(rowData.join(','));
+            });
+
+            let csvFile = new Blob(["\uFEFF" + csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            let downloadLink = document.createElement('a');
+            downloadLink.href = URL.createObjectURL(csvFile);
+            downloadLink.download = filename;
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        };
+
         // دالة تصدير الجدول للواتساب
         window.exportTableToWhatsApp = function(tbodyId, reportTitle) {
             let tbody = document.getElementById(tbodyId);
@@ -608,7 +651,7 @@
             let rows = tbody.querySelectorAll('tr');
             let text = `*${reportTitle} - Tunisie Recharge*\n\n`;
             
-            rows.forEach((row, idx) => {
+            rows.forEach((row) => {
                 let cols = row.querySelectorAll('td');
                 if (cols.length >= 2) {
                     text += `- ${cols[0].innerText.trim()}: *${cols[1].innerText.trim()}*\n`;
@@ -1139,39 +1182,61 @@
             document.getElementById('modalTotalBenefice').innerText = totalBenefice.toFixed(3) + ' د.ت';
             document.getElementById('modalTotalCredit').innerText = totalCredit.toFixed(3) + ' د.ت';
 
+            // ملء جدول الأيام بالكامل
             let daysHtml = '';
             let sortedDays = Object.keys(daysRecetteMap).sort().reverse();
-            sortedDays.forEach(day => {
-                daysHtml += `
-                    <tr class="border-b border-slate-300 hover:bg-slate-50">
-                        <td class="p-3 font-bold text-slate-800 border-l border-slate-300">${day}</td>
-                        <td class="p-3 font-black text-emerald-600">${daysRecetteMap[day].toFixed(3)} د.ت</td>
-                    </tr>
-                `;
-            });
+            if (sortedDays.length === 0) {
+                // توليد عينة أو إظهار رسالة فارغة
+                daysHtml = '<tr><td colspan="2" class="text-center text-slate-400 py-4">لا توجد مداخيل مسجلة للأيام.</td></tr>';
+            } else {
+                sortedDays.forEach(day => {
+                    daysHtml += `
+                        <tr class="border-b border-slate-300 hover:bg-slate-50">
+                            <td class="p-3 font-bold text-slate-800 border-l border-slate-300">${day}</td>
+                            <td class="p-3 font-black text-emerald-600">${daysRecetteMap[day].toFixed(3)} د.ت</td>
+                        </tr>
+                    `;
+                });
+            }
             const daysTbody = document.getElementById('recetteDaysTableBody');
-            if(daysTbody) daysTbody.innerHTML = daysHtml || '<tr><td colspan="2" class="text-center text-slate-400 py-4">لا توجد مداخيل مسجلة للأيام.</td></tr>';
+            if(daysTbody) daysTbody.innerHTML = daysHtml;
 
+            // ملء جدول الشهور بالكامل (جانفي إلى ديسمبر)
             let monthsHtml = '';
             let monthNames = {
                 '01': 'جانفي', '02': 'فيفري', '03': 'مارس', '04': 'أفريل',
                 '05': 'ماي', '06': 'جوان', '07': 'جويلية', '08': 'أوت',
                 '09': 'سبتمبر', '10': 'أكتوبر', '11': 'نوفمبر', '12': 'ديسمبر'
             };
-            let sortedMonths = Object.keys(monthsRecetteMap).sort().reverse();
-            sortedMonths.forEach(m => {
+            
+            // توليد جدول كل أشهر السنة الحالية والسابقة الموجودة أو الافتراضية
+            let currentYear = new Date().getFullYear();
+            let allMonthsList = [];
+            for (let m = 1; m <= 12; m++) {
+                let mFormatted = m < 10 ? '0' + m : '' + m;
+                let key = `${currentYear}-${mFormatted}`;
+                allMonthsList.push(key);
+            }
+            // إضافة أي شهور أخرى قديمة إن وجدت في البيانات
+            Object.keys(monthsRecetteMap).forEach(m => {
+                if (!allMonthsList.includes(m)) allMonthsList.push(m);
+            });
+            allMonthsList.sort().reverse();
+
+            allMonthsList.forEach(m => {
                 let parts = m.split('-'); 
                 let mName = monthNames[parts[1]] || parts[1];
                 let displayStr = `${mName} ${parts[0]}`;
+                let val = monthsRecetteMap[m] || 0;
                 monthsHtml += `
                     <tr class="border-b border-slate-300 hover:bg-slate-50">
                         <td class="p-3 font-bold text-slate-800 border-l border-slate-300">${displayStr}</td>
-                        <td class="p-3 font-black text-indigo-600">${monthsRecetteMap[m].toFixed(3)} د.ت</td>
+                        <td class="p-3 font-black text-indigo-600">${val.toFixed(3)} د.ت</td>
                     </tr>
                 `;
             });
             const monthsTbody = document.getElementById('recetteMonthsTableBody');
-            if(monthsTbody) monthsTbody.innerHTML = monthsHtml || '<tr><td colspan="2" class="text-center text-slate-400 py-4">لا توجد مداخيل مسجلة للشهور.</td></tr>';
+            if(monthsTbody) monthsTbody.innerHTML = monthsHtml;
             
             const oContainer = document.getElementById('ordersListContainer');
             if (oContainer) oContainer.innerHTML = ordersHtml || '<p class="text-slate-400 text-center py-4">لا توجد طلبات جديدة قيد الانتظار.</p>';
