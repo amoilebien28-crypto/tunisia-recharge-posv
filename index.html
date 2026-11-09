@@ -8,14 +8,16 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- مكتبة تحويل الجداول إلى صور واضحة -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        /* ستايل إضافي لضمان ظهور الخطوط العمودية والأفقية في كل الجداول وعند الطباعة */
+        /* تسطير وتخطيط كافة الجداول أفقياً وعمودياً مع دعم الطباعة الرسمية */
         table.custom-grid {
             border-collapse: collapse !important;
             width: 100%;
         }
         table.custom-grid th, table.custom-grid td {
-            border: 1px solid #94a3b8 !important; /* لون رمادي متوسط وواضح */
+            border: 1px solid #64748b !important;
             padding: 8px 10px;
         }
         @media print {
@@ -148,7 +150,6 @@
                     <i class="fa-solid fa-plus text-emerald-700 text-sm font-bold"></i>
                 </button>
 
-                <!-- زر ديون الكريدي على الحوانت -->
                 <button type="button" onclick="openAdminWindow('credits')" class="w-full text-right bg-rose-100 hover:bg-rose-200 text-rose-950 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-rose-500 shadow-sm">
                     <div class="flex items-center gap-3">
                         <div class="bg-rose-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold shadow-2xs">
@@ -278,7 +279,7 @@
         </div>
     </div>
 
-    <!-- نافذة تفاصيل الفاتورة عند النقر عليها مع الطباعة المخططة أفقياً وعمودياً -->
+    <!-- نافذة تفاصيل الفاتورة عند النقر عليها مع الطباعة وتحويلها لصورة -->
     <div id="invoiceDetailModal" class="fixed inset-0 bg-black/70 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
@@ -288,7 +289,8 @@
             <div id="invoiceDetailModalContent" class="space-y-3 text-xs"></div>
             <div class="flex gap-2 pt-2">
                 <button type="button" onclick="printSingleInvoice()" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white py-2.5 rounded-xl font-bold text-xs"><i class="fa-solid fa-print ml-1"></i> طباعة الفاتورة كجدول</button>
-                <button type="button" onclick="closeInvoiceDetailModal()" class="flex-1 bg-slate-200 text-slate-700 py-2.5 rounded-xl font-bold text-xs">إغلاق</button>
+                <button type="button" onclick="exportTableAsImage('invoiceDetailModalContent', 'فاتورة_شراء')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-bold text-xs"><i class="fa-solid fa-image ml-1"></i> صورة للواتساب</button>
+                <button type="button" onclick="closeInvoiceDetailModal()" class="bg-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-bold text-xs">إغلاق</button>
             </div>
         </div>
     </div>
@@ -322,7 +324,7 @@
         </div>
     </div>
 
-    <!-- نافذة المداخيل والمرابيح (الروسيت) بأسطر أفقية وعمودية -->
+    <!-- نافذة المداخيل والمرابيح (الروسيت) -->
     <div id="recetteModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
@@ -353,8 +355,8 @@
                         <button type="button" onclick="printReportTable('recetteDaysTableContainer', 'تقرير روسيت الأيام')" class="bg-slate-800 hover:bg-slate-900 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
                             <i class="fa-solid fa-print"></i> طباعة / حفظ
                         </button>
-                        <button type="button" onclick="exportTableToWhatsApp('recetteDaysTableBody', 'تقرير روسيت الأيام')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
-                            <i class="fa-brands fa-whatsapp"></i> واتساب
+                        <button type="button" onclick="exportTableAsImage('recetteDaysTableContainer', 'تقرير_روسيت_الأيام')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
+                            <i class="fa-solid fa-image"></i> صورة للواتساب
                         </button>
                     </div>
                 </div>
@@ -380,8 +382,8 @@
                         <button type="button" onclick="printReportTable('recetteMonthsTableContainer', 'تقرير روسيت الشهور')" class="bg-slate-800 hover:bg-slate-900 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
                             <i class="fa-solid fa-print"></i> طباعة / حفظ
                         </button>
-                        <button type="button" onclick="exportTableToWhatsApp('recetteMonthsTableBody', 'تقرير روسيت الشهور')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
-                            <i class="fa-brands fa-whatsapp"></i> واتساب
+                        <button type="button" onclick="exportTableAsImage('recetteMonthsTableContainer', 'تقرير_روسيت_الشهور')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
+                            <i class="fa-solid fa-image"></i> صورة للواتساب
                         </button>
                     </div>
                 </div>
@@ -505,7 +507,7 @@
         </div>
     </div>
 
-    <!-- نافذة إدارة الفواتير وشراء المخزون (تحتوي على البطاقات + شحن E-Recharge) -->
+    <!-- نافذة إدارة الفواتير وشراء المخزون -->
     <div id="windowInvoice" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto space-y-6 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
@@ -540,8 +542,8 @@
                         <button type="button" onclick="printReportTable('invoicesHistoryTableContainer', 'قائمة جميع الفواتير السابقة')" class="bg-slate-800 hover:bg-slate-900 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
                             <i class="fa-solid fa-print"></i> طباعة / حفظ
                         </button>
-                        <button type="button" onclick="exportTableToWhatsApp('invoicesHistoryTableBody', 'قائمة الفواتير السابقة')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
-                            <i class="fa-brands fa-whatsapp"></i> واتساب
+                        <button type="button" onclick="exportTableAsImage('invoicesHistoryTableContainer', 'قائمة_الفواتير_السابقة')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
+                            <i class="fa-solid fa-image"></i> صورة للواتساب
                         </button>
                     </div>
                 </div>
@@ -564,7 +566,7 @@
         </div>
     </div>
 
-    <!-- نافذة تقرير المخزون النهائي المقسمة بالأسطر الأفقية والعمودية -->
+    <!-- نافذة تقرير المخزون النهائي المقسمة بالأسطر الأفقية والعمودية مع سطر المجموع (الطوطال) داخل الجدول -->
     <div id="windowStock" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto space-y-6 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
@@ -578,12 +580,13 @@
                     <button type="button" onclick="printReportTable('stockTableContainer', 'تقرير المخزون النهائي')" class="bg-slate-800 hover:bg-slate-900 text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-2xs">
                         <i class="fa-solid fa-print"></i> طباعة كجدول رسمي
                     </button>
-                    <button type="button" onclick="exportTableToWhatsApp('stockTableBody', 'تقرير المخزون النهائي')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-2xs">
-                        <i class="fa-brands fa-whatsapp"></i> واتساب
+                    <button type="button" onclick="exportTableAsImage('stockTableContainer', 'تقرير_المخزون_النهائي')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-2xs">
+                        <i class="fa-solid fa-image"></i> صورة للواتساب
                     </button>
                 </div>
             </div>
 
+            <!-- الجدول ومعه سطر المجموع النهائي داخل tfoot ليخرج دائماً في الطباعة والصور -->
             <div id="stockTableContainer" class="overflow-x-auto border-2 border-slate-400 rounded-2xl shadow-inner bg-white">
                 <table class="custom-grid w-full text-right text-xs">
                     <thead>
@@ -598,12 +601,13 @@
                     <tbody id="stockTableBody">
                         <tr><td colspan="5" class="text-center text-slate-400 py-4">جاري حساب المخزون...</td></tr>
                     </tbody>
+                    <tfoot>
+                        <tr class="bg-emerald-100 text-emerald-950 font-black text-sm border-t-2 border-slate-500">
+                            <td colspan="4" class="text-left font-black p-3">القيمة الإجمالية للمخزون (بسعر الشراء):</td>
+                            <td id="tableFooterTotalStock" class="p-3 text-emerald-800 font-black text-base">0.000 د.ت</td>
+                        </tr>
+                    </tfoot>
                 </table>
-            </div>
-
-            <div class="bg-emerald-50 p-4 rounded-2xl border-2 border-emerald-400 flex justify-between items-center">
-                <span class="text-sm font-black text-emerald-900">القيمة الإجمالية للمخزون (بسعر الشراء):</span>
-                <span id="totalStockValue" class="text-2xl font-black text-emerald-700">0.000 د.ت</span>
             </div>
 
             <button type="button" onclick="closeAdminWindow('stock')" class="w-full bg-slate-100 text-slate-700 py-2.5 rounded-xl font-bold text-sm">إغلاق</button>
@@ -618,7 +622,6 @@
                 <button type="button" onclick="closeAdminWindow('stats')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
             </div>
 
-            <!-- أزرار خيارات الفرز والترتيب -->
             <div class="flex items-center gap-2 bg-slate-100 p-2 rounded-2xl border border-slate-300 text-xs font-bold">
                 <span class="text-slate-600">ترتيب العرض:</span>
                 <button type="button" onclick="changeStatsSort('best')" id="btnSortBest" class="bg-indigo-600 text-white px-3 py-1.5 rounded-xl shadow-xs transition">
@@ -786,8 +789,14 @@
             const password = document.getElementById('regPassword').value.trim();
             if (!name || !phone || !password) { alert('الرجاء ملء كل البيانات.'); return; }
             try {
-                const docRef = await addDoc(collection(db, "vendeurs"), { name, phone, password });
-                window.currentVendeur = { id: docRef.id, name, phone };
+                const docRef = await addDoc(collection(db, "vendeurs"), { 
+                    name, 
+                    phone, 
+                    password,
+                    isActive: true, // مفعّل افتراضياً
+                    createdAt: new Date().toISOString()
+                });
+                window.currentVendeur = { id: docRef.id, name, phone, isActive: true };
                 localStorage.setItem('currentVendeur', JSON.stringify(window.currentVendeur));
                 window.showSystemNotification("تم التسجيل", "تم إنشاء الحساب بنجاح وشكرا!");
                 window.checkVendeurAuth();
@@ -804,6 +813,13 @@
                 if (!querySnapshot.empty) {
                     let vData;
                     querySnapshot.forEach(d => vData = { id: d.id, ...d.data() });
+                    
+                    // التحقق مما إذا كان الحساب موقوفاً من الأدمن
+                    if (vData.isActive === false) {
+                        alert('حسابك موقوف أو بانتظار تفعيل الاشتراك. يرجى التواصل مع الإدارة.');
+                        return;
+                    }
+
                     window.currentVendeur = vData;
                     localStorage.setItem('currentVendeur', JSON.stringify(window.currentVendeur));
                     window.checkVendeurAuth();
@@ -841,16 +857,44 @@
             win.document.close();
         };
 
-        window.exportTableToWhatsApp = function(tbodyId, reportTitle) {
-            let tbody = document.getElementById(tbodyId);
-            if (!tbody) return;
-            let rows = tbody.querySelectorAll('tr');
-            let text = `*${reportTitle} - Tunisie Recharge*\n\n`;
-            rows.forEach((row) => {
-                let cols = row.querySelectorAll('td');
-                if (cols.length >= 2) text += `- ${cols[0].innerText.trim()}: *${cols[1].innerText.trim()}*\n`;
-            });
-            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+        // الدالة الاحترافية لتحويل الجداول إلى صور وإرسالها للواتساب
+        window.exportTableAsImage = async function(containerId, title) {
+            const element = document.getElementById(containerId);
+            if (!element) return;
+
+            try {
+                const canvas = await html2canvas(element, {
+                    scale: 2,
+                    backgroundColor: "#ffffff",
+                    useCORS: true
+                });
+
+                canvas.toBlob(async (blob) => {
+                    const file = new File([blob], `${title}.png`, { type: "image/png" });
+
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        try {
+                            await navigator.share({
+                                files: [file],
+                                title: title,
+                                text: `*${title} - Tunisie Recharge*`
+                            });
+                            return;
+                        } catch (err) {
+                            console.log("تم إلغاء المشاركة أو غير مدعومة");
+                        }
+                    }
+
+                    const link = document.createElement("a");
+                    link.href = canvas.toDataURL("image/png");
+                    link.download = `${title}.png`;
+                    link.click();
+                    alert("تم حفظ الجدول كصورة بجهازك! يمكنك الآن إرسالها مباشرة كصورة عبر واتساب.");
+                }, "image/png");
+
+            } catch (error) {
+                alert("حدث خطأ أثناء إنشاء الصورة: " + error.message);
+            }
         };
 
         window.showSystemNotification = function(title, text) {
@@ -862,7 +906,6 @@
             document.getElementById('systemNotificationModal').classList.add('hidden');
         };
 
-        // قائمة المنتجات مضاف إليها الشحن الإلكتروني E-Recharge
         window.tariffs = [
             // أوريدو
             { id: 'Ooredoo_1', operator: 'Ooredoo', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 },
@@ -1240,7 +1283,6 @@
             if (tbody) tbody.innerHTML = html || '<tr><td colspan="2" class="text-center text-slate-400 py-4">لا توجد فواتير سابقة.</td></tr>';
         }
 
-        // تفاصيل الفاتورة كجدول رسمي مسطّر أفقياً وعمودياً
         window.openInvoiceDetailModal = function(invId) {
             let inv = window.allInvoices.find(item => item.id === invId);
             if (!inv) return;
@@ -1462,7 +1504,6 @@
                             if (!stockMap[key]) {
                                 stockMap[key] = { operator: item.operator || 'أخرى', name: item.name, buy: item.buy || 0, purchased: 0, sold: 0 };
                             }
-                            // إذا كان شحن مباشر/إلكتروني يطرح بالقيمة
                             let qtySold = (key.includes('Recharge') && item.price) ? item.price * (item.qty || 1) : (item.qty || 1);
                             stockMap[key].sold += qtySold;
                         });
@@ -1564,7 +1605,7 @@
             const statsTable = document.getElementById('salesStatsTableBody');
             if (statsTable) statsTable.innerHTML = statsHtml || '<tr><td colspan="3" class="text-center text-slate-400 py-4">لا توجد مبيعات مؤكدة للتجار بعد.</td></tr>';
 
-            // جرد المخزون النهائي المقسم
+            // جرد المخزون النهائي وتحديث سطر المجموع (الطوطال) داخل الجدول
             let stockHtml = '';
             let totalStockFinancialValue = 0;
             for (let k in stockMap) {
@@ -1589,8 +1630,9 @@
             const stockTable = document.getElementById('stockTableBody');
             if (stockTable) stockTable.innerHTML = stockHtml || '<tr><td colspan="5" class="text-center text-slate-400 py-4">لا توجد بيانات مخزون.</td></tr>';
             
-            const totalStockEl = document.getElementById('totalStockValue');
-            if (totalStockEl) totalStockEl.innerText = totalStockFinancialValue.toFixed(3) + ' د.ت';
+            // تحديث سطر المجموع في أسفل الجدول tfoot
+            const footerTotalEl = document.getElementById('tableFooterTotalStock');
+            if (footerTotalEl) footerTotalEl.innerText = totalStockFinancialValue.toFixed(3) + ' د.ت';
         }
 
         window.selectMainChoice = function(choice) {
