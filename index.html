@@ -8,6 +8,22 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ستايل إضافي لضمان ظهور الخطوط العمودية والأفقية في كل الجداول وعند الطباعة */
+        table.custom-grid {
+            border-collapse: collapse !important;
+            width: 100%;
+        }
+        table.custom-grid th, table.custom-grid td {
+            border: 1px solid #94a3b8 !important; /* لون رمادي متوسط وواضح */
+            padding: 8px 10px;
+        }
+        @media print {
+            table.custom-grid th, table.custom-grid td {
+                border: 1px solid #000 !important;
+            }
+        }
+    </style>
 </head>
 <body class="bg-slate-300 min-h-screen font-sans pb-12 text-slate-800">
 
@@ -171,7 +187,7 @@
                         <div class="bg-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold shadow-2xs">
                             <i class="fa-solid fa-file-invoice-dollar"></i>
                         </div>
-                        <span class="text-sm font-black">إدخال فاتورة شراء مخزون جديد والفواتير السابقة</span>
+                        <span class="text-sm font-black">إدخال فاتورة شراء مخزون جديد (بطاقات + شحن E-Recharge)</span>
                     </div>
                     <i class="fa-solid fa-chevron-left text-purple-700 text-xs"></i>
                 </button>
@@ -262,16 +278,16 @@
         </div>
     </div>
 
-    <!-- نافذة تفاصيل الفاتورة عند النقر عليها مع الطباعة -->
+    <!-- نافذة تفاصيل الفاتورة عند النقر عليها مع الطباعة المخططة أفقياً وعمودياً -->
     <div id="invoiceDetailModal" class="fixed inset-0 bg-black/70 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto space-y-4 border border-slate-300">
+        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
                 <h4 id="invoiceDetailModalTitle" class="font-bold text-lg text-slate-900"><i class="fa-solid fa-file-invoice text-indigo-600 ml-2"></i> تفاصيل الفاتورة</h4>
                 <button type="button" onclick="closeInvoiceDetailModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
             </div>
             <div id="invoiceDetailModalContent" class="space-y-3 text-xs"></div>
             <div class="flex gap-2 pt-2">
-                <button type="button" onclick="printSingleInvoice()" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white py-2.5 rounded-xl font-bold text-xs"><i class="fa-solid fa-print ml-1"></i> طباعة الفاتورة</button>
+                <button type="button" onclick="printSingleInvoice()" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white py-2.5 rounded-xl font-bold text-xs"><i class="fa-solid fa-print ml-1"></i> طباعة الفاتورة كجدول</button>
                 <button type="button" onclick="closeInvoiceDetailModal()" class="flex-1 bg-slate-200 text-slate-700 py-2.5 rounded-xl font-bold text-xs">إغلاق</button>
             </div>
         </div>
@@ -306,9 +322,9 @@
         </div>
     </div>
 
-    <!-- نافذة المداخيل والمرابيح (الروسيت) ملونة وواضحة -->
+    <!-- نافذة المداخيل والمرابيح (الروسيت) بأسطر أفقية وعمودية -->
     <div id="recetteModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto space-y-4 border border-slate-300">
+        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
                 <h3 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-chart-line text-amber-600 ml-2"></i> المداخيل والمرابيح (الروسيت)</h3>
                 <button type="button" onclick="closeRecetteModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
@@ -332,9 +348,9 @@
 
             <div id="sectionRecetteDays" class="space-y-2">
                 <div class="flex justify-between items-center">
-                    <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الأيام (مفصل):</h5>
+                    <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الأيام (مفصل ومسطّر):</h5>
                     <div class="flex gap-1.5">
-                        <button type="button" onclick="printReportTable('recetteDaysTableBody', 'تقرير روسيت الأيام')" class="bg-slate-800 hover:bg-slate-900 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
+                        <button type="button" onclick="printReportTable('recetteDaysTableContainer', 'تقرير روسيت الأيام')" class="bg-slate-800 hover:bg-slate-900 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
                             <i class="fa-solid fa-print"></i> طباعة / حفظ
                         </button>
                         <button type="button" onclick="exportTableToWhatsApp('recetteDaysTableBody', 'تقرير روسيت الأيام')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
@@ -342,15 +358,15 @@
                         </button>
                     </div>
                 </div>
-                <div class="overflow-x-auto max-h-60 overflow-y-auto border-2 border-slate-300 rounded-2xl shadow-inner bg-white">
-                    <table class="w-full text-right border-collapse text-xs">
+                <div id="recetteDaysTableContainer" class="overflow-x-auto max-h-60 overflow-y-auto border-2 border-slate-400 rounded-2xl shadow-inner bg-white">
+                    <table class="custom-grid w-full text-right text-xs">
                         <thead>
-                            <tr class="bg-slate-100 text-slate-700 border-b-2 border-slate-300 font-black">
-                                <th class="p-3 border-l border-slate-300">اليوم (التاريخ)</th>
+                            <tr class="bg-slate-200 text-slate-800 font-black">
+                                <th class="p-3">اليوم (التاريخ)</th>
                                 <th class="p-3">قيمة الروسيت اليومية</th>
                             </tr>
                         </thead>
-                        <tbody id="recetteDaysTableBody" class="divide-y divide-slate-200">
+                        <tbody id="recetteDaysTableBody">
                             <tr><td colspan="2" class="text-center text-slate-400 py-4">لا توجد مبيعات.</td></tr>
                         </tbody>
                     </table>
@@ -361,7 +377,7 @@
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الشهور:</h5>
                     <div class="flex gap-1.5">
-                        <button type="button" onclick="printReportTable('recetteMonthsTableBody', 'تقرير روسيت الشهور')" class="bg-slate-800 hover:bg-slate-900 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
+                        <button type="button" onclick="printReportTable('recetteMonthsTableContainer', 'تقرير روسيت الشهور')" class="bg-slate-800 hover:bg-slate-900 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
                             <i class="fa-solid fa-print"></i> طباعة / حفظ
                         </button>
                         <button type="button" onclick="exportTableToWhatsApp('recetteMonthsTableBody', 'تقرير روسيت الشهور')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
@@ -369,15 +385,15 @@
                         </button>
                     </div>
                 </div>
-                <div class="overflow-x-auto max-h-60 overflow-y-auto border-2 border-slate-300 rounded-2xl shadow-inner bg-white">
-                    <table class="w-full text-right border-collapse text-xs">
+                <div id="recetteMonthsTableContainer" class="overflow-x-auto max-h-60 overflow-y-auto border-2 border-slate-400 rounded-2xl shadow-inner bg-white">
+                    <table class="custom-grid w-full text-right text-xs">
                         <thead>
-                            <tr class="bg-slate-100 text-slate-700 border-b-2 border-slate-300 font-black">
-                                <th class="p-3 border-l border-slate-300">الشهر</th>
+                            <tr class="bg-slate-200 text-slate-800 font-black">
+                                <th class="p-3">الشهر</th>
                                 <th class="p-3">قيمة الروسيت الشهرية</th>
                             </tr>
                         </thead>
-                        <tbody id="recetteMonthsTableBody" class="divide-y divide-slate-200">
+                        <tbody id="recetteMonthsTableBody">
                             <tr><td colspan="2" class="text-center text-slate-400 py-4">لا توجد مبيعات.</td></tr>
                         </tbody>
                     </table>
@@ -484,16 +500,16 @@
                     <label class="block text-xs font-bold text-slate-700 mb-1">المبلغ المدفوع كاش:</label>
                     <input type="number" id="validerPaidAmount" placeholder="0.000 د.ت" class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
                 </div>
-                <button type="button" onclick="confirmAndValidateOrder()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold shadow-sm transition">تأكيد وإتمام الطلبية (تأكيد)</button>
+                <button type="button" onclick="confirmAndValidateOrder()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold shadow-sm transition">تأكيد وإتمام الطلبية</button>
             </div>
         </div>
     </div>
 
-    <!-- نافذة إدارة الفواتير وشراء المخزون -->
+    <!-- نافذة إدارة الفواتير وشراء المخزون (تحتوي على البطاقات + شحن E-Recharge) -->
     <div id="windowInvoice" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto space-y-6 border border-slate-300">
+        <div class="bg-white p-6 rounded-3xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto space-y-6 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
-                <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-file-invoice-dollar text-indigo-600 ml-2"></i> إدارة فواتير الشراء</h4>
+                <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-file-invoice-dollar text-indigo-600 ml-2"></i> إدارة فواتير الشراء وإضافة المخزون</h4>
                 <button type="button" onclick="closeAdminWindow('invoice')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
             </div>
 
@@ -503,23 +519,25 @@
             </div>
 
             <div id="sectionNewInvoice" class="space-y-4">
-                <p class="text-xs text-slate-500">قم بإدخال سعر الشراء والكمية لكل منتج، ثم اضغط على حفظ الفاتورة:</p>
+                <p class="text-xs text-slate-600 font-bold bg-slate-100 p-2.5 rounded-xl border border-slate-300">
+                    <i class="fa-solid fa-circle-info text-indigo-600 ml-1"></i> أدخل سعر الشراء والكمية لكل منتج (بطاقات الشحن أو رصيد الشحن الإلكتروني E-Recharge)، ثم اضغط حفظ الفاتورة:
+                </p>
                 <div class="space-y-3 max-h-96 overflow-y-auto pr-1" id="invoiceProductsListContainer"></div>
 
-                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex justify-between items-center sticky bottom-0 bg-white shadow-md">
+                <div class="bg-slate-100 p-4 rounded-2xl border-2 border-slate-300 flex justify-between items-center sticky bottom-0 bg-white shadow-md">
                     <div>
-                        <span class="text-xs text-slate-600">المجموع الجملي لفاتورة الشراء:</span>
-                        <span id="invoiceTotalBuyCost" class="text-xl font-black text-indigo-600 mr-2">0.000 د.ت</span>
+                        <span class="text-xs text-slate-600 font-bold">المجموع الجملي لفاتورة الشراء:</span>
+                        <span id="invoiceTotalBuyCost" class="text-xl font-black text-indigo-700 mr-2">0.000 د.ت</span>
                     </div>
-                    <button type="button" onclick="saveNewStockInvoiceBatch()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-sm transition">حفظ الفاتورة وإضافة للمخزون</button>
+                    <button type="button" onclick="saveNewStockInvoiceBatch()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-md transition">حفظ الفاتورة وإضافة للمخزون</button>
                 </div>
             </div>
 
             <div id="sectionListInvoice" class="space-y-3 hidden">
                 <div class="flex justify-between items-center">
-                    <h5 class="font-bold text-xs text-slate-700">جميع الفواتير السابقة (انقر على الفاتورة للتفاصيل):</h5>
+                    <h5 class="font-bold text-xs text-slate-700">جميع الفواتير السابقة (مخططة - انقر على الفاتورة للتفاصيل):</h5>
                     <div class="flex gap-1.5">
-                        <button type="button" onclick="printReportTable('invoicesHistoryTableBody', 'قائمة جميع الفواتير السابقة')" class="bg-slate-800 hover:bg-slate-900 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
+                        <button type="button" onclick="printReportTable('invoicesHistoryTableContainer', 'قائمة جميع الفواتير السابقة')" class="bg-slate-800 hover:bg-slate-900 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
                             <i class="fa-solid fa-print"></i> طباعة / حفظ
                         </button>
                         <button type="button" onclick="exportTableToWhatsApp('invoicesHistoryTableBody', 'قائمة الفواتير السابقة')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
@@ -527,15 +545,15 @@
                         </button>
                     </div>
                 </div>
-                <div class="overflow-x-auto border-2 border-slate-300 rounded-2xl shadow-inner bg-white">
-                    <table class="w-full text-right border-collapse text-xs">
+                <div id="invoicesHistoryTableContainer" class="overflow-x-auto border-2 border-slate-400 rounded-2xl shadow-inner bg-white">
+                    <table class="custom-grid w-full text-right text-xs">
                         <thead>
-                            <tr class="bg-slate-200 text-slate-700 border-b-2 border-slate-300 font-black">
-                                <th class="p-3 border-l border-slate-300">رقم الفاتورة / التاريخ</th>
+                            <tr class="bg-slate-200 text-slate-800 font-black">
+                                <th class="p-3">رقم الفاتورة / التاريخ</th>
                                 <th class="p-3">إجمالي مبلغ الفاتورة</th>
                             </tr>
                         </thead>
-                        <tbody id="invoicesHistoryTableBody" class="divide-y divide-slate-300">
+                        <tbody id="invoicesHistoryTableBody">
                             <tr><td colspan="2" class="text-center text-slate-400 py-4">لا توجد فواتير مسجلة بعد.</td></tr>
                         </tbody>
                     </table>
@@ -546,46 +564,46 @@
         </div>
     </div>
 
-    <!-- نافذة تقرير المخزون النهائي -->
+    <!-- نافذة تقرير المخزون النهائي المقسمة بالأسطر الأفقية والعمودية -->
     <div id="windowStock" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto space-y-6 border border-slate-300">
+        <div class="bg-white p-6 rounded-3xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto space-y-6 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
-                <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-warehouse text-emerald-600 ml-2"></i> تقرير المخزون النهائي</h4>
+                <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-warehouse text-emerald-600 ml-2"></i> تقرير المخزون النهائي (جرد المخزون)</h4>
                 <button type="button" onclick="closeAdminWindow('stock')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
             </div>
 
             <div class="flex justify-between items-center">
-                <span class="text-xs text-slate-500 font-bold">جرد المخزون الحالي بالقطعة والقيمة:</span>
+                <span class="text-xs text-slate-600 font-bold">جرد المخزون الحالي بالقطعة والرصيد وقيمة الشراء:</span>
                 <div class="flex gap-1.5">
-                    <button type="button" onclick="printReportTable('stockTableBody', 'تقرير المخزون النهائي')" class="bg-slate-800 hover:bg-slate-900 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
-                        <i class="fa-solid fa-print"></i> طباعة / حفظ
+                    <button type="button" onclick="printReportTable('stockTableContainer', 'تقرير المخزون النهائي')" class="bg-slate-800 hover:bg-slate-900 text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-2xs">
+                        <i class="fa-solid fa-print"></i> طباعة كجدول رسمي
                     </button>
-                    <button type="button" onclick="exportTableToWhatsApp('stockTableBody', 'تقرير المخزون النهائي')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
+                    <button type="button" onclick="exportTableToWhatsApp('stockTableBody', 'تقرير المخزون النهائي')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-2xs">
                         <i class="fa-brands fa-whatsapp"></i> واتساب
                     </button>
                 </div>
             </div>
 
-            <div class="overflow-x-auto border-2 border-slate-300 rounded-2xl shadow-inner bg-white">
-                <table class="w-full text-right border-collapse text-xs">
+            <div id="stockTableContainer" class="overflow-x-auto border-2 border-slate-400 rounded-2xl shadow-inner bg-white">
+                <table class="custom-grid w-full text-right text-xs">
                     <thead>
-                        <tr class="bg-slate-200 text-slate-700 border-b-2 border-slate-300 font-black">
-                            <th class="p-3 border-l border-slate-300">المشغل</th>
-                            <th class="p-3 border-l border-slate-300">المنتج / البطاقة</th>
-                            <th class="p-3 border-l border-slate-300">سعر الشراء</th>
-                            <th class="p-3 border-l border-slate-300">المشتريات</th>
-                            <th class="p-3">المخزون المتبقي</th>
+                        <tr class="bg-slate-200 text-slate-900 font-black">
+                            <th>المشغل</th>
+                            <th>المنتج / البطاقة / الشحن</th>
+                            <th>سعر الشراء</th>
+                            <th>المشتريات الإجمالية</th>
+                            <th>المخزون المتبقي</th>
                         </tr>
                     </thead>
-                    <tbody id="stockTableBody" class="divide-y divide-slate-300">
+                    <tbody id="stockTableBody">
                         <tr><td colspan="5" class="text-center text-slate-400 py-4">جاري حساب المخزون...</td></tr>
                     </tbody>
                 </table>
             </div>
 
-            <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-300 flex justify-between items-center">
-                <span class="text-sm font-bold text-emerald-800">القيمة الإجمالية للمخزون (بسعر الشراء):</span>
-                <span id="totalStockValue" class="text-xl font-black text-emerald-700">0.000 د.ت</span>
+            <div class="bg-emerald-50 p-4 rounded-2xl border-2 border-emerald-400 flex justify-between items-center">
+                <span class="text-sm font-black text-emerald-900">القيمة الإجمالية للمخزون (بسعر الشراء):</span>
+                <span id="totalStockValue" class="text-2xl font-black text-emerald-700">0.000 د.ت</span>
             </div>
 
             <button type="button" onclick="closeAdminWindow('stock')" class="w-full bg-slate-100 text-slate-700 py-2.5 rounded-xl font-bold text-sm">إغلاق</button>
@@ -611,16 +629,16 @@
                 </button>
             </div>
 
-            <div class="overflow-x-auto border-2 border-slate-300 rounded-2xl shadow-inner bg-white">
-                <table class="w-full text-right border-collapse text-xs">
+            <div id="salesStatsTableContainer" class="overflow-x-auto border-2 border-slate-400 rounded-2xl shadow-inner bg-white">
+                <table class="custom-grid w-full text-right text-xs">
                     <thead>
-                        <tr class="bg-slate-200 text-slate-700 border-b-2 border-slate-300 font-black">
-                            <th class="p-3 border-l border-slate-300">الترتيب / اسم الحانوت</th>
-                            <th class="p-3 border-l border-slate-300">عدد الطلبيات المؤكدة</th>
-                            <th class="p-3">إجمالي المشتريات بالدينار</th>
+                        <tr class="bg-slate-200 text-slate-800 font-black">
+                            <th>الترتيب / اسم الحانوت</th>
+                            <th>عدد الطلبيات المؤكدة</th>
+                            <th>إجمالي المشتريات بالدينار</th>
                         </tr>
                     </thead>
-                    <tbody id="salesStatsTableBody" class="divide-y divide-slate-300">
+                    <tbody id="salesStatsTableBody">
                         <tr><td colspan="3" class="text-center text-slate-400 py-4">لا توجد إحصائيات مبيعات بعد.</td></tr>
                     </tbody>
                 </table>
@@ -629,7 +647,7 @@
         </div>
     </div>
 
-    <!-- نافذة البيع المباشر (POS) بنظام السبحة الملونة ومطابقة لفضاء التاجر -->
+    <!-- نافذة البيع المباشر (POS) بنظام السبحة الملونة -->
     <div id="windowPos" class="admin-window fixed inset-0 bg-slate-950/70 backdrop-blur-xs hidden flex items-center justify-center z-40 p-2 md:p-6 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-4xl w-full h-[95vh] flex flex-col justify-between overflow-hidden border border-slate-300">
             <div class="overflow-y-auto pr-1 flex-1 space-y-4">
@@ -660,7 +678,6 @@
                     <input type="number" step="0.001" id="posPaidAmountInput" placeholder="0.000 د.ت" class="w-full border border-amber-300 p-3 rounded-xl text-sm font-bold bg-white">
                 </div>
 
-                <!-- أزرار المشغلين الكبيرة الملونة -->
                 <div class="grid grid-cols-3 gap-3">
                     <button type="button" onclick="selectPosOperator('Ooredoo')" id="btnPosOoredoo" class="py-4 rounded-2xl font-black text-sm bg-red-50 text-red-600 hover:bg-red-100 border-2 border-red-500 shadow-sm transition flex flex-col items-center justify-center gap-1">
                         <i class="fa-solid fa-signal text-lg"></i> أوريدو
@@ -675,13 +692,11 @@
 
                 <div id="posProductsSection" class="hidden space-y-4 border-t pt-3 border-slate-200">
                     <h5 id="posSelectedOperatorTitle" class="font-bold text-slate-700 text-xs"></h5>
-                    
-                    <!-- شبكة البطاقات بنظام السبحة الملونة -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="posCardsGrid"></div>
 
                     <!-- خانة الشحن المباشر -->
                     <div class="bg-slate-50 p-4 rounded-2xl border border-slate-300 space-y-2 mt-2">
-                        <label class="block text-xs font-bold text-slate-700"><i class="fa-solid fa-bolt text-amber-500 ml-1"></i> الشحن المباشر (اكتب القيمة مباشرة):</label>
+                        <label class="block text-xs font-bold text-slate-700"><i class="fa-solid fa-bolt text-amber-500 ml-1"></i> الشحن المباشر / الإلكتروني (اكتب القيمة مباشرة):</label>
                         <div class="flex gap-2">
                             <input type="number" id="posDirectRechargeInput" placeholder="أدخل القيمة بالدينار (مثال: 15)..." class="flex-1 border border-slate-300 p-3 rounded-xl text-sm font-bold bg-white">
                             <button type="button" onclick="addPosDirectRecharge()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 rounded-xl font-bold text-xs shadow-sm transition">إضافة للقفة</button>
@@ -729,7 +744,7 @@
         window.allInvoices = [];
         window.currentActiveInvoice = null;
         window.currentPayingClient = null;
-        window.statsSortMode = 'best'; // 'best' or 'name'
+        window.statsSortMode = 'best';
 
         document.addEventListener('change', function(e) {
             if (e.target && e.target.id === 'posPaymentStatus') {
@@ -818,11 +833,11 @@
             }
         };
 
-        window.printReportTable = function(tbodyId, title) {
-            let tbody = document.getElementById(tbodyId);
-            if (!tbody) return;
+        window.printReportTable = function(containerId, title) {
+            let container = document.getElementById(containerId);
+            if (!container) return;
             let win = window.open('', '_blank');
-            win.document.write(`<html lang="ar" dir="rtl"><head><title>${title}</title><style>body{font-family:Tahoma;padding:20px;text-align:right;}table{width:100%;border-collapse:collapse;}th,td{border:1px solid #cbd5e1;padding:10px;font-size:13px;}</style></head><body><h2>${title}</h2><table><tbody>${tbody.innerHTML}</tbody></table><script>window.print()<\/script></body></html>`);
+            win.document.write(`<html lang="ar" dir="rtl"><head><title>${title}</title><style>body{font-family:Tahoma,sans-serif;padding:25px;text-align:right;}table{width:100%;border-collapse:collapse;margin-top:15px;}th,td{border:1px solid #334155 !important;padding:10px;font-size:13px;}th{background-color:#f1f5f9;}</style></head><body><h2>${title}</h2>${container.innerHTML}<script>window.print()<\/script></body></html>`);
             win.document.close();
         };
 
@@ -847,21 +862,28 @@
             document.getElementById('systemNotificationModal').classList.add('hidden');
         };
 
+        // قائمة المنتجات مضاف إليها الشحن الإلكتروني E-Recharge
         window.tariffs = [
+            // أوريدو
             { id: 'Ooredoo_1', operator: 'Ooredoo', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 },
             { id: 'Ooredoo_5', operator: 'Ooredoo', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 },
             { id: 'Ooredoo_10', operator: 'Ooredoo', name: 'بطاقة 10 د.ت', buy: 9.500, sell: 10.000 },
             { id: 'Ooredoo_25', operator: 'Ooredoo', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 },
+            { id: 'Ooredoo_Recharge', operator: 'Ooredoo', name: 'شحن إلكتروني (E-Recharge / Light)', buy: 0.960, sell: 1.000 },
             
+            // تيليكوم
             { id: 'Telecom_1', operator: 'Telecom', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 },
             { id: 'Telecom_5', operator: 'Telecom', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 },
             { id: 'Telecom_10', operator: 'Telecom', name: 'بطاقة 10 د.ت', buy: 9.500, sell: 10.000 },
             { id: 'Telecom_25', operator: 'Telecom', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 },
+            { id: 'Telecom_Recharge', operator: 'Telecom', name: 'شحن إلكتروني (E-Recharge / TT Cash)', buy: 0.960, sell: 1.000 },
 
+            // أورنج
             { id: 'Orange_1', operator: 'Orange', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 },
             { id: 'Orange_5', operator: 'Orange', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 },
             { id: 'Orange_10', operator: 'Orange', name: 'بطاقة 10 د.ت', buy: 9.500, sell: 10.000 },
-            { id: 'Orange_25', operator: 'Orange', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 }
+            { id: 'Orange_25', operator: 'Orange', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 },
+            { id: 'Orange_Recharge', operator: 'Orange', name: 'شحن إلكتروني (E-Recharge / Orange)', buy: 0.960, sell: 1.000 }
         ];
 
         window.openAddClientModal = () => document.getElementById('addClientModal').classList.remove('hidden');
@@ -997,7 +1019,6 @@
             });
         }
 
-        // عرض قائمة ديون الكريدي مع زر خلاص الدين المباشر
         function renderCreditsList() {
             let container = document.getElementById('creditsListContainer');
             if (!container) return;
@@ -1043,7 +1064,6 @@
             container.innerHTML = hasCredit ? html : '<p class="text-emerald-700 bg-emerald-50 p-4 rounded-2xl border border-emerald-300 text-center text-xs font-bold">لا توجد ديون كريدي على أي حانوت حالياً، كل الحسابات خالصة!</p>';
         }
 
-        // فتح نافذة دفع الدين
         window.openPayCreditModal = function(clientName, currentCredit) {
             window.currentPayingClient = { name: clientName, credit: currentCredit };
             document.getElementById('payCreditClientName').innerText = `الحانوت: ${clientName}`;
@@ -1057,7 +1077,6 @@
             window.currentPayingClient = null;
         };
 
-        // تنفيذ دفع الدين وتوزيعه على طلبيات الكريدي بالتسلسل
         window.submitPayCredit = async function() {
             if (!window.currentPayingClient) return;
             let payAmount = parseFloat(document.getElementById('payCreditAmountInput').value) || 0;
@@ -1069,7 +1088,7 @@
             let remainingToDeduct = payAmount;
             let clientOrders = window.allOrders
                 .filter(o => o.clientName === window.currentPayingClient.name && o.creditAmount && o.creditAmount > 0)
-                .sort((a, b) => new Date(a.date) - new Date(b.date)); // الأقدم فالأحدث
+                .sort((a, b) => new Date(a.date) - new Date(b.date));
 
             try {
                 for (let o of clientOrders) {
@@ -1136,16 +1155,21 @@
         function renderInvoiceForm() {
             let html = '';
             window.tariffs.forEach(t => {
+                let isRecharge = t.id.includes('Recharge');
+                let badge = isRecharge ? '<span class="bg-indigo-100 text-indigo-800 text-[10px] px-2 py-0.5 rounded-md font-bold mr-1">شحن رصيد إلكتروني</span>' : '';
                 html += `
-                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-300 grid grid-cols-1 md:grid-cols-3 gap-2 items-center text-xs">
-                        <div><span class="font-bold text-slate-900">${t.operator} - ${t.name}</span></div>
+                    <div class="bg-white p-3.5 rounded-2xl border-2 border-slate-300 grid grid-cols-1 md:grid-cols-3 gap-2 items-center text-xs shadow-2xs">
                         <div>
-                            <label class="block text-[10px] text-slate-500 mb-0.5">سعر الشراء:</label>
-                            <input type="number" step="0.001" value="${t.buy}" id="inv_buy_${t.id}" oninput="calcInvoiceTotal()" class="w-full border border-slate-300 p-2 rounded-xl text-center font-bold bg-white">
+                            <span class="font-black text-slate-900 block">${t.operator} - ${t.name}</span>
+                            ${badge}
                         </div>
                         <div>
-                            <label class="block text-[10px] text-slate-500 mb-0.5">الكمية:</label>
-                            <input type="number" min="0" value="0" id="inv_qty_${t.id}" oninput="calcInvoiceTotal()" class="w-full border border-slate-300 p-2 rounded-xl text-center font-bold bg-white">
+                            <label class="block text-[10px] text-slate-500 mb-0.5 font-bold">سعر الشراء للوحدة (د.ت):</label>
+                            <input type="number" step="0.001" value="${t.buy}" id="inv_buy_${t.id}" oninput="calcInvoiceTotal()" class="w-full border border-slate-300 p-2 rounded-xl text-center font-bold bg-slate-50">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-500 mb-0.5 font-bold">${isRecharge ? 'قيمة الرصيد المشترى (د.ت):' : 'الكمية (عدد البطاقات):'}</label>
+                            <input type="number" min="0" value="0" id="inv_qty_${t.id}" oninput="calcInvoiceTotal()" class="w-full border border-slate-300 p-2 rounded-xl text-center font-bold bg-slate-50">
                         </div>
                     </div>
                 `;
@@ -1160,7 +1184,7 @@
                 let qtyInput = document.getElementById(`inv_qty_${t.id}`);
                 let buyInput = document.getElementById(`inv_buy_${t.id}`);
                 if (qtyInput && buyInput) {
-                    let qty = parseInt(qtyInput.value) || 0;
+                    let qty = parseFloat(qtyInput.value) || 0;
                     let buyPrice = parseFloat(buyInput.value) || 0;
                     total += qty * buyPrice;
                 }
@@ -1175,7 +1199,7 @@
                 let qtyInput = document.getElementById(`inv_qty_${t.id}`);
                 let buyInput = document.getElementById(`inv_buy_${t.id}`);
                 if (qtyInput && buyInput) {
-                    let qty = parseInt(qtyInput.value) || 0;
+                    let qty = parseFloat(qtyInput.value) || 0;
                     let buyPrice = parseFloat(buyInput.value) || t.buy;
                     if (qty > 0) {
                         itemsToSave.push({ ...t, buy: buyPrice, qty });
@@ -1183,7 +1207,7 @@
                     }
                 }
             });
-            if (itemsToSave.length === 0) { alert('الرجاء إدخال كمية لمنتج واحد على الأقل.'); return; }
+            if (itemsToSave.length === 0) { alert('الرجاء إدخال كمية أو رصيد لمنتج واحد على الأقل.'); return; }
             try {
                 await addDoc(collection(db, "invoices"), {
                     vendeurId: window.currentVendeur.id,
@@ -1191,7 +1215,7 @@
                     totalCost: totalInvoiceCost,
                     date: new Date().toISOString()
                 });
-                window.showSystemNotification("نجاح الحفظ", "تم حفظ فاتورة المخزون بنجاح وشكرا لك!");
+                window.showSystemNotification("نجاح الحفظ", "تم حفظ فاتورة المخزون بنجاح وإضافتها للستوك!");
                 renderInvoiceForm();
                 calcInvoiceTotal();
                 window.closeAdminWindow('invoice');
@@ -1204,11 +1228,11 @@
                 let dateStr = inv.date ? new Date(inv.date).toLocaleString() : 'تاريخ غير محدد';
                 let total = inv.totalCost || 0;
                 html += `
-                    <tr class="border-b border-slate-300 text-xs hover:bg-slate-50">
-                        <td onclick="openInvoiceDetailModal('${inv.id}')" class="p-3 font-bold text-indigo-700 border-l border-slate-300 cursor-pointer hover:underline">
-                            <i class="fa-solid fa-file-invoice ml-1"></i> فاتورة #${index + 1} (${dateStr})
+                    <tr class="hover:bg-slate-50">
+                        <td onclick="openInvoiceDetailModal('${inv.id}')" class="font-bold text-indigo-700 cursor-pointer hover:underline">
+                            <i class="fa-solid fa-file-invoice ml-1"></i> فاتورة شراء #${index + 1} (${dateStr})
                         </td>
-                        <td class="p-3 font-black text-indigo-600">${total.toFixed(3)} د.ت</td>
+                        <td class="font-black text-indigo-600">${total.toFixed(3)} د.ت</td>
                     </tr>
                 `;
             });
@@ -1216,25 +1240,44 @@
             if (tbody) tbody.innerHTML = html || '<tr><td colspan="2" class="text-center text-slate-400 py-4">لا توجد فواتير سابقة.</td></tr>';
         }
 
+        // تفاصيل الفاتورة كجدول رسمي مسطّر أفقياً وعمودياً
         window.openInvoiceDetailModal = function(invId) {
             let inv = window.allInvoices.find(item => item.id === invId);
             if (!inv) return;
             window.currentActiveInvoice = inv;
-            let itemsHtml = '<ul class="space-y-1.5 bg-slate-50 p-3 rounded-2xl border border-slate-300">';
+            let rowsHtml = '';
             if (inv.items && Array.isArray(inv.items)) {
                 inv.items.forEach(i => {
-                    itemsHtml += `<li class="flex justify-between items-center text-xs font-bold text-slate-800 border-b pb-1 border-slate-200">
-                        <span>${i.operator} - ${i.name}</span>
-                        <span>${i.qty} قطع × ${i.buy.toFixed(3)} د.ت = ${(i.qty * i.buy).toFixed(3)} د.ت</span>
-                    </li>`;
+                    let totalLine = i.qty * i.buy;
+                    rowsHtml += `
+                        <tr>
+                            <td class="font-bold text-slate-800">${i.operator} - ${i.name}</td>
+                            <td class="text-center font-bold">${i.qty}</td>
+                            <td class="text-center">${i.buy.toFixed(3)} د.ت</td>
+                            <td class="text-center font-bold text-emerald-700">${totalLine.toFixed(3)} د.ت</td>
+                        </tr>
+                    `;
                 });
             }
-            itemsHtml += '</ul>';
 
             document.getElementById('invoiceDetailModalContent').innerHTML = `
-                <p class="font-bold text-slate-900">التاريخ: ${new Date(inv.date).toLocaleString()}</p>
-                <p class="font-black text-indigo-600 text-sm">إجمالي الفاتورة: ${(inv.totalCost || 0).toFixed(3)} د.ت</p>
-                <div class="mt-2"><p class="font-bold text-slate-700 mb-1">تفاصيل المنتجات المشتراة:</p>${itemsHtml}</div>
+                <div class="bg-slate-100 p-3 rounded-xl border border-slate-300 space-y-1 mb-2">
+                    <p class="font-bold text-slate-900">تاريخ الفاتورة: ${new Date(inv.date).toLocaleString()}</p>
+                    <p class="font-black text-indigo-700 text-sm">المجموع الجملي للفاتورة: ${(inv.totalCost || 0).toFixed(3)} د.ت</p>
+                </div>
+                <div class="overflow-x-auto border-2 border-slate-400 rounded-xl bg-white">
+                    <table class="custom-grid w-full text-right text-xs">
+                        <thead>
+                            <tr class="bg-slate-200 text-slate-800 font-black">
+                                <th>اسم المنتج / الصنف</th>
+                                <th>الكمية / الرصيد</th>
+                                <th>سعر الشراء</th>
+                                <th>المجموع</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rowsHtml}</tbody>
+                    </table>
+                </div>
             `;
             document.getElementById('invoiceDetailModal').classList.remove('hidden');
         };
@@ -1247,7 +1290,7 @@
         window.printSingleInvoice = function() {
             if (!window.currentActiveInvoice) return;
             let win = window.open('', '_blank');
-            win.document.write(`<html lang="ar" dir="rtl"><head><title>فاتورة شراء مخزون</title><style>body{font-family:Tahoma;padding:20px;text-align:right;}ul{list-style:none;padding:0;}li{border-bottom:1px solid #ccc;padding:8px 0;}</style></head><body><h2>فاتورة شراء مخزون</h2>${document.getElementById('invoiceDetailModalContent').innerHTML}<script>window.print()<\/script></body></html>`);
+            win.document.write(`<html lang="ar" dir="rtl"><head><title>فاتورة شراء مخزون</title><style>body{font-family:Tahoma,sans-serif;padding:25px;text-align:right;}table{width:100%;border-collapse:collapse;margin-top:15px;}th,td{border:1px solid #334155 !important;padding:8px 10px;font-size:12px;}th{background-color:#f1f5f9;}</style></head><body><h2>فاتورة شراء مخزون كروت ورصيد</h2>${document.getElementById('invoiceDetailModalContent').innerHTML}<script>window.print()<\/script></body></html>`);
             win.document.close();
         };
 
@@ -1350,11 +1393,10 @@
             if (name.includes('5 د.ت') || item.id === '5' || item.id === `${op}_5`) return `${op}_5`;
             if (name.includes('10 د.ت') || item.id === '10' || item.id === `${op}_10`) return `${op}_10`;
             if (name.includes('25 د.ت') || item.id === '25' || item.id === `${op}_25`) return `${op}_25`;
-            if (name.includes('شحن مباشر') || (item.id && item.id.includes('Direct'))) return `${op}_Recharge`;
+            if (name.includes('شحن مباشر') || name.includes('إلكتروني') || (item.id && item.id.includes('Recharge')) || (item.id && item.id.includes('Direct'))) return `${op}_Recharge`;
             return item.id || `${op}_${name}`;
         }
 
-        // فرز وترتيب إحصائيات المبيعات
         window.changeStatsSort = function(mode) {
             window.statsSortMode = mode;
             let btnBest = document.getElementById('btnSortBest');
@@ -1389,7 +1431,7 @@
                         if (!stockMap[key]) {
                             stockMap[key] = { operator: item.operator, name: item.name, buy: item.buy, purchased: 0, sold: 0 };
                         }
-                        stockMap[key].purchased += item.qty;
+                        stockMap[key].purchased += parseFloat(item.qty) || 0;
                         stockMap[key].buy = item.buy;
                     });
                 }
@@ -1420,7 +1462,9 @@
                             if (!stockMap[key]) {
                                 stockMap[key] = { operator: item.operator || 'أخرى', name: item.name, buy: item.buy || 0, purchased: 0, sold: 0 };
                             }
-                            stockMap[key].sold += (item.qty || 1);
+                            // إذا كان شحن مباشر/إلكتروني يطرح بالقيمة
+                            let qtySold = (key.includes('Recharge') && item.price) ? item.price * (item.qty || 1) : (item.qty || 1);
+                            stockMap[key].sold += qtySold;
                         });
                     }
                 } else {
@@ -1450,9 +1494,9 @@
                 let dayKey = `${year}-${mStr}-${dStr}`;
                 let val = daysRecetteMap[dayKey] || 0;
                 daysHtml += `
-                    <tr class="border-b border-slate-200 hover:bg-slate-50">
-                        <td class="p-3 font-bold text-slate-800 border-l border-slate-200">${dayKey}</td>
-                        <td class="p-3 font-black text-emerald-600">${val.toFixed(3)} د.ت</td>
+                    <tr class="hover:bg-slate-50">
+                        <td class="font-bold text-slate-800">${dayKey}</td>
+                        <td class="font-black text-emerald-600">${val.toFixed(3)} د.ت</td>
                     </tr>
                 `;
             }
@@ -1480,9 +1524,9 @@
                 let displayStr = `${mName} ${parts[0]}`;
                 let val = monthsRecetteMap[m] || 0;
                 monthsHtml += `
-                    <tr class="border-b border-slate-200 hover:bg-slate-50">
-                        <td class="p-3 font-bold text-slate-800 border-l border-slate-200">${displayStr}</td>
-                        <td class="p-3 font-black text-indigo-600">${val.toFixed(3)} د.ت</td>
+                    <tr class="hover:bg-slate-50">
+                        <td class="font-bold text-slate-800">${displayStr}</td>
+                        <td class="font-black text-indigo-600">${val.toFixed(3)} د.ت</td>
                     </tr>
                 `;
             });
@@ -1492,7 +1536,6 @@
             const oContainer = document.getElementById('ordersListContainer');
             if (oContainer) oContainer.innerHTML = ordersHtml || '<p class="text-slate-400 text-center py-4">لا توجد طلبات جديدة قيد الانتظار.</p>';
 
-            // بناء جدول الإحصائيات مع تطبيق الترتيب المختار
             let clientStatsArray = Object.keys(clientSalesMap).map(clientName => ({
                 name: clientName,
                 count: clientSalesMap[clientName].count,
@@ -1509,18 +1552,19 @@
             clientStatsArray.forEach((stat, index) => {
                 let rankBadge = index === 0 ? '<span class="bg-amber-100 text-amber-800 border border-amber-300 text-[10px] px-2 py-0.5 rounded-full font-black mr-1">🥇 الأفضل</span>' : '';
                 statsHtml += `
-                    <tr class="border-b border-slate-300 text-sm hover:bg-slate-50">
-                        <td class="p-3 font-bold text-slate-800 border-l border-slate-300">
+                    <tr class="hover:bg-slate-50">
+                        <td class="font-bold text-slate-800">
                             <i class="fa-solid fa-store text-emerald-600 ml-1"></i> ${stat.name} ${rankBadge}
                         </td>
-                        <td class="p-3 text-indigo-600 font-bold border-l border-slate-300">${stat.count} طلبات</td>
-                        <td class="p-3 font-black text-emerald-600">${stat.totalSpent.toFixed(3)} د.ت</td>
+                        <td class="text-indigo-600 font-bold">${stat.count} طلبات</td>
+                        <td class="font-black text-emerald-600">${stat.totalSpent.toFixed(3)} د.ت</td>
                     </tr>
                 `;
             });
             const statsTable = document.getElementById('salesStatsTableBody');
             if (statsTable) statsTable.innerHTML = statsHtml || '<tr><td colspan="3" class="text-center text-slate-400 py-4">لا توجد مبيعات مؤكدة للتجار بعد.</td></tr>';
 
+            // جرد المخزون النهائي المقسم
             let stockHtml = '';
             let totalStockFinancialValue = 0;
             for (let k in stockMap) {
@@ -1529,13 +1573,16 @@
                 let lineValue = finalStock * st.buy;
                 if (finalStock > 0) totalStockFinancialValue += lineValue;
 
+                let isRecharge = k.includes('Recharge');
+                let unitLabel = isRecharge ? 'د.ت رصيد' : 'قطعة';
+
                 stockHtml += `
-                    <tr class="border-b border-slate-300 text-xs hover:bg-slate-50">
-                        <td class="p-3 font-bold text-slate-700 border-l border-slate-300">${st.operator}</td>
-                        <td class="p-3 border-l border-slate-300">${st.name}</td>
-                        <td class="p-3 text-slate-500 border-l border-slate-300">${st.buy.toFixed(3)} د.ت</td>
-                        <td class="p-3 font-bold text-indigo-600 border-l border-slate-300">${st.purchased}</td>
-                        <td class="p-3 font-black ${finalStock < 5 ? 'text-rose-600' : 'text-emerald-600'} text-sm">${finalStock} قطعة</td>
+                    <tr class="hover:bg-slate-50">
+                        <td class="font-bold text-slate-800">${st.operator}</td>
+                        <td class="font-bold">${st.name}</td>
+                        <td class="text-slate-600">${st.buy.toFixed(3)} د.ت</td>
+                        <td class="font-bold text-indigo-700">${st.purchased.toFixed(0)} ${unitLabel}</td>
+                        <td class="font-black ${finalStock < 5 ? 'text-rose-600' : 'text-emerald-700'}">${finalStock.toFixed(0)} ${unitLabel}</td>
                     </tr>
                 `;
             }
@@ -1573,7 +1620,7 @@
         window.openRecetteModal = () => document.getElementById('recetteModal').classList.remove('hidden');
         window.closeRecetteModal = () => document.getElementById('recetteModal').classList.add('hidden');
 
-        // واجهة POS بالسبحة الملونة
+        // واجهة البيع السريع POS
         window.posCart = {};
         window.selectedPosOp = '';
 
@@ -1585,7 +1632,7 @@
             let headerBgColor = op === 'Ooredoo' ? 'bg-red-50 text-red-700 border-red-300' : (op === 'Telecom' ? 'bg-blue-50 text-blue-700 border-blue-300' : 'bg-orange-50 text-orange-700 border-orange-300');
 
             let html = '';
-            window.tariffs.filter(t => t.operator === op).forEach(t => {
+            window.tariffs.filter(t => t.operator === op && !t.id.includes('Recharge')).forEach(t => {
                 let qty = window.posCart[t.id] ? window.posCart[t.id].qty : 0;
                 html += `
                     <div class="bg-white border-2 p-3 rounded-2xl flex flex-col justify-between items-center text-center transition shadow-2xs relative ${headerBgColor}">
@@ -1640,14 +1687,15 @@
             window.posCart[key] = {
                 id: key,
                 operator: window.selectedPosOp,
-                name: `شحن مباشر بقيمة ${val} د.ت`,
+                name: `شحن إلكتروني بقيمة ${val} د.ت`,
+                price: val,
                 buy: val * 0.960,
                 sell: val,
                 qty: (window.posCart[key] ? window.posCart[key].qty + 1 : 1)
             };
 
             document.getElementById('posDirectRechargeInput').value = '';
-            window.showSystemNotification("الشحن المباشر", "تم إضافة الشحن المباشر بنجاح للقفة!");
+            window.showSystemNotification("الشحن المباشر", "تم إضافة الشحن الإلكتروني بنجاح للقفة!");
             calcPosTotal();
         };
 
