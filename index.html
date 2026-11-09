@@ -9,7 +9,7 @@
     <!-- FontAwesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-slate-300 min-h-screen font-sans pb-12 text-slate-800">
+<body class="bg-slate-200 min-h-screen font-sans pb-12 text-slate-800">
 
     <!-- شاشة تسجيل الدخول / التسجيل للبائع -->
     <div id="authScreen" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -57,19 +57,22 @@
         </div>
     </div>
 
-    <!-- رأسية لوحة التحكم -->
-    <header class="bg-white shadow-sm border-b border-slate-300 sticky top-0 z-30">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="bg-indigo-600 text-white w-10 h-10 rounded-2xl flex items-center justify-center font-bold shadow-2xs border border-indigo-700">
+    <!-- رأسية لوحة التحكم (اسم Mourad كبير داخل مربع بارز وزر خروج غامق) -->
+    <header class="bg-white shadow-md border-b border-slate-300 sticky top-0 z-30">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <!-- مربع البائع المعتمد البارز -->
+            <div class="flex items-center gap-3 bg-gradient-to-r from-indigo-50 to-slate-100 border-2 border-indigo-400 px-4 py-2 rounded-2xl shadow-sm">
+                <div class="bg-indigo-600 text-white w-12 h-12 rounded-xl flex items-center justify-center font-black text-xl shadow-md border border-indigo-700">
                     <i class="fa-solid fa-user-tie"></i>
                 </div>
                 <div>
-                    <span class="text-[10px] text-slate-400 block font-bold">البائع المعتمد</span>
-                    <h1 id="headerVendeurName" class="text-base font-black text-indigo-900">...</h1>
+                    <span class="text-[11px] font-extrabold text-indigo-700 uppercase tracking-wide block">البائع المعتمد</span>
+                    <h1 id="headerVendeurName" class="text-xl font-black text-slate-900 leading-tight">Mourad</h1>
                 </div>
             </div>
-            <button type="button" onclick="logoutVendeur()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 border border-rose-200 shadow-2xs">
+
+            <!-- زر خروج أغمق وأوضح -->
+            <button type="button" onclick="logoutVendeur()" class="bg-rose-600 hover:bg-rose-700 text-white px-5 py-2.5 rounded-xl text-xs font-black transition flex items-center gap-2 shadow-md border border-rose-700">
                 <i class="fa-solid fa-right-from-bracket"></i> خروج
             </button>
         </div>
@@ -78,46 +81,47 @@
     <main class="container mx-auto px-4 py-8 max-w-3xl space-y-6">
 
         <!-- واجهة الاختيار الرئيسية -->
-        <div id="mainChoicesSection" class="space-y-4">
+        <div id="mainChoicesSection" class="space-y-5">
             <div class="text-center space-y-2 mb-6">
-                <h2 class="text-2xl font-black text-slate-900">لوحة تحكم البائع</h2>
-                <p class="text-sm text-slate-700 font-bold">اختر القسم المناسب لإدارة عملك بكل احترافية:</p>
+                <h2 class="text-2xl font-black text-slate-900">لوحة تحكم كروت الشحن</h2>
+                <p class="text-sm text-slate-600 font-bold">اختر القسم المناسب لإدارة عملك بكل سهولة:</p>
             </div>
 
-            <button type="button" onclick="selectMainChoice('pos')" class="w-full text-right bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-md border border-emerald-500/30">
+            <button type="button" onclick="selectMainChoice('pos')" class="w-full text-right bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-lg border-2 border-emerald-500">
                 <div class="flex items-center gap-4">
-                    <div class="bg-white/20 p-4 rounded-2xl text-2xl border border-white/20">
+                    <div class="bg-white/20 p-4 rounded-2xl text-3xl border border-white/20">
                         <i class="fa-solid fa-cash-register text-yellow-300"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-black">1. نظام البيع المباشر (Caisse POS)</h3>
-                        <p class="text-xs text-emerald-100 font-normal mt-1">اختيار الحانوت التابع لك، البيع الفوري وشحن الرصيد</p>
+                        <h3 class="text-xl font-black">1. نظام البيع المباشر (Caisse POS)</h3>
+                        <p class="text-xs text-emerald-100 font-normal mt-1">أزرار المشغلين، الكروت بالسبحة، الشحن المباشر وخيارات الدفع</p>
                     </div>
                 </div>
-                <i class="fa-solid fa-chevron-left text-lg"></i>
+                <i class="fa-solid fa-chevron-left text-2xl"></i>
             </button>
 
-            <button type="button" onclick="selectMainChoice('management')" class="w-full text-right bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-md">
+            <button type="button" onclick="selectMainChoice('management')" class="w-full text-right bg-gradient-to-r from-indigo-800 to-slate-900 hover:from-indigo-900 hover:to-slate-950 text-white p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-lg border-2 border-indigo-600">
                 <div class="flex items-center gap-4">
-                    <div class="bg-indigo-50 p-4 rounded-2xl text-2xl text-indigo-600 border border-indigo-200">
+                    <div class="bg-white/10 p-4 rounded-2xl text-3xl text-indigo-300 border border-white/10">
                         <i class="fa-solid fa-boxes-stacked"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-black text-slate-900">2. إدارة الحوانت، الطلبات والمخزون</h3>
-                        <p class="text-xs text-slate-500 font-normal mt-1">إضافة حانوت، متابعة الطلبات، فواتير الشراء، الروسيت والإحصائيات</p>
+                        <h3 class="text-xl font-black">2. إدارة الحوانت، الطلبات والمخزون</h3>
+                        <p class="text-xs text-indigo-200 font-normal mt-1">إضافة حانوت، ديون الكريدي، متابعة الطلبات، الستوك والمداخيل</p>
                     </div>
                 </div>
-                <i class="fa-solid fa-chevron-left text-slate-400 text-lg"></i>
+                <i class="fa-solid fa-chevron-left text-2xl text-indigo-300"></i>
             </button>
         </div>
 
         <!-- الأقسام التفصيلية للإدارة -->
-        <div id="detailedManagementSection" class="hidden space-y-4 bg-slate-100 p-6 rounded-3xl border-2 border-slate-300 shadow-inner">
-            <div class="flex items-center justify-between mb-2">
-                <button type="button" onclick="backToMainChoices()" class="text-indigo-600 font-bold text-xs flex items-center gap-1 bg-white px-3.5 py-2 rounded-xl border border-slate-300 shadow-2xs">
+        <div id="detailedManagementSection" class="hidden space-y-4 bg-slate-100 p-6 rounded-3xl border-2 border-slate-300 shadow-md">
+            <div class="flex items-center justify-between mb-3 border-b pb-3 border-slate-300">
+                <!-- زر العودة غامق وملون -->
+                <button type="button" onclick="backToMainChoices()" class="text-white font-black text-xs flex items-center gap-2 bg-indigo-700 hover:bg-indigo-800 px-4 py-2.5 rounded-xl border border-indigo-900 shadow-md transition">
                     <i class="fa-solid fa-arrow-right"></i> العودة للقائمة الرئيسية
                 </button>
-                <h3 class="font-bold text-slate-800 text-sm">إدارة الحوانت والمتابعة</h3>
+                <h3 class="font-black text-slate-800 text-sm">إدارة الحوانت والمتابعة العامة</h3>
             </div>
 
             <div class="grid grid-cols-1 gap-3.5">
@@ -129,6 +133,20 @@
                         <span class="text-sm font-black">إضافة حانوت جديد</span>
                     </div>
                     <i class="fa-solid fa-plus text-emerald-700 text-sm font-bold"></i>
+                </button>
+
+                <!-- زر مخصص لديون الكريدي على الحوانت -->
+                <button type="button" onclick="openAdminWindow('credits')" class="w-full text-right bg-rose-100 hover:bg-rose-200 text-rose-950 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-rose-500 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-rose-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold shadow-2xs">
+                            <i class="fa-solid fa-hand-holding-dollar"></i>
+                        </div>
+                        <div>
+                            <span class="text-sm font-black block">ديون الكريدي على الحوانت</span>
+                            <span class="text-[11px] text-rose-700 font-normal">عرض قائمة الحوانت التي عليها ديون ومبالغها</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-left text-rose-700 text-xs"></i>
                 </button>
 
                 <button type="button" onclick="openAdminWindow('orders')" class="w-full text-right bg-indigo-100 hover:bg-indigo-200 text-indigo-950 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-indigo-500 shadow-sm">
@@ -181,14 +199,14 @@
                     <i class="fa-solid fa-chevron-left text-amber-700 text-xs"></i>
                 </button>
 
-                <button type="button" onclick="openAdminWindow('stats')" class="w-full text-right bg-rose-100 hover:bg-rose-200 text-rose-950 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-rose-500 shadow-sm">
+                <button type="button" onclick="openAdminWindow('stats')" class="w-full text-right bg-cyan-100 hover:bg-cyan-200 text-cyan-950 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-cyan-500 shadow-sm">
                     <div class="flex items-center gap-3">
-                        <div class="bg-rose-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold shadow-2xs">
+                        <div class="bg-cyan-700 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold shadow-2xs">
                             <i class="fa-solid fa-chart-pie"></i>
                         </div>
                         <span class="text-sm font-black">إحصائيات المبيعات حسب التجار</span>
                     </div>
-                    <i class="fa-solid fa-chevron-left text-rose-700 text-xs"></i>
+                    <i class="fa-solid fa-chevron-left text-cyan-700 text-xs"></i>
                 </button>
             </div>
         </div>
@@ -200,9 +218,25 @@
             <div id="sysNotifIcon" class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold border border-emerald-300">
                 <i class="fa-solid fa-check"></i>
             </div>
-            <h4 id="sysNotifTitle" class="font-black text-lg text-slate-900">تم الحفظ بنجاح</h4>
-            <p id="sysNotifText" class="text-xs text-slate-500">تم حفظ العملية بنجاح وشكرا لك.</p>
+            <h4 id="sysNotifTitle" class="font-black text-lg text-slate-900">تم بنجاح</h4>
+            <p id="sysNotifText" class="text-xs text-slate-500">تمت العملية بنجاح وشكرا لك.</p>
             <button type="button" onclick="closeSystemNotification()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl font-bold text-xs shadow-sm transition">موافق</button>
+        </div>
+    </div>
+
+    <!-- نافذة ديون الكريدي على الحوانت المخصصة -->
+    <div id="windowCredits" class="admin-window fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
+        <div class="bg-white p-6 rounded-3xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4 border border-slate-300">
+            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+                <h4 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-hand-holding-dollar text-rose-600 ml-2"></i> قائمة ديون الكريدي على الحوانت</h4>
+                <button type="button" onclick="closeAdminWindow('credits')" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+            </div>
+            <p class="text-xs text-slate-500">هنا تظهر فقط الحوانت التي بذمتها ديون كريدي لم يتم خلاصها بعد:</p>
+            
+            <div id="creditsListContainer" class="space-y-3">
+                <p class="text-slate-400 text-center py-4 text-xs">جاري جرد الديون...</p>
+            </div>
+            <button type="button" onclick="closeAdminWindow('credits')" class="w-full bg-slate-800 text-white py-2.5 rounded-xl font-bold text-xs">إغلاق</button>
         </div>
     </div>
 
@@ -515,7 +549,7 @@
                     <thead>
                         <tr class="bg-slate-200 text-slate-700 border-b-2 border-slate-300 font-black">
                             <th class="p-3 border-l border-slate-300">المشغل</th>
-                            <th class="p-3 border-l border-slate-300">المنتج / البطاقة / الشحن</th>
+                            <th class="p-3 border-l border-slate-300">المنتج / البطاقة</th>
                             <th class="p-3 border-l border-slate-300">سعر الشراء</th>
                             <th class="p-3 border-l border-slate-300">المشتريات</th>
                             <th class="p-3">الستوك النهائي</th>
@@ -540,7 +574,7 @@
     <div id="windowStats" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
-                <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-chart-pie text-amber-500 ml-2"></i> إحصائيات المبيعات حسب التجار (الحوانت)</h4>
+                <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-chart-pie text-cyan-600 ml-2"></i> إحصائيات المبيعات حسب التجار (الحوانت)</h4>
                 <button type="button" onclick="closeAdminWindow('stats')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
             </div>
             <div class="overflow-x-auto border-2 border-slate-300 rounded-2xl shadow-inner bg-white">
@@ -561,9 +595,9 @@
         </div>
     </div>
 
-    <!-- نافذة البيع المباشر (POS) -->
-    <div id="windowPos" class="admin-window fixed inset-0 bg-slate-950/60 backdrop-blur-xs hidden flex items-center justify-center z-40 p-2 md:p-6 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-5xl w-full h-[95vh] flex flex-col justify-between overflow-hidden border border-slate-300">
+    <!-- نافذة البيع المباشر (POS) بنظام السبحة الملونة ومطابقة لفضاء التاجر تماماً -->
+    <div id="windowPos" class="admin-window fixed inset-0 bg-slate-950/70 backdrop-blur-xs hidden flex items-center justify-center z-40 p-2 md:p-6 text-slate-800">
+        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-4xl w-full h-[95vh] flex flex-col justify-between overflow-hidden border border-slate-300">
             <div class="overflow-y-auto pr-1 flex-1 space-y-4">
                 <div class="flex justify-between items-center border-b pb-3 sticky top-0 bg-white z-10 border-slate-200">
                     <h4 class="font-extrabold text-xl text-slate-900"><i class="fa-solid fa-cash-register text-emerald-600 ml-2"></i> نظام البيع المباشر (Caisse POS)</h4>
@@ -572,7 +606,7 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">اختر الحانوت الخاص بك:</label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">اختر الحانوت التابع لك:</label>
                         <select id="posRegisteredClientSelect" class="border border-slate-300 p-3 rounded-xl w-full text-sm font-bold bg-white">
                             <option value="">اختر الحانوت...</option>
                         </select>
@@ -587,39 +621,51 @@
                     </div>
                 </div>
 
+                <!-- خانة المبلغ المدفوع كاش تظهر فقط عند اختيار الخلاص الجزئي -->
                 <div id="posPartielAmountDiv" class="hidden bg-amber-50 p-4 rounded-2xl border border-amber-200">
                     <label class="block text-xs font-bold text-amber-900 mb-1">المبلغ المدفوع كاش حالياً:</label>
                     <input type="number" step="0.001" id="posPaidAmountInput" placeholder="0.000 د.ت" class="w-full border border-amber-300 p-3 rounded-xl text-sm font-bold bg-white">
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <button type="button" onclick="selectPosOperator('Ooredoo')" class="bg-red-500 hover:bg-red-600 text-white p-3 rounded-2xl font-bold text-sm">أوريدو</button>
-                    <button type="button" onclick="selectPosOperator('Telecom')" class="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-2xl font-bold text-sm">تيليكوم</button>
-                    <button type="button" onclick="selectPosOperator('Orange')" class="bg-orange-500 hover:bg-orange-600 text-white p-3 rounded-2xl font-bold text-sm">أورنج</button>
+                <!-- أزرار المشغلين الكبيرة الملونة -->
+                <div class="grid grid-cols-3 gap-3">
+                    <button type="button" onclick="selectPosOperator('Ooredoo')" id="btnPosOoredoo" class="py-4 rounded-2xl font-black text-sm bg-red-50 text-red-600 hover:bg-red-100 border-2 border-red-500 shadow-sm transition flex flex-col items-center justify-center gap-1">
+                        <i class="fa-solid fa-signal text-lg"></i> أوريدو
+                    </button>
+                    <button type="button" onclick="selectPosOperator('Telecom')" id="btnPosTelecom" class="py-4 rounded-2xl font-black text-sm bg-blue-50 text-blue-600 hover:bg-blue-100 border-2 border-blue-500 shadow-sm transition flex flex-col items-center justify-center gap-1">
+                        <i class="fa-solid fa-signal text-lg"></i> تيليكوم
+                    </button>
+                    <button type="button" onclick="selectPosOperator('Orange')" id="btnPosOrange" class="py-4 rounded-2xl font-black text-sm bg-orange-50 text-orange-600 hover:bg-orange-100 border-2 border-orange-500 shadow-sm transition flex flex-col items-center justify-center gap-1">
+                        <i class="fa-solid fa-signal text-lg"></i> أورنج
+                    </button>
                 </div>
 
-                <div id="posProductsSection" class="hidden space-y-3 border-t pt-3 border-slate-200">
-                    <h5 id="posSelectedOperatorTitle" class="font-bold text-slate-700 text-sm"></h5>
+                <div id="posProductsSection" class="hidden space-y-4 border-t pt-3 border-slate-200">
+                    <h5 id="posSelectedOperatorTitle" class="font-bold text-slate-700 text-xs"></h5>
+                    
+                    <!-- شبكة البطاقات بنظام السبحة الملونة والأزرار -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="posCardsGrid"></div>
 
-                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-300 space-y-2 mt-4">
+                    <!-- خانة الشحن المباشر (واحدة فقط دون تكرار) -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-300 space-y-2 mt-2">
                         <label class="block text-xs font-bold text-slate-700"><i class="fa-solid fa-bolt text-amber-500 ml-1"></i> الشحن المباشر (اكتب القيمة مباشرة):</label>
                         <div class="flex gap-2">
                             <input type="number" id="posDirectRechargeInput" placeholder="أدخل القيمة بالدينار (مثال: 15)..." class="flex-1 border border-slate-300 p-3 rounded-xl text-sm font-bold bg-white">
-                            <button type="button" onclick="addPosDirectRecharge()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 rounded-xl font-bold text-xs shadow-sm">إضافة للقفة</button>
+                            <button type="button" onclick="addPosDirectRecharge()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 rounded-xl font-bold text-xs shadow-sm transition">إضافة للقفة</button>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- أسفل القفة والمجموع الجملي -->
             <div class="border-t pt-4 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50 p-4 rounded-2xl mt-2 border-slate-200">
                 <div>
-                    <span class="text-slate-500 text-sm">المجموع الجملي:</span>
-                    <span id="posCartTotal" class="text-2xl font-extrabold text-emerald-600 mr-2">0.000 د.ت</span>
+                    <span class="text-slate-500 text-xs font-bold block">المجموع الجملي للقفة:</span>
+                    <span id="posCartTotal" class="text-2xl font-black text-emerald-600">0.000 د.ت</span>
                 </div>
                 <div class="flex gap-3 w-full md:w-auto">
-                    <button type="button" onclick="closeAdminWindow('pos')" class="flex-1 md:flex-none bg-slate-200 text-slate-700 px-6 py-3 rounded-xl font-bold">إغلاق</button>
-                    <button type="button" onclick="submitPosOrder()" class="flex-1 md:flex-none bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-emerald-700 shadow-sm">تأكيد البيع</button>
+                    <button type="button" onclick="closeAdminWindow('pos')" class="flex-1 md:flex-none bg-slate-200 text-slate-700 px-6 py-3 rounded-xl font-bold text-xs">إغلاق</button>
+                    <button type="button" onclick="submitPosOrder()" class="flex-1 md:flex-none bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 rounded-xl font-bold text-xs shadow-md transition">تأكيد البيع</button>
                 </div>
             </div>
         </div>
@@ -729,7 +775,7 @@
             const authScreen = document.getElementById('authScreen');
             if (window.currentVendeur && window.currentVendeur.id) {
                 if (authScreen) authScreen.classList.add('hidden');
-                document.getElementById('headerVendeurName').innerText = window.currentVendeur.name || "الموزع";
+                document.getElementById('headerVendeurName').innerText = window.currentVendeur.name || "Mourad";
                 fetchVendeurData();
                 renderInvoiceForm();
             } else {
@@ -771,25 +817,22 @@
             { id: 'Ooredoo_5', operator: 'Ooredoo', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 },
             { id: 'Ooredoo_10', operator: 'Ooredoo', name: 'بطاقة 10 د.ت', buy: 9.500, sell: 10.000 },
             { id: 'Ooredoo_25', operator: 'Ooredoo', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 },
-            { id: 'Ooredoo_Recharge', operator: 'Ooredoo', name: 'شحن مباشر', buy: 0.960, sell: 1.000 },
             
             { id: 'Telecom_1', operator: 'Telecom', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 },
             { id: 'Telecom_5', operator: 'Telecom', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 },
             { id: 'Telecom_10', operator: 'Telecom', name: 'بطاقة 10 د.ت', buy: 9.500, sell: 10.000 },
             { id: 'Telecom_25', operator: 'Telecom', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 },
-            { id: 'Telecom_Recharge', operator: 'Telecom', name: 'شحن مباشر', buy: 0.960, sell: 1.000 },
 
             { id: 'Orange_1', operator: 'Orange', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 },
             { id: 'Orange_5', operator: 'Orange', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 },
             { id: 'Orange_10', operator: 'Orange', name: 'بطاقة 10 د.ت', buy: 9.500, sell: 10.000 },
-            { id: 'Orange_25', operator: 'Orange', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 },
-            { id: 'Orange_Recharge', operator: 'Orange', name: 'شحن مباشر', buy: 0.960, sell: 1.000 }
+            { id: 'Orange_25', operator: 'Orange', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 }
         ];
 
         window.openAddClientModal = () => document.getElementById('addClientModal').classList.remove('hidden');
         window.closeAddClientModal = () => document.getElementById('addClientModal').classList.add('hidden');
 
-        // مطابقة تامة مع هيكل قاعدة البيانات[cite: 1]
+        // مطابقة الحقول تماماً مع Firebase[cite: 1]
         window.saveNewClientByVendeur = async function() {
             const name = document.getElementById('newClientName').value.trim();
             const phone = document.getElementById('newClientPhone').value.trim();
@@ -895,18 +938,19 @@
             document.getElementById('historyOrderDetailModal').classList.add('hidden');
         };
 
-        // المتابعة الحية لكافة الجداول بـ Realtime onSnapshot
+        // استماع حي لكافة الجداول بـ Realtime onSnapshot
         function fetchVendeurData() {
             if (!window.currentVendeur) return;
             
-            // استماع حي لزبائن هذا البائع
+            // زبائن هذا البائع
             onSnapshot(query(collection(db, "clients"), where("vendeurId", "==", window.currentVendeur.id)), (snap) => {
                 window.allClients = [];
                 snap.forEach(d => window.allClients.push({ id: d.id, ...d.data() }));
                 updateClientsUI();
+                renderCreditsList();
             });
 
-            // استماع حي لفواتير الشراء
+            // فواتير الشراء
             onSnapshot(query(collection(db, "invoices"), where("vendeurId", "==", window.currentVendeur.id)), (snap) => {
                 window.allInvoices = [];
                 snap.forEach(d => window.allInvoices.push({ id: d.id, ...d.data() }));
@@ -914,14 +958,56 @@
                 renderInvoicesHistory();
             });
 
-            // استماع حي للطلبيات
+            // الطلبيات
             onSnapshot(query(collection(db, "orders"), where("vendeurId", "==", window.currentVendeur.id)), (snap) => {
                 window.allOrders = [];
-                snap.forEach(d => {
-                    window.allOrders.push({ id: d.id, ...d.data() });
-                });
+                snap.forEach(d => window.allOrders.push({ id: d.id, ...d.data() }));
                 processAdminStatsAndStock();
+                renderCreditsList();
             });
+        }
+
+        // دالة عرض وتحديث قائمة الحوانت التي عليها ديون الكريدي
+        function renderCreditsList() {
+            let container = document.getElementById('creditsListContainer');
+            if (!container) return;
+
+            let clientCreditMap = {};
+            window.allOrders.forEach(o => {
+                if (o.creditAmount && o.creditAmount > 0) {
+                    clientCreditMap[o.clientName] = (clientCreditMap[o.clientName] || 0) + o.creditAmount;
+                }
+            });
+
+            let html = '';
+            let hasCredit = false;
+
+            for (let clientName in clientCreditMap) {
+                let creditVal = clientCreditMap[clientName];
+                if (creditVal > 0) {
+                    hasCredit = true;
+                    let clientObj = window.allClients.find(c => c.name === clientName) || {};
+                    html += `
+                        <div class="bg-rose-50/60 p-4 rounded-2xl border-2 border-rose-300 flex justify-between items-center shadow-xs">
+                            <div class="space-y-1">
+                                <h4 class="font-black text-slate-900 text-sm"><i class="fa-solid fa-store text-rose-600 ml-1"></i> ${clientName}</h4>
+                                <p class="text-xs text-slate-500">الهاتف: ${clientObj.phone || 'غير مسجل'} | العنوان: ${clientObj.address || 'غير محدد'}</p>
+                            </div>
+                            <div class="text-left space-y-1">
+                                <span class="text-xs font-bold text-rose-700 block">ديون الكريدي:</span>
+                                <span class="text-lg font-black text-rose-600 bg-white px-3 py-1 rounded-xl border border-rose-300 inline-block">${creditVal.toFixed(3)} د.ت</span>
+                                <div>
+                                    <button type="button" onclick="closeAdminWindow('credits'); openClientHistoryModal('${clientName}')" class="text-[10px] bg-slate-900 hover:bg-slate-800 text-white px-2.5 py-1 rounded-lg font-bold transition">
+                                        عرض المعاملات
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            container.innerHTML = hasCredit ? html : '<p class="text-emerald-700 bg-emerald-50 p-4 rounded-2xl border border-emerald-300 text-center text-xs font-bold">لا توجد ديون كريدي على أي حانوت حالياً، كل الحسابات خالصة!</p>';
         }
 
         window.switchInvoiceTab = function(tab) {
@@ -1045,7 +1131,6 @@
             if (tbody) tbody.innerHTML = html || '<tr><td colspan="2" class="text-center text-slate-400 py-4">لا توجد فواتير سابقة.</td></tr>';
         }
 
-        // تفاصيل الفاتورة المنفردة وطباعتها
         window.openInvoiceDetailModal = function(invId) {
             let inv = window.allInvoices.find(item => item.id === invId);
             if (!inv) return;
@@ -1172,7 +1257,6 @@
             } catch (e) { alert('خطأ أثناء تأكيد الطلبية.'); }
         };
 
-        // دالة لتوحيد مفاتيح المنتجات لضمان طرح الكروت المحجوزة من الستوك بشكل دقيق
         function getNormalizedProductKey(item) {
             if (!item) return 'other';
             let op = item.operator || '';
@@ -1374,55 +1458,89 @@
         window.openRecetteModal = () => document.getElementById('recetteModal').classList.remove('hidden');
         window.closeRecetteModal = () => document.getElementById('recetteModal').classList.add('hidden');
 
+        // واجهة POS مطابقة تماماً لكود التاجر الصغير
         window.posCart = {};
         window.selectedPosOp = '';
 
         window.selectPosOperator = function(op) {
             window.selectedPosOp = op;
             document.getElementById('posProductsSection').classList.remove('hidden');
-            document.getElementById('posSelectedOperatorTitle').innerText = `اختر للبيع: ${op}`;
+            document.getElementById('posSelectedOperatorTitle').innerText = `البطاقات المتاحة للمشغل: ${op} (انقر للزيادة أو النقصان بالسبحة)`;
+
+            let headerBgColor = op === 'Ooredoo' ? 'bg-red-50 text-red-700 border-red-300' : (op === 'Telecom' ? 'bg-blue-50 text-blue-700 border-blue-300' : 'bg-orange-50 text-orange-700 border-orange-300');
+
             let html = '';
             window.tariffs.filter(t => t.operator === op).forEach(t => {
-                let qty = window.posCart[t.id] || 0;
-                let cardColor = op === 'Ooredoo' ? 'bg-red-50 text-red-700 border-red-300' : (op === 'Telecom' ? 'bg-blue-50 text-blue-700 border-blue-300' : 'bg-orange-50 text-orange-700 border-orange-300');
+                let qty = window.posCart[t.id] ? window.posCart[t.id].qty : 0;
                 html += `
-                    <div onclick="addPosCardQty('${t.id}')" class="border-2 p-3 rounded-xl cursor-pointer hover:shadow transition ${cardColor}">
-                        <h4 class="font-bold text-xs">${t.name}</h4>
-                        <p class="text-xs mt-1 font-bold">${t.sell} د.ت</p>
-                        <div class="mt-2 text-center bg-white py-1 rounded font-bold text-xs text-slate-900 border border-slate-200" id="pos_qty_${t.id}">${qty}</div>
+                    <div class="bg-white border-2 p-3 rounded-2xl flex flex-col justify-between items-center text-center transition shadow-2xs relative ${headerBgColor}">
+                        ${qty > 0 ? `<span class="absolute -top-2 -right-2 bg-slate-900 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-sm">${qty}</span>` : ''}
+                        
+                        <div onclick="addPosCardByClick('${t.id}')" class="cursor-pointer w-full py-1">
+                            <span class="font-black text-sm block">${t.name}</span>
+                            <span class="text-xs font-bold mt-1 block">${t.sell.toFixed(3)} د.ت</span>
+                        </div>
+
+                        <div class="flex items-center gap-2 mt-2 pt-2 border-t border-slate-200 w-full justify-center">
+                            <button type="button" onclick="decrementPosCard('${t.id}')" class="w-7 h-7 bg-rose-100 text-rose-700 rounded-lg font-bold text-xs hover:bg-rose-200 transition"><i class="fa-solid fa-minus"></i></button>
+                            <span class="font-bold text-xs w-6 text-center text-slate-800">${qty}</span>
+                            <button type="button" onclick="addPosCardByClick('${t.id}')" class="w-7 h-7 bg-emerald-100 text-emerald-700 rounded-lg font-bold text-xs hover:bg-emerald-200 transition"><i class="fa-solid fa-plus"></i></button>
+                        </div>
                     </div>
                 `;
             });
             document.getElementById('posCardsGrid').innerHTML = html;
         };
 
-        window.addPosCardQty = (id) => {
-            window.posCart[id] = (window.posCart[id] || 0) + 1;
-            let el = document.getElementById(`pos_qty_${id}`);
-            if (el) el.innerText = window.posCart[id];
+        window.addPosCardByClick = function(id) {
+            let t = window.tariffs.find(item => item.id === id);
+            if (!t) return;
+
+            if (!window.posCart[id]) {
+                window.posCart[id] = { id: t.id, operator: t.operator, name: t.name, buy: t.buy, sell: t.sell, qty: 0 };
+            }
+            window.posCart[id].qty += 1;
             calcPosTotal();
+            selectPosOperator(t.operator);
         };
 
+        window.decrementPosCard = function(id) {
+            let t = window.tariffs.find(item => item.id === id);
+            if (window.posCart[id] && window.posCart[id].qty > 0) {
+                window.posCart[id].qty -= 1;
+                if (window.posCart[id].qty === 0) {
+                    delete window.posCart[id];
+                }
+                calcPosTotal();
+                if (t) selectPosOperator(t.operator);
+            }
+        };
+
+        // الشحن المباشر بالكتابة المباشرة (خانة واحدة فقط)
         window.addPosDirectRecharge = function() {
             let val = parseFloat(document.getElementById('posDirectRechargeInput').value) || 0;
             if (val <= 0) { alert('أدخل مبلغ صحيح للشحن المباشر.'); return; }
             if (!window.selectedPosOp) { alert('اختر المشغل أولاً.'); return; }
 
             let key = `${window.selectedPosOp}_Direct_${val}`;
-            window.posCart[key] = (window.posCart[key] || 0) + 1;
-            if (!window.customDirectTariffs) window.customDirectTariffs = {};
-            window.customDirectTariffs[key] = { id: key, operator: window.selectedPosOp, name: `شحن مباشر ${val} د.ت`, buy: val * 0.960, sell: val };
+            window.posCart[key] = {
+                id: key,
+                operator: window.selectedPosOp,
+                name: `شحن مباشر بقيمة ${val} د.ت`,
+                buy: val * 0.960,
+                sell: val,
+                qty: (window.posCart[key] ? window.posCart[key].qty + 1 : 1)
+            };
 
             document.getElementById('posDirectRechargeInput').value = '';
-            window.showSystemNotification("الشحن المباشر", "تم إضافة الشحن المباشر بنجاح!");
+            window.showSystemNotification("الشحن المباشر", "تم إضافة الشحن المباشر بنجاح للقفة!");
             calcPosTotal();
         };
 
         function calcPosTotal() {
             let total = 0;
             for (let id in window.posCart) {
-                let item = window.tariffs.find(t => t.id === id) || (window.customDirectTariffs && window.customDirectTariffs[id]);
-                if (item) total += item.sell * window.posCart[id];
+                total += window.posCart[id].sell * window.posCart[id].qty;
             }
             document.getElementById('posCartTotal').innerText = total.toFixed(3) + ' د.ت';
         }
@@ -1430,18 +1548,18 @@
         window.submitPosOrder = async function() {
             const clientName = document.getElementById('posRegisteredClientSelect').value;
             const paymentStatus = document.getElementById('posPaymentStatus').value;
-            if (!clientName) { alert('اختر الحانوت.'); return; }
+            if (!clientName) { alert('اختر الحانوت أولاً.'); return; }
             
             let items = [], totalSell = 0, totalBuy = 0;
             for (let id in window.posCart) {
-                if (window.posCart[id] > 0) {
-                    let item = window.tariffs.find(t => t.id === id) || (window.customDirectTariffs && window.customDirectTariffs[id]);
-                    items.push({ ...item, qty: window.posCart[id] });
-                    totalSell += item.sell * window.posCart[id];
-                    totalBuy += item.buy * window.posCart[id];
+                if (window.posCart[id].qty > 0) {
+                    let item = window.posCart[id];
+                    items.push(item);
+                    totalSell += item.sell * item.qty;
+                    totalBuy += item.buy * item.qty;
                 }
             }
-            if (items.length === 0) { alert('اختر منتج.'); return; }
+            if (items.length === 0) { alert('القفة فارغة، الرجاء اختيار بطاقات للبيع.'); return; }
 
             let paidAmount = 0, creditAmount = 0;
             if (paymentStatus === 'Payé') {
@@ -1466,10 +1584,10 @@
                     creditAmount: creditAmount,
                     date: new Date().toISOString(), status: 'مكتمل ومؤكد'
                 });
-                window.showSystemNotification("عملية بيع", "تم إتمام البيع بنجاح وشكرا لك!");
+                window.showSystemNotification("عملية بيع", "تم إتمام البيع بنجاح وتأكيد الفاتورة وشكرا لك!");
                 window.posCart = {};
-                window.customDirectTariffs = {};
                 calcPosTotal();
+                if (window.selectedPosOp) selectPosOperator(window.selectedPosOp);
                 window.closeAdminWindow('pos');
             } catch (e) { alert('خطأ أثناء الحفظ: ' + e.message); }
         };
