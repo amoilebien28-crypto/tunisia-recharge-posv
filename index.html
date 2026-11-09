@@ -58,7 +58,7 @@
     </div>
 
     <!-- رأسية لوحة التحكم -->
-    <header class="bg-white shadow-sm border-b border-slate-300">
+    <header class="bg-white shadow-sm border-b border-slate-300 sticky top-0 z-30">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <div class="bg-indigo-600 text-white w-10 h-10 rounded-2xl flex items-center justify-center font-bold shadow-2xs border border-indigo-700">
@@ -66,7 +66,7 @@
                 </div>
                 <div>
                     <span class="text-[10px] text-slate-400 block font-bold">البائع المعتمد</span>
-                    <h1 id="headerVendeurName" class="text-base font-black text-indigo-900">مراد</h1>
+                    <h1 id="headerVendeurName" class="text-base font-black text-indigo-900">...</h1>
                 </div>
             </div>
             <button type="button" onclick="logoutVendeur()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 border border-rose-200 shadow-2xs">
@@ -80,7 +80,7 @@
         <!-- واجهة الاختيار الرئيسية -->
         <div id="mainChoicesSection" class="space-y-4">
             <div class="text-center space-y-2 mb-6">
-                <h2 class="text-2xl font-black text-slate-900">لوحة تحكم البائع مراد</h2>
+                <h2 class="text-2xl font-black text-slate-900">لوحة تحكم البائع</h2>
                 <p class="text-sm text-slate-700 font-bold">اختر القسم المناسب لإدارة عملك بكل احترافية:</p>
             </div>
 
@@ -201,12 +201,12 @@
                 <i class="fa-solid fa-check"></i>
             </div>
             <h4 id="sysNotifTitle" class="font-black text-lg text-slate-900">تم الحفظ بنجاح</h4>
-            <p id="sysNotifText" class="text-xs text-slate-500">تم حفظ فاتورة الستوك بنجاح وشكرا لك.</p>
+            <p id="sysNotifText" class="text-xs text-slate-500">تم حفظ العملية بنجاح وشكرا لك.</p>
             <button type="button" onclick="closeSystemNotification()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl font-bold text-xs shadow-sm transition">موافق</button>
         </div>
     </div>
 
-    <!-- نافذة تفاصيل الفاتورة عند النقر عليها -->
+    <!-- نافذة تفاصيل الفاتورة عند النقر عليها مع الطباعة -->
     <div id="invoiceDetailModal" class="fixed inset-0 bg-black/70 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
@@ -303,7 +303,7 @@
 
             <div id="sectionRecetteMonths" class="space-y-2 hidden">
                 <div class="flex justify-between items-center">
-                    <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الشهور (جانفي - ديسمبر):</h5>
+                    <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الشهور:</h5>
                     <div class="flex gap-1.5">
                         <button type="button" onclick="printReportTable('recetteMonthsTableBody', 'تقرير روسيت الشهور')" class="bg-slate-800 hover:bg-slate-900 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
                             <i class="fa-solid fa-print"></i> طباعة / حفظ
@@ -407,7 +407,7 @@
         </div>
     </div>
 
-    <!-- نافذة تفاصيل الطلبية والـ Valider -->
+    <!-- نافذة تفاصيل الطلبية وتأكيدها -->
     <div id="orderDetailModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-lg w-full space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
@@ -561,7 +561,7 @@
         </div>
     </div>
 
-    <!-- نافذة البيع المباشر (POS) المحدثة بالخلاص الجزئي والشحن المباشر بالكتابة -->
+    <!-- نافذة البيع المباشر (POS) -->
     <div id="windowPos" class="admin-window fixed inset-0 bg-slate-950/60 backdrop-blur-xs hidden flex items-center justify-center z-40 p-2 md:p-6 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-5xl w-full h-[95vh] flex flex-col justify-between overflow-hidden border border-slate-300">
             <div class="overflow-y-auto pr-1 flex-1 space-y-4">
@@ -587,7 +587,6 @@
                     </div>
                 </div>
 
-                <!-- خانة المبلغ المدفوع كاش تظهر فقط عند اختيار الخلاص الجزئي -->
                 <div id="posPartielAmountDiv" class="hidden bg-amber-50 p-4 rounded-2xl border border-amber-200">
                     <label class="block text-xs font-bold text-amber-900 mb-1">المبلغ المدفوع كاش حالياً:</label>
                     <input type="number" step="0.001" id="posPaidAmountInput" placeholder="0.000 د.ت" class="w-full border border-amber-300 p-3 rounded-xl text-sm font-bold bg-white">
@@ -601,10 +600,8 @@
 
                 <div id="posProductsSection" class="hidden space-y-3 border-t pt-3 border-slate-200">
                     <h5 id="posSelectedOperatorTitle" class="font-bold text-slate-700 text-sm"></h5>
-                    <!-- شبكة البطاقات -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="posCardsGrid"></div>
 
-                    <!-- خانة الشحن المباشر بالكتابة المباشرة -->
                     <div class="bg-slate-50 p-4 rounded-2xl border border-slate-300 space-y-2 mt-4">
                         <label class="block text-xs font-bold text-slate-700"><i class="fa-solid fa-bolt text-amber-500 ml-1"></i> الشحن المباشر (اكتب القيمة مباشرة):</label>
                         <div class="flex gap-2">
@@ -648,12 +645,20 @@
         window.db = db;
 
         window.currentVendeur = JSON.parse(localStorage.getItem('currentVendeur') || 'null');
+        window.allClients = [];
+        window.allOrders = [];
+        window.allInvoices = [];
+        window.currentActiveInvoice = null;
 
-        // إظهار وإخفاء خانة المبلغ الجزئي في POS
         document.addEventListener('change', function(e) {
             if (e.target && e.target.id === 'posPaymentStatus') {
                 const val = e.target.value;
                 const partDiv = document.getElementById('posPartielAmountDiv');
+                if (val === 'Partiel') { partDiv.classList.remove('hidden'); } else { partDiv.classList.add('hidden'); }
+            }
+            if (e.target && e.target.id === 'validerPaymentStatus') {
+                const val = e.target.value;
+                const partDiv = document.getElementById('partielAmountDiv');
                 if (val === 'Partiel') { partDiv.classList.remove('hidden'); } else { partDiv.classList.add('hidden'); }
             }
         });
@@ -724,7 +729,7 @@
             const authScreen = document.getElementById('authScreen');
             if (window.currentVendeur && window.currentVendeur.id) {
                 if (authScreen) authScreen.classList.add('hidden');
-                document.getElementById('headerVendeurName').innerText = window.currentVendeur.name || "مراد";
+                document.getElementById('headerVendeurName').innerText = window.currentVendeur.name || "الموزع";
                 fetchVendeurData();
                 renderInvoiceForm();
             } else {
@@ -784,6 +789,7 @@
         window.openAddClientModal = () => document.getElementById('addClientModal').classList.remove('hidden');
         window.closeAddClientModal = () => document.getElementById('addClientModal').classList.add('hidden');
 
+        // مطابقة تامة مع هيكل قاعدة البيانات[cite: 1]
         window.saveNewClientByVendeur = async function() {
             const name = document.getElementById('newClientName').value.trim();
             const phone = document.getElementById('newClientPhone').value.trim();
@@ -798,9 +804,12 @@
                     vendeurId: window.currentVendeur.id,
                     createdAt: new Date().toISOString()
                 });
-                window.showSystemNotification("إضافة حانوت", "تم إضافة الحانوت بنجاح وشكرا!");
+                window.showSystemNotification("إضافة حانوت", "تمت إضافة الحانوت بنجاح! يمكن للتاجر الآن تسجيل الدخول مباشرة.");
+                document.getElementById('newClientName').value = '';
+                document.getElementById('newClientPhone').value = '';
+                document.getElementById('newClientPassword').value = '';
+                document.getElementById('newClientAddress').value = '';
                 window.closeAddClientModal();
-                fetchVendeurData();
             } catch (e) { alert('حدث خطأ أثناء الحفظ.'); }
         };
 
@@ -823,7 +832,6 @@
                 await updateDoc(clientRef, { password: newPass });
                 window.showSystemNotification("تغيير الكود", "تم تغيير كلمة المرور بنجاح وشكرا!");
                 window.closeEditPasswordModal();
-                fetchVendeurData();
             } catch (e) { alert('خطأ أثناء تحديث كلمة المرور.'); }
         };
 
@@ -887,34 +895,33 @@
             document.getElementById('historyOrderDetailModal').classList.add('hidden');
         };
 
-        window.allClients = [];
-        window.allOrders = [];
-        window.allInvoices = [];
-
-        async function fetchVendeurData() {
+        // المتابعة الحية لكافة الجداول بـ Realtime onSnapshot
+        function fetchVendeurData() {
             if (!window.currentVendeur) return;
-            try {
-                const clientsSnap = await getDocs(query(collection(db, "clients"), where("vendeurId", "==", window.currentVendeur.id)));
+            
+            // استماع حي لزبائن هذا البائع
+            onSnapshot(query(collection(db, "clients"), where("vendeurId", "==", window.currentVendeur.id)), (snap) => {
                 window.allClients = [];
-                clientsSnap.forEach(d => window.allClients.push({ id: d.id, ...d.data() }));
-
-                onSnapshot(query(collection(db, "invoices"), where("vendeurId", "==", window.currentVendeur.id)), (snap) => {
-                    window.allInvoices = [];
-                    snap.forEach(d => window.allInvoices.push({ id: d.id, ...d.data() }));
-                    processAdminStatsAndStock();
-                    renderInvoicesHistory();
-                });
-
-                onSnapshot(query(collection(db, "orders"), where("vendeurId", "==", window.currentVendeur.id)), (snap) => {
-                    window.allOrders = [];
-                    snap.forEach(d => {
-                        window.allOrders.push({ id: d.id, ...d.data() });
-                    });
-                    processAdminStatsAndStock();
-                });
-
+                snap.forEach(d => window.allClients.push({ id: d.id, ...d.data() }));
                 updateClientsUI();
-            } catch (e) { console.error(e); }
+            });
+
+            // استماع حي لفواتير الشراء
+            onSnapshot(query(collection(db, "invoices"), where("vendeurId", "==", window.currentVendeur.id)), (snap) => {
+                window.allInvoices = [];
+                snap.forEach(d => window.allInvoices.push({ id: d.id, ...d.data() }));
+                processAdminStatsAndStock();
+                renderInvoicesHistory();
+            });
+
+            // استماع حي للطلبيات
+            onSnapshot(query(collection(db, "orders"), where("vendeurId", "==", window.currentVendeur.id)), (snap) => {
+                window.allOrders = [];
+                snap.forEach(d => {
+                    window.allOrders.push({ id: d.id, ...d.data() });
+                });
+                processAdminStatsAndStock();
+            });
         }
 
         window.switchInvoiceTab = function(tab) {
@@ -1017,7 +1024,6 @@
                 renderInvoiceForm();
                 calcInvoiceTotal();
                 window.closeAdminWindow('invoice');
-                fetchVendeurData();
             } catch (e) { alert('خطأ أثناء حفظ الفاتورة.'); }
         };
 
@@ -1039,6 +1045,42 @@
             if (tbody) tbody.innerHTML = html || '<tr><td colspan="2" class="text-center text-slate-400 py-4">لا توجد فواتير سابقة.</td></tr>';
         }
 
+        // تفاصيل الفاتورة المنفردة وطباعتها
+        window.openInvoiceDetailModal = function(invId) {
+            let inv = window.allInvoices.find(item => item.id === invId);
+            if (!inv) return;
+            window.currentActiveInvoice = inv;
+            let itemsHtml = '<ul class="space-y-1.5 bg-slate-50 p-3 rounded-2xl border border-slate-300">';
+            if (inv.items && Array.isArray(inv.items)) {
+                inv.items.forEach(i => {
+                    itemsHtml += `<li class="flex justify-between items-center text-xs font-bold text-slate-800 border-b pb-1 border-slate-200">
+                        <span>${i.operator} - ${i.name}</span>
+                        <span>${i.qty} قطع × ${i.buy.toFixed(3)} د.ت = ${(i.qty * i.buy).toFixed(3)} د.ت</span>
+                    </li>`;
+                });
+            }
+            itemsHtml += '</ul>';
+
+            document.getElementById('invoiceDetailModalContent').innerHTML = `
+                <p class="font-bold text-slate-900">التاريخ: ${new Date(inv.date).toLocaleString()}</p>
+                <p class="font-black text-indigo-600 text-sm">إجمالي الفاتورة: ${(inv.totalCost || 0).toFixed(3)} د.ت</p>
+                <div class="mt-2"><p class="font-bold text-slate-700 mb-1">تفاصيل المنتجات المشتراة:</p>${itemsHtml}</div>
+            `;
+            document.getElementById('invoiceDetailModal').classList.remove('hidden');
+        };
+
+        window.closeInvoiceDetailModal = function() {
+            document.getElementById('invoiceDetailModal').classList.add('hidden');
+            window.currentActiveInvoice = null;
+        };
+
+        window.printSingleInvoice = function() {
+            if (!window.currentActiveInvoice) return;
+            let win = window.open('', '_blank');
+            win.document.write(`<html lang="ar" dir="rtl"><head><title>فاتورة شراء ستوك</title><style>body{font-family:Tahoma;padding:20px;text-align:right;}ul{list-style:none;padding:0;}li{border-bottom:1px solid #ccc;padding:8px 0;}</style></head><body><h2>فاتورة شراء ستوك</h2>${document.getElementById('invoiceDetailModalContent').innerHTML}<script>window.print()<\/script></body></html>`);
+            win.document.close();
+        };
+
         function updateClientsUI() {
             let selectHtml = '<option value="">اختر الحانوت...</option>';
             let listHtml = '';
@@ -1048,7 +1090,7 @@
                     <div class="bg-slate-50 p-4 rounded-2xl border border-slate-300 flex justify-between items-center shadow-2xs">
                         <div class="cursor-pointer flex-1" onclick="openClientHistoryModal('${c.name}')">
                             <h4 class="font-bold text-slate-900 hover:text-indigo-600 transition"><i class="fa-solid fa-store text-emerald-600 ml-1"></i> ${c.name} <span class="text-xs text-indigo-600 font-normal">(عرض الـ Historique)</span></h4>
-                            <p class="text-xs text-slate-500">الهاتف: ${c.phone} | الكود الحالي: <strong class="text-slate-800">${c.password}</strong></p>
+                            <p class="text-xs text-slate-500">الهاتف: ${c.phone} | الكود الحالي: <strong class="text-slate-800">${c.password}</strong> | العنوان: ${c.address || 'غير محدد'}</p>
                         </div>
                         <button type="button" onclick="openEditPasswordModal('${c.id}', '${c.name}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 border border-indigo-200">
                             <i class="fa-solid fa-key"></i> تغيير الكود
@@ -1130,6 +1172,19 @@
             } catch (e) { alert('خطأ أثناء تأكيد الطلبية.'); }
         };
 
+        // دالة لتوحيد مفاتيح المنتجات لضمان طرح الكروت المحجوزة من الستوك بشكل دقيق
+        function getNormalizedProductKey(item) {
+            if (!item) return 'other';
+            let op = item.operator || '';
+            let name = item.name || '';
+            if (name.includes('1 د.ت') || item.id === '1' || item.id === `${op}_1`) return `${op}_1`;
+            if (name.includes('5 د.ت') || item.id === '5' || item.id === `${op}_5`) return `${op}_5`;
+            if (name.includes('10 د.ت') || item.id === '10' || item.id === `${op}_10`) return `${op}_10`;
+            if (name.includes('25 د.ت') || item.id === '25' || item.id === `${op}_25`) return `${op}_25`;
+            if (name.includes('شحن مباشر') || (item.id && item.id.includes('Direct'))) return `${op}_Recharge`;
+            return item.id || `${op}_${name}`;
+        }
+
         function processAdminStatsAndStock() {
             let totalBenefice = 0, totalCredit = 0;
             let ordersHtml = '';
@@ -1146,7 +1201,7 @@
             window.allInvoices.forEach(inv => {
                 if (inv.items && Array.isArray(inv.items)) {
                     inv.items.forEach(item => {
-                        let key = item.id;
+                        let key = getNormalizedProductKey(item);
                         if (!stockMap[key]) {
                             stockMap[key] = { operator: item.operator, name: item.name, buy: item.buy, purchased: 0, sold: 0 };
                         }
@@ -1177,7 +1232,7 @@
 
                     if (o.items && Array.isArray(o.items)) {
                         o.items.forEach(item => {
-                            let key = item.id;
+                            let key = getNormalizedProductKey(item);
                             if (!stockMap[key]) {
                                 stockMap[key] = { operator: item.operator || 'أخرى', name: item.name, buy: item.buy || 0, purchased: 0, sold: 0 };
                             }
@@ -1281,7 +1336,7 @@
                         <td class="p-3 border-l border-slate-300">${st.name}</td>
                         <td class="p-3 text-slate-500 border-l border-slate-300">${st.buy.toFixed(3)} د.ت</td>
                         <td class="p-3 font-bold text-indigo-600 border-l border-slate-300">${st.purchased}</td>
-                        <td class="p-3 font-black text-emerald-600 text-sm">${finalStock} قطعة</td>
+                        <td class="p-3 font-black ${finalStock < 5 ? 'text-rose-600' : 'text-emerald-600'} text-sm">${finalStock} قطعة</td>
                     </tr>
                 `;
             }
@@ -1320,8 +1375,10 @@
         window.closeRecetteModal = () => document.getElementById('recetteModal').classList.add('hidden');
 
         window.posCart = {};
+        window.selectedPosOp = '';
 
         window.selectPosOperator = function(op) {
+            window.selectedPosOp = op;
             document.getElementById('posProductsSection').classList.remove('hidden');
             document.getElementById('posSelectedOperatorTitle').innerText = `اختر للبيع: ${op}`;
             let html = '';
@@ -1341,11 +1398,11 @@
 
         window.addPosCardQty = (id) => {
             window.posCart[id] = (window.posCart[id] || 0) + 1;
-            document.getElementById(`pos_qty_${id}`).innerText = window.posCart[id];
+            let el = document.getElementById(`pos_qty_${id}`);
+            if (el) el.innerText = window.posCart[id];
             calcPosTotal();
         };
 
-        // دالة إضافة الشحن المباشر بالكتابة المباشرة في POS
         window.addPosDirectRecharge = function() {
             let val = parseFloat(document.getElementById('posDirectRechargeInput').value) || 0;
             if (val <= 0) { alert('أدخل مبلغ صحيح للشحن المباشر.'); return; }
@@ -1353,20 +1410,12 @@
 
             let key = `${window.selectedPosOp}_Direct_${val}`;
             window.posCart[key] = (window.posCart[key] || 0) + 1;
-            // حفظ تفاصيل هذا الشحن المباشر مؤقتاً
             if (!window.customDirectTariffs) window.customDirectTariffs = {};
             window.customDirectTariffs[key] = { id: key, operator: window.selectedPosOp, name: `شحن مباشر ${val} د.ت`, buy: val * 0.960, sell: val };
 
             document.getElementById('posDirectRechargeInput').value = '';
-            alert('تم إضافة الشحن المباشر بنجاح!');
+            window.showSystemNotification("الشحن المباشر", "تم إضافة الشحن المباشر بنجاح!");
             calcPosTotal();
-        };
-
-        // تعديل طفيف لتخزين المشغل الحالي في POS
-        window.oldSelectPosOp = window.selectPosOperator;
-        window.selectPosOperator = function(op) {
-            window.selectedPosOp = op;
-            window.oldSelectPosOp(op);
         };
 
         function calcPosTotal() {
@@ -1420,11 +1469,11 @@
                 window.showSystemNotification("عملية بيع", "تم إتمام البيع بنجاح وشكرا لك!");
                 window.posCart = {};
                 window.customDirectTariffs = {};
+                calcPosTotal();
                 window.closeAdminWindow('pos');
             } catch (e) { alert('خطأ أثناء الحفظ: ' + e.message); }
         };
 
-        // تفعيل المصادقة فوراً بالمليمتر
         window.checkVendeurAuth();
     </script>
 </body>
