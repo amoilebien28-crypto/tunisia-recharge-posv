@@ -26,29 +26,45 @@
             }
         }
 
-        /* منع التمرير الأفقي الزائد للصفحة */
         html, body {
             overflow-x: hidden !important;
-            max-width: 100vw !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
         }
 
-        /* 1. التنسيق الافتراضي للنوافذ على شاشة الكمبيوتر (PC) */
-        .admin-window, 
-        #authScreen,
-        #systemNotificationModal,
-        #payCreditModal,
-        #invoiceDetailModal,
-        #addClientModal,
-        #recetteModal,
-        #editClientPasswordModal,
-        #clientDetailHistoryModal,
-        #historyOrderDetailModal,
-        #orderDetailModal {
-            padding: 16px !important;
-            align-items: center !important;
-            justify-content: center !important;
+        /* إخفاء النوافذ عند وجود كلاس hidden */
+        .hidden {
+            display: none !important;
         }
 
+        /* الخلفية السوداء الشفافة وراء النافذة */
+        .admin-window:not(.hidden), 
+        #authScreen:not(.hidden),
+        #systemNotificationModal:not(.hidden),
+        #payCreditModal:not(.hidden),
+        #invoiceDetailModal:not(.hidden),
+        #addClientModal:not(.hidden),
+        #recetteModal:not(.hidden),
+        #editClientPasswordModal:not(.hidden),
+        #clientDetailHistoryModal:not(.hidden),
+        #historyOrderDetailModal:not(.hidden),
+        #orderDetailModal:not(.hidden) {
+            display: block !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background-color: rgba(15, 23, 42, 0.85) !important;
+            z-index: 9999 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        /* الصندوق الأبيض الداخلي للنافذة - مربوط بحواف الشاشة مباشرة لمنع تحوله لخط */
         .admin-window > div,
         #authScreen > div,
         #payCreditModal > div,
@@ -59,77 +75,51 @@
         #clientDetailHistoryModal > div,
         #historyOrderDetailModal > div,
         #orderDetailModal > div {
-            width: 100% !important;
+            display: block !important;
+            position: fixed !important;
+            top: 8px !important;
+            bottom: 8px !important;
+            left: 8px !important;
+            right: 8px !important;
+            width: auto !important;
+            height: auto !important;
             max-width: 650px !important;
-            max-height: 90vh !important;
-            margin: auto !important;
-            padding: 20px !important;
-            display: flex !important;
-            flex-direction: column !important;
+            max-height: none !important;
+            min-height: 0 !important;
+            margin: 0 auto !important;
+            padding: 16px !important;
+            background-color: #ffffff !important;
+            border-radius: 20px !important;
             overflow-y: auto !important;
-            border-radius: 24px !important;
+            -webkit-overflow-scrolling: touch !important;
             box-sizing: border-box !important;
+            transform: none !important;
         }
 
-        /* 2. التنسيق الخاص بالهاتف المحمول فقط (Plein écran على الهاتف) */
-        @media (max-width: 767px) {
-            .admin-window, 
-            #authScreen,
-            #payCreditModal,
-            #invoiceDetailModal,
-            #addClientModal,
-            #recetteModal,
-            #editClientPasswordModal,
-            #clientDetailHistoryModal,
-            #historyOrderDetailModal,
-            #orderDetailModal {
-                padding: 0 !important;
-            }
-
-            .admin-window > div,
-            #authScreen > div,
-            #payCreditModal > div,
-            #invoiceDetailModal > div,
-            #addClientModal > div,
-            #recetteModal > div,
-            #editClientPasswordModal > div,
-            #clientDetailHistoryModal > div,
-            #historyOrderDetailModal > div,
-            #orderDetailModal > div {
-                width: 100% !important;
-                max-width: 100% !important;
-                height: 100% !important;
-                min-height: 100vh !important;
-                max-height: 100vh !important;
-                border-radius: 0 !important;
-                border: none !important;
-                padding: 14px !important;
-            }
-        }
-
-        /* نافذة التنبيهات الصغيرة تبقى دائماً في المنتصف بشكل أنيق */
+        /* نافذة التنبيهات الصغيرة في المنتصف */
         #systemNotificationModal > div {
+            display: block !important;
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            right: auto !important;
+            bottom: auto !important;
+            transform: translate(-50%, -50%) !important;
             width: 90% !important;
             max-width: 360px !important;
             height: auto !important;
-            min-height: auto !important;
-            max-height: 80vh !important;
-            margin: auto !important;
+            padding: 20px !important;
+            background-color: #ffffff !important;
             border-radius: 24px !important;
-            border: 1px solid #cbd5e1 !important;
-        }
-
-        .overflow-x-auto, .overflow-y-auto {
-            -webkit-overflow-scrolling: touch !important;
         }
     </style>
 </head>
 <body class="bg-slate-300 min-h-screen font-sans pb-12 text-slate-800">
 
     <!-- شاشة تسجيل الدخول للبائع بالمعرف أو الهاتف -->
-    <div id="authScreen" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full space-y-6 border border-slate-300">
-            <div class="text-center space-y-2">
+    <div id="authScreen" class="fixed inset-0 z-50">
+        <div class="bg-white p-6 rounded-3xl shadow-2xl space-y-6 border border-slate-300">
+            <div class="text-center space-y-2 mt-8">
                 <div class="bg-indigo-50 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto text-indigo-600 text-2xl font-bold border border-indigo-200">
                     <i class="fa-solid fa-user-tie"></i>
                 </div>
@@ -146,7 +136,7 @@
                     <label class="block text-xs font-bold text-slate-700 mb-1">كلمة المرور (Mot de passe):</label>
                     <input type="password" id="loginPassword" placeholder="••••••••" class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50 text-center">
                 </div>
-                <button type="button" onclick="handleVendeurLogin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold shadow-sm transition">تسجيل الدخول</button>
+                <button type="button" onclick="handleVendeurLogin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-xl font-bold shadow-sm transition">تسجيل الدخول</button>
             </div>
             <p class="text-[11px] text-slate-400 text-center">الحسابات تدار حصرياً من قبل الإدارة المركزية (Super Admin)</p>
         </div>
@@ -319,16 +309,16 @@
         </div>
     </main>
 
-    <!-- نافذة يوميات المبيعات العامة (Journal de Vente) -->
-    <div id="windowJournal" class="admin-window fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-xl max-w-4xl w-full border border-slate-300">
-            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+    <!-- نافذة يوميات المبيعات العامة -->
+    <div id="windowJournal" class="admin-window hidden">
+        <div>
+            <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
                 <h4 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-book-bookmark text-purple-600 ml-2"></i> يوميات المبيعات العامة (Journal de Vente)</h4>
-                <button type="button" onclick="closeAdminWindow('journal')" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+                <button type="button" onclick="closeAdminWindow('journal')" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
             </div>
-            <p class="text-xs text-slate-500">سجل كامل للمبيعات المباشرة وطلبيات الحوانت بالترتيب الزمني (انقر على أي سطر لعرض كامل التفاصيل):</p>
+            <p class="text-xs text-slate-500 mb-3">سجل كامل للمبيعات المباشرة وطلبيات الحوانت بالترتيب الزمني (انقر على أي سطر لعرض كامل التفاصيل):</p>
             
-            <div class="overflow-x-auto border-2 border-slate-400 rounded-2xl bg-white shadow-inner flex-1 my-2">
+            <div class="overflow-x-auto border-2 border-slate-400 rounded-2xl bg-white shadow-inner mb-4">
                 <table class="custom-grid w-full text-right text-xs">
                     <thead>
                         <tr class="bg-slate-200 text-slate-800 font-black">
@@ -344,13 +334,13 @@
                     </tbody>
                 </table>
             </div>
-            <button type="button" onclick="closeAdminWindow('journal')" class="w-full bg-slate-800 text-white py-3.5 rounded-xl font-bold text-xs mt-2">إغلاق</button>
+            <button type="button" onclick="closeAdminWindow('journal')" class="w-full bg-slate-800 text-white py-3.5 rounded-xl font-bold text-xs">إغلاق</button>
         </div>
     </div>
 
-    <!-- نافذة إشعار احترافية (بديلة للـ alert) -->
-    <div id="systemNotificationModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-sm w-full space-y-4 text-center border border-slate-300">
+    <!-- نافذة إشعار احترافية -->
+    <div id="systemNotificationModal" class="hidden">
+        <div class="text-center space-y-4">
             <div id="sysNotifIcon" class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold border border-indigo-300">
                 <i class="fa-solid fa-circle-exclamation"></i>
             </div>
@@ -361,15 +351,15 @@
     </div>
 
     <!-- نافذة ديون الكريدي على الحوانت -->
-    <div id="windowCredits" class="admin-window fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-xl max-w-2xl w-full border border-slate-300">
-            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+    <div id="windowCredits" class="admin-window hidden">
+        <div>
+            <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
                 <h4 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-hand-holding-dollar text-rose-600 ml-2"></i> قائمة ديون الكريدي على الحوانت</h4>
-                <button type="button" onclick="closeAdminWindow('credits')" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+                <button type="button" onclick="closeAdminWindow('credits')" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
             </div>
-            <p class="text-xs text-slate-500">الحوانت التي بذمتها ديون كريدي مع إمكانية تسجيل خلاص جزئي أو كلي:</p>
+            <p class="text-xs text-slate-500 mb-3">الحوانت التي بذمتها ديون كريدي مع إمكانية تسجيل خلاص جزئي أو كلي:</p>
             
-            <div id="creditsListContainer" class="space-y-3 flex-1 overflow-y-auto my-2">
+            <div id="creditsListContainer" class="space-y-3 mb-4">
                 <p class="text-slate-400 text-center py-4 text-xs">جاري جرد الديون...</p>
             </div>
             <button type="button" onclick="closeAdminWindow('credits')" class="w-full bg-slate-800 text-white py-3.5 rounded-xl font-bold text-xs">إغلاق</button>
@@ -377,39 +367,39 @@
     </div>
 
     <!-- نافذة دفع خلاص الدين للتاجر -->
-    <div id="payCreditModal" class="fixed inset-0 bg-black/70 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-sm w-full space-y-4 border border-slate-300">
-            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+    <div id="payCreditModal" class="hidden">
+        <div>
+            <div class="flex justify-between items-center border-b pb-3 mb-4 border-slate-200">
                 <h4 class="font-bold text-base text-slate-900"><i class="fa-solid fa-money-bill-wave text-emerald-600 ml-2"></i> تسجيل خلاص دين</h4>
-                <button type="button" onclick="closePayCreditModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+                <button type="button" onclick="closePayCreditModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
             </div>
-            <div class="space-y-3 text-xs flex-1">
+            <div class="space-y-4 text-xs mb-6">
                 <p id="payCreditClientName" class="font-black text-slate-900 text-sm"></p>
-                <div class="bg-rose-50 p-3 rounded-xl border border-rose-200">
+                <div class="bg-rose-50 p-4 rounded-xl border border-rose-200">
                     <span class="text-slate-600 block">إجمالي الدين الحالي:</span>
-                    <strong id="payCreditCurrentAmount" class="text-rose-600 text-base font-black">0.000 د.ت</strong>
+                    <strong id="payCreditCurrentAmount" class="text-rose-600 text-lg font-black">0.000 د.ت</strong>
                 </div>
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">المبلغ المدفوع كاش الآن (د.ت):</label>
-                    <input type="number" step="0.001" id="payCreditAmountInput" placeholder="أدخل المبلغ..." class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
+                    <input type="number" step="0.001" id="payCreditAmountInput" placeholder="أدخل المبلغ..." class="w-full border border-slate-300 p-3.5 rounded-xl text-sm font-bold bg-slate-50">
                 </div>
             </div>
-            <div class="flex gap-2 pt-2">
+            <div class="flex gap-2">
                 <button type="button" onclick="submitPayCredit()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold text-xs shadow-sm transition">تأكيد الخلاص</button>
-                <button type="button" onclick="closePayCreditModal()" class="bg-slate-200 text-slate-700 px-4 py-3.5 rounded-xl font-bold text-xs">إلغاء</button>
+                <button type="button" onclick="closePayCreditModal()" class="bg-slate-200 text-slate-700 px-6 py-3.5 rounded-xl font-bold text-xs">إلغاء</button>
             </div>
         </div>
     </div>
 
     <!-- نافذة تفاصيل الفاتورة -->
-    <div id="invoiceDetailModal" class="fixed inset-0 bg-black/70 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-2xl w-full border border-slate-300">
-            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+    <div id="invoiceDetailModal" class="hidden">
+        <div>
+            <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
                 <h4 id="invoiceDetailModalTitle" class="font-bold text-lg text-slate-900"><i class="fa-solid fa-file-invoice text-indigo-600 ml-2"></i> تفاصيل الفاتورة</h4>
-                <button type="button" onclick="closeInvoiceDetailModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+                <button type="button" onclick="closeInvoiceDetailModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
             </div>
-            <div id="invoiceDetailModalContent" class="space-y-3 text-xs flex-1 overflow-y-auto my-2"></div>
-            <div class="flex gap-2 pt-2">
+            <div id="invoiceDetailModalContent" class="space-y-3 text-xs mb-4"></div>
+            <div class="flex gap-2">
                 <button type="button" onclick="printSingleInvoice()" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white py-3.5 rounded-xl font-bold text-xs"><i class="fa-solid fa-print ml-1"></i> طباعة الفاتورة</button>
                 <button type="button" onclick="exportTableAsImage('invoiceDetailModalContent', 'فاتورة_شراء')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold text-xs"><i class="fa-solid fa-image ml-1"></i> صورة للواتساب</button>
                 <button type="button" onclick="closeInvoiceDetailModal()" class="bg-slate-200 text-slate-700 px-4 py-3.5 rounded-xl font-bold text-xs">إغلاق</button>
@@ -418,20 +408,20 @@
     </div>
 
     <!-- نافذة إضافة حانوت جديد -->
-    <div id="addClientModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-xl max-w-md w-full border border-slate-300">
-            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+    <div id="addClientModal" class="hidden">
+        <div>
+            <div class="flex justify-between items-center border-b pb-3 mb-4 border-slate-200">
                 <h3 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-store text-emerald-600 ml-2"></i> إضافة حانوت جديد لزبائنك</h3>
-                <button type="button" onclick="closeAddClientModal()" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+                <button type="button" onclick="closeAddClientModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
             </div>
-            <div class="space-y-3 flex-1 overflow-y-auto my-2">
+            <div class="space-y-3 mb-6">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">اسم الحانوت (المحل):</label>
                     <input type="text" id="newClientName" placeholder="مثال: حانوت البركة..." class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">الولاية (إجباري):</label>
-                    <select id="newClientGov" class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50 focus:outline-none focus:border-emerald-500">
+                    <select id="newClientGov" class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
                         <option value="">-- اختر الولاية --</option>
                         <option value="مدنين">مدنين</option>
                         <option value="قابس">قابس</option>
@@ -477,42 +467,42 @@
     </div>
 
     <!-- نافذة المداخيل والمرابيح (الروسيت) -->
-    <div id="recetteModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-xl w-full border border-slate-300">
-            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+    <div id="recetteModal" class="hidden">
+        <div>
+            <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
                 <h3 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-chart-line text-amber-600 ml-2"></i> المداخيل والمرابيح (الروسيت)</h3>
-                <button type="button" onclick="closeRecetteModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+                <button type="button" onclick="closeRecetteModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
             </div>
 
-            <div class="grid grid-cols-2 gap-3 my-2">
-                <div class="bg-emerald-100/70 p-3.5 rounded-2xl border-2 border-emerald-400 shadow-2xs">
+            <div class="grid grid-cols-2 gap-3 mb-3">
+                <div class="bg-emerald-100/70 p-3.5 rounded-2xl border-2 border-emerald-400">
                     <span class="text-xs text-emerald-900 font-bold block">صافي الأرباح (المرابيح):</span>
                     <h4 id="modalTotalBenefice" class="text-xl font-black text-emerald-700 mt-1">0.000 د.ت</h4>
                 </div>
-                <div class="bg-rose-100/70 p-3.5 rounded-2xl border-2 border-rose-400 shadow-2xs">
+                <div class="bg-rose-100/70 p-3.5 rounded-2xl border-2 border-rose-400">
                     <span class="text-xs text-rose-900 font-bold block">ديون الكريدي الجملية:</span>
                     <h4 id="modalTotalCredit" class="text-xl font-black text-rose-700 mt-1">0.000 د.ت</h4>
                 </div>
             </div>
 
-            <div class="flex bg-slate-200 p-1.5 rounded-2xl gap-2 border border-slate-300">
+            <div class="flex bg-slate-200 p-1.5 rounded-2xl gap-2 border border-slate-300 mb-3">
                 <button type="button" onclick="switchRecetteTab('days')" id="tabBtnRecetteDays" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-amber-800 shadow-sm transition border border-slate-300">روسيت الأيام</button>
                 <button type="button" onclick="switchRecetteTab('months')" id="tabBtnRecetteMonths" class="flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600 transition border border-transparent">روسيت الشهور</button>
             </div>
 
-            <div id="sectionRecetteDays" class="space-y-2 flex-1 overflow-y-auto my-2">
+            <div id="sectionRecetteDays" class="space-y-2 mb-4">
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الأيام:</h5>
                     <div class="flex gap-1.5">
-                        <button type="button" onclick="printReportTable('recetteDaysTableContainer', 'تقرير روسيت الأيام')" class="bg-slate-800 hover:bg-slate-900 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
+                        <button type="button" onclick="printReportTable('recetteDaysTableContainer', 'تقرير روسيت الأيام')" class="bg-slate-800 text-white px-2.5 py-1 rounded-lg text-xs font-bold">
                             <i class="fa-solid fa-print"></i> طباعة
                         </button>
-                        <button type="button" onclick="exportTableAsImage('recetteDaysTableContainer', 'تقرير_روسيت_الأيام')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
+                        <button type="button" onclick="exportTableAsImage('recetteDaysTableContainer', 'تقرير_روسيت_الأيام')" class="bg-emerald-600 text-white px-2.5 py-1 rounded-lg text-xs font-bold">
                             <i class="fa-solid fa-image"></i> صورة
                         </button>
                     </div>
                 </div>
-                <div id="recetteDaysTableContainer" class="overflow-x-auto border-2 border-slate-400 rounded-2xl shadow-inner bg-white">
+                <div id="recetteDaysTableContainer" class="overflow-x-auto border-2 border-slate-400 rounded-2xl bg-white">
                     <table class="custom-grid w-full text-right text-xs">
                         <thead>
                             <tr class="bg-slate-200 text-slate-800 font-black">
@@ -527,19 +517,19 @@
                 </div>
             </div>
 
-            <div id="sectionRecetteMonths" class="space-y-2 hidden flex-1 overflow-y-auto my-2">
+            <div id="sectionRecetteMonths" class="space-y-2 hidden mb-4">
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الشهور:</h5>
                     <div class="flex gap-1.5">
-                        <button type="button" onclick="printReportTable('recetteMonthsTableContainer', 'تقرير روسيت الشهور')" class="bg-slate-800 hover:bg-slate-900 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
+                        <button type="button" onclick="printReportTable('recetteMonthsTableContainer', 'تقرير روسيت الشهور')" class="bg-slate-800 text-white px-2.5 py-1 rounded-lg text-xs font-bold">
                             <i class="fa-solid fa-print"></i> طباعة
                         </button>
-                        <button type="button" onclick="exportTableAsImage('recetteMonthsTableContainer', 'تقرير_روسيت_الشهور')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
+                        <button type="button" onclick="exportTableAsImage('recetteMonthsTableContainer', 'تقرير_روسيت_الشهور')" class="bg-emerald-600 text-white px-2.5 py-1 rounded-lg text-xs font-bold">
                             <i class="fa-solid fa-image"></i> صورة
                         </button>
                     </div>
                 </div>
-                <div id="recetteMonthsTableContainer" class="overflow-x-auto border-2 border-slate-400 rounded-2xl shadow-inner bg-white">
+                <div id="recetteMonthsTableContainer" class="overflow-x-auto border-2 border-slate-400 rounded-2xl bg-white">
                     <table class="custom-grid w-full text-right text-xs">
                         <thead>
                             <tr class="bg-slate-200 text-slate-800 font-black">
@@ -554,93 +544,93 @@
                 </div>
             </div>
 
-            <button type="button" onclick="closeRecetteModal()" class="w-full bg-slate-800 text-white py-3.5 rounded-xl font-bold text-xs shadow-sm mt-2">إغلاق</button>
+            <button type="button" onclick="closeRecetteModal()" class="w-full bg-slate-800 text-white py-3.5 rounded-xl font-bold text-xs">إغلاق</button>
         </div>
     </div>
 
     <!-- نافذة تعديل كلمة مرور التاجر -->
-    <div id="editClientPasswordModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-sm w-full space-y-4 border border-slate-300">
-            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+    <div id="editClientPasswordModal" class="hidden">
+        <div>
+            <div class="flex justify-between items-center border-b pb-3 mb-4 border-slate-200">
                 <h4 class="font-bold text-base text-slate-900"><i class="fa-solid fa-key text-indigo-600 ml-2"></i> تغيير كلمة المرور للتاجر</h4>
-                <button type="button" onclick="closeEditPasswordModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+                <button type="button" onclick="closeEditPasswordModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
             </div>
-            <div class="space-y-3 flex-1">
-                <p id="editClientNameTitle" class="text-xs font-bold text-slate-600"></p>
+            <div class="space-y-4 mb-6">
+                <p id="editClientNameTitle" class="text-sm font-bold text-slate-700"></p>
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">كلمة المرور الجديدة:</label>
-                    <input type="text" id="newClientPasswordInput" placeholder="أدخل الكود الجديد..." class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
+                    <input type="text" id="newClientPasswordInput" placeholder="أدخل الكود الجديد..." class="w-full border border-slate-300 p-3.5 rounded-xl text-sm font-bold bg-slate-50">
                 </div>
             </div>
-            <button type="button" onclick="saveNewClientPassword()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-xl font-bold text-xs shadow-sm transition">حفظ الكود الجديد</button>
+            <button type="button" onclick="saveNewClientPassword()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-xl font-bold text-xs">حفظ الكود الجديد</button>
         </div>
     </div>
 
     <!-- نافذة سجل التاجر -->
-    <div id="clientDetailHistoryModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-2xl w-full border border-slate-300">
-            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+    <div id="clientDetailHistoryModal" class="hidden">
+        <div>
+            <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
                 <h4 id="historyModalTitle" class="font-bold text-lg text-slate-900"><i class="fa-solid fa-address-book text-blue-600 ml-2"></i> سجل معاملات وحانوت</h4>
-                <button type="button" onclick="closeClientHistoryModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+                <button type="button" onclick="closeClientHistoryModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
             </div>
 
-            <div class="bg-rose-50 border border-rose-300 p-4 rounded-2xl flex justify-between items-center my-2">
+            <div class="bg-rose-50 border border-rose-300 p-4 rounded-2xl flex justify-between items-center mb-3">
                 <span class="text-xs font-bold text-rose-800">إجمالي ديون الكريدي الحالية على هذا التاجر:</span>
                 <span id="historyClientTotalCredit" class="text-xl font-black text-rose-600">0.000 د.ت</span>
             </div>
 
-            <div class="space-y-2 flex-1 overflow-y-auto my-2" id="clientHistoryOrdersList"></div>
-            <button type="button" onclick="closeClientHistoryModal()" class="w-full bg-slate-100 text-slate-700 py-3.5 rounded-xl font-bold text-sm">إغلاق</button>
+            <div class="space-y-2 mb-4" id="clientHistoryOrdersList"></div>
+            <button type="button" onclick="closeClientHistoryModal()" class="w-full bg-slate-800 text-white py-3.5 rounded-xl font-bold text-sm">إغلاق</button>
         </div>
     </div>
 
     <!-- نافذة تفاصيل فاتورة أو طلبية داخل السجل -->
-    <div id="historyOrderDetailModal" class="fixed inset-0 bg-black/70 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-md w-full border border-slate-300">
-            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+    <div id="historyOrderDetailModal" class="hidden">
+        <div>
+            <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
                 <h4 class="font-bold text-base text-slate-900"><i class="fa-solid fa-file-invoice text-emerald-600 ml-2"></i> تفاصيل الطلبية / البيعة</h4>
-                <button type="button" onclick="closeHistoryOrderDetail()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+                <button type="button" onclick="closeHistoryOrderDetail()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
             </div>
-            <div id="historyOrderDetailContent" class="space-y-3 text-xs flex-1 overflow-y-auto my-2"></div>
+            <div id="historyOrderDetailContent" class="space-y-3 text-xs mb-4"></div>
             <button type="button" onclick="closeHistoryOrderDetail()" class="w-full bg-slate-800 text-white py-3.5 rounded-xl font-bold text-xs">إغلاق</button>
         </div>
     </div>
 
     <!-- نافذة قائمة الحوانت المسجلة -->
-    <div id="windowClients" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-xl max-w-2xl w-full border border-slate-300">
-            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+    <div id="windowClients" class="admin-window hidden">
+        <div>
+            <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
                 <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-address-book text-blue-600 ml-2"></i> قائمة الحوانت المسجلة لدي</h4>
-                <button type="button" onclick="closeAdminWindow('clients')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+                <button type="button" onclick="closeAdminWindow('clients')" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
             </div>
-            <p class="text-xs text-slate-500">انقر على اسم الحانوت لعرض العمليات السابقة والديون، أو انقر على زر (تغيير الكود) لتعديل كلمة المرور:</p>
-            <div id="clientsListContainer" class="space-y-2 flex-1 overflow-y-auto my-2"></div>
-            <button type="button" onclick="closeAdminWindow('clients')" class="w-full bg-slate-100 text-slate-700 py-3.5 rounded-xl font-bold text-sm">إغلاق</button>
+            <p class="text-xs text-slate-500 mb-3">انقر على اسم الحانوت لعرض العمليات السابقة والديون، أو انقر على زر (تغيير الكود) لتعديل كلمة المرور:</p>
+            <div id="clientsListContainer" class="space-y-2 mb-4"></div>
+            <button type="button" onclick="closeAdminWindow('clients')" class="w-full bg-slate-800 text-white py-3.5 rounded-xl font-bold text-sm">إغلاق</button>
         </div>
     </div>
 
     <!-- نافذة الطلبات الجديدة -->
-    <div id="windowOrders" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-xl max-w-2xl w-full border border-slate-300">
-            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+    <div id="windowOrders" class="admin-window hidden">
+        <div>
+            <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
                 <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-box-archive text-indigo-600 ml-2"></i> طلبات الحوانت الجديدة (قيد الانتظار)</h4>
-                <button type="button" onclick="closeAdminWindow('orders')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+                <button type="button" onclick="closeAdminWindow('orders')" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
             </div>
-            <div id="ordersListContainer" class="space-y-3 flex-1 overflow-y-auto my-2">
+            <div id="ordersListContainer" class="space-y-3 mb-4">
                 <p class="text-slate-400 text-sm text-center py-4">لا توجد طلبات جديدة حالياً.</p>
             </div>
-            <button type="button" onclick="closeAdminWindow('orders')" class="w-full bg-slate-100 text-slate-700 py-3.5 rounded-xl font-bold text-sm">إغلاق</button>
+            <button type="button" onclick="closeAdminWindow('orders')" class="w-full bg-slate-800 text-white py-3.5 rounded-xl font-bold text-sm">إغلاق</button>
         </div>
     </div>
 
     <!-- نافذة تفاصيل الطلبية وتأكيدها -->
-    <div id="orderDetailModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-lg w-full border border-slate-300">
-            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+    <div id="orderDetailModal" class="hidden">
+        <div>
+            <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
                 <h4 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-file-invoice text-emerald-600 ml-2"></i> تفاصيل الطلبية وتأكيدها</h4>
-                <button type="button" onclick="closeOrderDetailModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+                <button type="button" onclick="closeOrderDetailModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
             </div>
-            <div id="modalOrderContent" class="space-y-3 text-sm flex-1 overflow-y-auto my-2"></div>
+            <div id="modalOrderContent" class="space-y-3 text-sm mb-4"></div>
             <div class="border-t pt-4 space-y-3 border-slate-200">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">اختر طريقة الخلاص:</label>
@@ -660,19 +650,19 @@
     </div>
 
     <!-- نافذة إدارة الفواتير وشراء المخزون -->
-    <div id="windowInvoice" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-xl max-w-4xl w-full border border-slate-300">
-            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+    <div id="windowInvoice" class="admin-window hidden">
+        <div>
+            <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
                 <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-file-invoice-dollar text-indigo-600 ml-2"></i> إدارة فواتير الشراء وإضافة المخزون</h4>
-                <button type="button" onclick="closeAdminWindow('invoice')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+                <button type="button" onclick="closeAdminWindow('invoice')" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
             </div>
 
-            <div class="flex bg-slate-100 p-1.5 rounded-2xl gap-2 border border-slate-200 my-2">
-                <button type="button" onclick="switchInvoiceTab('new')" id="tabBtnNewInvoice" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-indigo-700 shadow-2xs transition border border-slate-200">إدخال فاتورة جديدة</button>
-                <button type="button" onclick="switchInvoiceTab('list')" id="tabBtnListInvoice" class="flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600 transition border border-transparent">جميع الفواتير السابقة</button>
+            <div class="flex bg-slate-100 p-1.5 rounded-2xl gap-2 border border-slate-200 mb-3">
+                <button type="button" onclick="switchInvoiceTab('new')" id="tabBtnNewInvoice" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-indigo-700 border border-slate-200">إدخال فاتورة جديدة</button>
+                <button type="button" onclick="switchInvoiceTab('list')" id="tabBtnListInvoice" class="flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600">جميع الفواتير السابقة</button>
             </div>
 
-            <div id="sectionNewInvoice" class="space-y-4 flex-1 overflow-y-auto">
+            <div id="sectionNewInvoice" class="space-y-4 mb-4">
                 <p class="text-xs text-slate-600 font-bold bg-slate-100 p-2.5 rounded-xl border border-slate-300">
                     <i class="fa-solid fa-circle-info text-indigo-600 ml-1"></i> أدخل سعر الشراء والكمية لكل منتج، ثم اضغط حفظ الفاتورة:
                 </p>
@@ -680,26 +670,26 @@
 
                 <div class="bg-slate-100 p-4 rounded-2xl border-2 border-slate-300 flex justify-between items-center sticky bottom-0 bg-white shadow-md">
                     <div>
-                        <span class="text-xs text-slate-600 font-bold">المجموع الجملي لفاتورة الشراء:</span>
-                        <span id="invoiceTotalBuyCost" class="text-xl font-black text-indigo-700 mr-2">0.000 د.ت</span>
+                        <span class="text-xs text-slate-600 font-bold block">المجموع الجملي لفاتورة الشراء:</span>
+                        <span id="invoiceTotalBuyCost" class="text-lg font-black text-indigo-700">0.000 د.ت</span>
                     </div>
-                    <button type="button" onclick="saveNewStockInvoiceBatch()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-md transition">حفظ الفاتورة وإضافة للمخزون</button>
+                    <button type="button" onclick="saveNewStockInvoiceBatch()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded-xl font-bold text-xs shadow-md">حفظ الفاتورة</button>
                 </div>
             </div>
 
-            <div id="sectionListInvoice" class="space-y-3 hidden flex-1 overflow-y-auto">
+            <div id="sectionListInvoice" class="space-y-3 hidden mb-4">
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">جميع الفواتير السابقة:</h5>
                     <div class="flex gap-1.5">
-                        <button type="button" onclick="printReportTable('invoicesHistoryTableContainer', 'قائمة جميع الفواتير السابقة')" class="bg-slate-800 hover:bg-slate-900 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
+                        <button type="button" onclick="printReportTable('invoicesHistoryTableContainer', 'قائمة جميع الفواتير السابقة')" class="bg-slate-800 text-white px-2.5 py-1 rounded-lg text-xs font-bold">
                             <i class="fa-solid fa-print"></i> طباعة
                         </button>
-                        <button type="button" onclick="exportTableAsImage('invoicesHistoryTableContainer', 'قائمة_الفواتير_السابقة')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-2xs">
+                        <button type="button" onclick="exportTableAsImage('invoicesHistoryTableContainer', 'قائمة_الفواتير_السابقة')" class="bg-emerald-600 text-white px-2.5 py-1 rounded-lg text-xs font-bold">
                             <i class="fa-solid fa-image"></i> صورة
                         </button>
                     </div>
                 </div>
-                <div id="invoicesHistoryTableContainer" class="overflow-x-auto border-2 border-slate-400 rounded-2xl shadow-inner bg-white">
+                <div id="invoicesHistoryTableContainer" class="overflow-x-auto border-2 border-slate-400 rounded-2xl bg-white">
                     <table class="custom-grid w-full text-right text-xs">
                         <thead>
                             <tr class="bg-slate-200 text-slate-800 font-black">
@@ -714,31 +704,31 @@
                 </div>
             </div>
 
-            <button type="button" onclick="closeAdminWindow('invoice')" class="w-full bg-slate-100 text-slate-700 py-3.5 rounded-xl font-bold text-sm mt-2">إغلاق</button>
+            <button type="button" onclick="closeAdminWindow('invoice')" class="w-full bg-slate-800 text-white py-3.5 rounded-xl font-bold text-sm">إغلاق</button>
         </div>
     </div>
 
     <!-- نافذة تقرير المخزون النهائي -->
-    <div id="windowStock" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-xl max-w-4xl w-full border border-slate-300">
-            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+    <div id="windowStock" class="admin-window hidden">
+        <div>
+            <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
                 <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-warehouse text-emerald-600 ml-2"></i> تقرير المخزون النهائي (جرد المخزون)</h4>
-                <button type="button" onclick="closeAdminWindow('stock')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+                <button type="button" onclick="closeAdminWindow('stock')" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
             </div>
 
-            <div class="flex justify-between items-center my-2">
-                <span class="text-xs text-slate-600 font-bold">جرد المخزون الحالي بالقطعة والرصيد وقيمة الشراء:</span>
+            <div class="flex justify-between items-center mb-3">
+                <span class="text-xs text-slate-600 font-bold">جرد المخزون الحالي بالقطعة والرصيد:</span>
                 <div class="flex gap-1.5">
-                    <button type="button" onclick="printReportTable('stockTableContainer', 'تقرير المخزون النهائي')" class="bg-slate-800 hover:bg-slate-900 text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-2xs">
+                    <button type="button" onclick="printReportTable('stockTableContainer', 'تقرير المخزون النهائي')" class="bg-slate-800 text-white px-3 py-1.5 rounded-xl text-xs font-bold">
                         <i class="fa-solid fa-print"></i> طباعة
                     </button>
-                    <button type="button" onclick="exportTableAsImage('stockTableContainer', 'تقرير_المخزون_النهائي')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-2xs">
+                    <button type="button" onclick="exportTableAsImage('stockTableContainer', 'تقرير_المخزون_النهائي')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold">
                         <i class="fa-solid fa-image"></i> صورة
                     </button>
                 </div>
             </div>
 
-            <div id="stockTableContainer" class="overflow-x-auto border-2 border-slate-400 rounded-2xl shadow-inner bg-white flex-1 overflow-y-auto">
+            <div id="stockTableContainer" class="overflow-x-auto border-2 border-slate-400 rounded-2xl bg-white mb-4">
                 <table class="custom-grid w-full text-right text-xs">
                     <thead>
                         <tr class="bg-slate-200 text-slate-900 font-black">
@@ -761,29 +751,29 @@
                 </table>
             </div>
 
-            <button type="button" onclick="closeAdminWindow('stock')" class="w-full bg-slate-100 text-slate-700 py-3.5 rounded-xl font-bold text-sm mt-2">إغلاق</button>
+            <button type="button" onclick="closeAdminWindow('stock')" class="w-full bg-slate-800 text-white py-3.5 rounded-xl font-bold text-sm">إغلاق</button>
         </div>
     </div>
 
     <!-- نافذة إحصائيات المبيعات -->
-    <div id="windowStats" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-xl max-w-2xl w-full border border-slate-300">
-            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+    <div id="windowStats" class="admin-window hidden">
+        <div>
+            <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
                 <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-chart-pie text-cyan-600 ml-2"></i> إحصائيات المبيعات حسب التجار</h4>
-                <button type="button" onclick="closeAdminWindow('stats')" class="text-slate-400 hover:text-slate-600 text-lg font-bold">&times;</button>
+                <button type="button" onclick="closeAdminWindow('stats')" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
             </div>
 
-            <div class="flex items-center gap-2 bg-slate-100 p-2 rounded-2xl border border-slate-300 text-xs font-bold my-2">
+            <div class="flex items-center gap-2 bg-slate-100 p-2 rounded-2xl border border-slate-300 text-xs font-bold mb-3">
                 <span class="text-slate-600">ترتيب العرض:</span>
-                <button type="button" onclick="changeStatsSort('best')" id="btnSortBest" class="bg-indigo-600 text-white px-3 py-1.5 rounded-xl shadow-xs transition">
+                <button type="button" onclick="changeStatsSort('best')" id="btnSortBest" class="bg-indigo-600 text-white px-3 py-1.5 rounded-xl">
                     <i class="fa-solid fa-trophy ml-1"></i> الأكثر شراءً
                 </button>
-                <button type="button" onclick="changeStatsSort('name')" id="btnSortName" class="bg-white text-slate-700 border border-slate-300 px-3 py-1.5 rounded-xl transition">
+                <button type="button" onclick="changeStatsSort('name')" id="btnSortName" class="bg-white text-slate-700 border border-slate-300 px-3 py-1.5 rounded-xl">
                     <i class="fa-solid fa-arrow-down-a-z ml-1"></i> أبجدياً
                 </button>
             </div>
 
-            <div id="salesStatsTableContainer" class="overflow-x-auto border-2 border-slate-400 rounded-2xl shadow-inner bg-white flex-1 overflow-y-auto">
+            <div id="salesStatsTableContainer" class="overflow-x-auto border-2 border-slate-400 rounded-2xl bg-white mb-4">
                 <table class="custom-grid w-full text-right text-xs">
                     <thead>
                         <tr class="bg-slate-200 text-slate-800 font-black">
@@ -797,29 +787,29 @@
                     </tbody>
                 </table>
             </div>
-            <button type="button" onclick="closeAdminWindow('stats')" class="w-full bg-slate-100 text-slate-700 py-3.5 rounded-xl font-bold text-sm mt-2">إغلاق</button>
+            <button type="button" onclick="closeAdminWindow('stats')" class="w-full bg-slate-800 text-white py-3.5 rounded-xl font-bold text-sm">إغلاق</button>
         </div>
     </div>
 
     <!-- نافذة البيع المباشر (POS) -->
-    <div id="windowPos" class="admin-window fixed inset-0 bg-slate-950/70 backdrop-blur-xs hidden flex items-center justify-center z-40 p-2 md:p-6 text-slate-800">
-        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-4xl w-full border border-slate-300">
-            <div class="overflow-y-auto pr-1 flex-1 space-y-4">
-                <div class="flex justify-between items-center border-b pb-3 sticky top-0 bg-white z-10 border-slate-200">
-                    <h4 class="font-extrabold text-xl text-slate-900"><i class="fa-solid fa-cash-register text-emerald-600 ml-2"></i> نظام البيع المباشر (Caisse POS)</h4>
+    <div id="windowPos" class="admin-window hidden">
+        <div style="padding-bottom: 80px !important;">
+            <div class="space-y-3">
+                <div class="flex justify-between items-center border-b pb-2 sticky top-0 bg-white z-10 border-slate-200">
+                    <h4 class="font-extrabold text-lg text-slate-900"><i class="fa-solid fa-cash-register text-emerald-600 ml-1"></i> نظام البيع المباشر (Caisse POS)</h4>
                     <button type="button" onclick="closeAdminWindow('pos')" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 bg-slate-50 p-2.5 rounded-2xl border border-slate-200">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">اختر الحانوت التابع لك:</label>
-                        <select id="posRegisteredClientSelect" class="border border-slate-300 p-3 rounded-xl w-full text-sm font-bold bg-white">
+                        <label class="block text-[11px] font-bold text-slate-700 mb-0.5">اختر الحانوت التابع لك:</label>
+                        <select id="posRegisteredClientSelect" class="border border-slate-300 p-2.5 rounded-xl w-full text-xs font-bold bg-white">
                             <option value="">اختر الحانوت...</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">طريقة الخلاص:</label>
-                        <select id="posPaymentStatus" class="border border-slate-300 p-3 rounded-xl w-full font-bold text-sm bg-white">
+                        <label class="block text-[11px] font-bold text-slate-700 mb-0.5">طريقة الخلاص:</label>
+                        <select id="posPaymentStatus" class="border border-slate-300 p-2.5 rounded-xl w-full font-bold text-xs bg-white">
                             <option value="Payé">خلاص كاش تام (Payé)</option>
                             <option value="Crédit">كريدي كلي (Crédit)</option>
                             <option value="Partiel">خلاص جزئي (Paiement Partiel)</option>
@@ -827,58 +817,59 @@
                     </div>
                 </div>
 
-                <div id="posPartielAmountDiv" class="hidden bg-amber-50 p-4 rounded-2xl border border-amber-200">
+                <div id="posPartielAmountDiv" class="hidden bg-amber-50 p-2.5 rounded-2xl border border-amber-200">
                     <label class="block text-xs font-bold text-amber-900 mb-1">المبلغ المدفوع كاش حالياً:</label>
-                    <input type="number" step="0.001" id="posPaidAmountInput" placeholder="0.000 د.ت" class="w-full border border-amber-300 p-3 rounded-xl text-sm font-bold bg-white">
+                    <input type="number" step="0.001" id="posPaidAmountInput" placeholder="0.000 د.ت" class="w-full border border-amber-300 p-2 rounded-xl text-xs font-bold bg-white">
                 </div>
 
-                <div class="grid grid-cols-3 gap-3">
-                    <button type="button" onclick="selectPosOperator('Ooredoo')" id="btnPosOoredoo" class="py-4 rounded-2xl font-black text-sm bg-red-50 text-red-600 hover:bg-red-100 border-2 border-red-500 shadow-sm transition flex flex-col items-center justify-center gap-1">
-                        <i class="fa-solid fa-signal text-lg"></i> أوريدو
+                <div class="grid grid-cols-3 gap-2">
+                    <button type="button" onclick="selectPosOperator('Ooredoo')" id="btnPosOoredoo" class="py-3 rounded-xl font-black text-xs bg-red-50 text-red-600 border-2 border-red-500 flex flex-col items-center justify-center gap-0.5">
+                        <i class="fa-solid fa-signal text-sm"></i> أوريدو
                     </button>
-                    <button type="button" onclick="selectPosOperator('Telecom')" id="btnPosTelecom" class="py-4 rounded-2xl font-black text-sm bg-blue-50 text-blue-600 hover:bg-blue-100 border-2 border-blue-500 shadow-sm transition flex flex-col items-center justify-center gap-1">
-                        <i class="fa-solid fa-signal text-lg"></i> تيليكوم
+                    <button type="button" onclick="selectPosOperator('Telecom')" id="btnPosTelecom" class="py-3 rounded-xl font-black text-xs bg-blue-50 text-blue-600 border-2 border-blue-500 flex flex-col items-center justify-center gap-0.5">
+                        <i class="fa-solid fa-signal text-sm"></i> تيليكوم
                     </button>
-                    <button type="button" onclick="selectPosOperator('Orange')" id="btnPosOrange" class="py-4 rounded-2xl font-black text-sm bg-orange-50 text-orange-600 hover:bg-orange-100 border-2 border-orange-500 shadow-sm transition flex flex-col items-center justify-center gap-1">
-                        <i class="fa-solid fa-signal text-lg"></i> أورنج
+                    <button type="button" onclick="selectPosOperator('Orange')" id="btnPosOrange" class="py-3 rounded-xl font-black text-xs bg-orange-50 text-orange-600 border-2 border-orange-500 flex flex-col items-center justify-center gap-0.5">
+                        <i class="fa-solid fa-signal text-sm"></i> أورنج
                     </button>
                 </div>
 
-                <div id="posProductsSection" class="hidden space-y-4 border-t pt-3 border-slate-200">
+                <div id="posProductsSection" class="hidden space-y-3 border-t pt-2 border-slate-200">
                     <h5 id="posSelectedOperatorTitle" class="font-bold text-slate-700 text-xs"></h5>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="posCardsGrid"></div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2" id="posCardsGrid"></div>
 
                     <!-- خانة الشحن المباشر -->
-                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-300 space-y-2 mt-2">
-                        <label class="block text-xs font-bold text-slate-700"><i class="fa-solid fa-bolt text-amber-500 ml-1"></i> الشحن المباشر / الإلكتروني:</label>
-                        <div class="flex gap-2">
-                            <input type="number" id="posDirectRechargeInput" placeholder="أدخل القيمة بالدينار..." class="flex-1 border border-slate-300 p-3 rounded-xl text-sm font-bold bg-white">
-                            <button type="button" onclick="addPosDirectRecharge()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 rounded-xl font-bold text-xs shadow-sm transition">إضافة للقفة</button>
+                    <div class="bg-slate-50 p-2.5 rounded-2xl border border-slate-300 space-y-1.5">
+                        <label class="block text-[11px] font-bold text-slate-700"><i class="fa-solid fa-bolt text-amber-500 ml-1"></i> الشحن المباشر / الإلكتروني:</label>
+                        <div class="flex gap-1.5">
+                            <input type="number" id="posDirectRechargeInput" placeholder="أدخل القيمة بالدينار..." class="flex-1 border border-slate-300 p-2 rounded-xl text-xs font-bold bg-white">
+                            <button type="button" onclick="addPosDirectRecharge()" class="bg-indigo-600 text-white px-4 rounded-xl font-bold text-xs">إضافة للقفة</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- أسفل القفة والمجموع الجملي -->
-            <div class="border-t pt-4 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50 p-4 rounded-2xl mt-2 border-slate-200">
+            <!-- شريط المجموع والأزرار ثابت في الأسفل -->
+            <div class="border-t bg-slate-100 p-3 rounded-xl mt-4 flex items-center justify-between gap-2 border-slate-300 sticky bottom-0 z-20 shadow-lg">
                 <div>
-                    <span class="text-slate-500 text-xs font-bold block">المجموع الجملي للقفة:</span>
-                    <span id="posCartTotal" class="text-2xl font-black text-emerald-600">0.000 د.ت</span>
+                    <span class="text-slate-500 text-[10px] font-bold block">المجموع الجملي:</span>
+                    <span id="posCartTotal" class="text-lg font-black text-emerald-600">0.000 د.ت</span>
                 </div>
-                <div class="flex gap-3 w-full md:w-auto">
-                    <button type="button" onclick="closeAdminWindow('pos')" class="flex-1 md:flex-none bg-slate-200 text-slate-700 px-6 py-3.5 rounded-xl font-bold text-xs">إغلاق</button>
-                    <button type="button" onclick="submitPosOrder()" class="flex-1 md:flex-none bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3.5 rounded-xl font-bold text-xs shadow-md transition">تأكيد البيع</button>
+                <div class="flex gap-2">
+                    <button type="button" onclick="closeAdminWindow('pos')" class="bg-slate-300 text-slate-800 px-4 py-2.5 rounded-xl font-bold text-xs">إغلاق</button>
+                    <button type="button" onclick="submitPosOrder()" class="bg-emerald-600 text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-md">
+                        <i class="fa-solid fa-check ml-1"></i> تأكيد البيع
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- السكربت والربط بقاعدة البيانات والتحكم الكامل -->
+    <!-- السكربت والربط بقاعدة البيانات -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // إخفاء الروابط من رسائل التنبيه واستبدالها بنافذة النظام الأنيقة تلقائياً
         window.alert = function(msg) {
             if (window.showSystemNotification) {
                 window.showSystemNotification("تنبيه", msg);
@@ -922,7 +913,6 @@
             }
         });
 
-        // دالة تسجيل الدخول للبائع
         window.handleVendeurLogin = async function() {
             const rawInput = (document.getElementById('loginPhone').value || '').trim();
             const password = (document.getElementById('loginPassword').value || '').trim();
@@ -1140,7 +1130,7 @@
                 let statusBadge = o.status === 'مكتمل ومؤكد' ? '<span class="text-xs bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded font-bold border border-emerald-300">مؤكد</span>' : '<span class="text-xs bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded font-bold border border-amber-300">قيد الانتظار</span>';
 
                 ordersHtml += `
-                    <div onclick="openHistoryOrderDetail('${o.id}')" class="bg-slate-50 hover:bg-slate-100 cursor-pointer p-3.5 rounded-2xl border border-slate-300 flex justify-between items-center transition shadow-2xs">
+                    <div onclick="openHistoryOrderDetail('${o.id}')" class="bg-slate-50 hover:bg-slate-100 cursor-pointer p-3.5 rounded-2xl border border-slate-300 flex justify-between items-center transition">
                         <div>
                             <p class="font-bold text-xs text-slate-900">تاريخ: ${dateStr} | المجموع: <strong class="text-emerald-600">${o.totalSell} د.ت</strong></p>
                             <p class="text-[10px] text-slate-500 mt-0.5">الحالة: ${o.paymentStatus || 'عادي'} (انقر لعرض التفاصيل)</p>
@@ -1262,19 +1252,19 @@
                     let clientObj = window.allClients.find(c => c.name === clientName) || {};
                     const loc = clientObj.governorate ? `${clientObj.governorate} - ${clientObj.address || ''}` : (clientObj.address || 'غير محدد');
                     html += `
-                        <div class="bg-rose-50/70 p-4 rounded-2xl border-2 border-rose-300 flex justify-between items-center shadow-xs">
+                        <div class="bg-rose-50/70 p-4 rounded-2xl border-2 border-rose-300 flex justify-between items-center">
                             <div class="space-y-1">
                                 <h4 class="font-black text-slate-900 text-sm"><i class="fa-solid fa-store text-rose-600 ml-1"></i> ${clientName}</h4>
                                 <p class="text-xs text-slate-600 font-bold">الهاتف: ${clientObj.phone || 'غير مسجل'} | المنطقة: ${loc}</p>
                             </div>
                             <div class="text-left space-y-1.5">
                                 <span class="text-xs font-bold text-rose-800 block">الدين المتبقي:</span>
-                                <span class="text-lg font-black text-rose-600 bg-white px-3 py-1 rounded-xl border border-rose-300 inline-block shadow-2xs">${creditVal.toFixed(3)} د.ت</span>
+                                <span class="text-lg font-black text-rose-600 bg-white px-3 py-1 rounded-xl border border-rose-300 inline-block">${creditVal.toFixed(3)} د.ت</span>
                                 <div class="flex gap-1 justify-end">
-                                    <button type="button" onclick="openPayCreditModal('${clientName}', ${creditVal})" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl font-black shadow-xs transition flex items-center gap-1">
+                                    <button type="button" onclick="openPayCreditModal('${clientName}', ${creditVal})" class="text-xs bg-emerald-600 text-white px-3 py-1.5 rounded-xl font-black">
                                         <i class="fa-solid fa-money-bill-wave"></i> دفع الدين
                                     </button>
-                                    <button type="button" onclick="closeAdminWindow('credits'); openClientHistoryModal('${clientName}')" class="text-xs bg-slate-800 hover:bg-slate-900 text-white px-2.5 py-1.5 rounded-xl font-bold transition">
+                                    <button type="button" onclick="closeAdminWindow('credits'); openClientHistoryModal('${clientName}')" class="text-xs bg-slate-800 text-white px-2.5 py-1.5 rounded-xl font-bold">
                                         السجل
                                     </button>
                                 </div>
@@ -1346,13 +1336,13 @@
             if (tab === 'new') {
                 secNew.classList.remove('hidden');
                 secList.classList.add('hidden');
-                btnNew.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-indigo-700 shadow-2xs transition border border-slate-200';
-                btnList.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600 transition border border-transparent';
+                btnNew.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-indigo-700 border border-slate-200';
+                btnList.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600';
             } else {
                 secNew.classList.add('hidden');
                 secList.classList.remove('hidden');
-                btnList.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-indigo-700 shadow-2xs transition border border-slate-200';
-                btnNew.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600 transition border border-transparent';
+                btnList.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-indigo-700 border border-slate-200';
+                btnNew.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600';
             }
         };
 
@@ -1365,13 +1355,13 @@
             if (tab === 'days') {
                 secDays.classList.remove('hidden');
                 secMonths.classList.add('hidden');
-                btnDays.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-amber-800 shadow-sm transition border border-slate-300';
-                btnMonths.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600 transition border border-transparent';
+                btnDays.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-amber-800 border border-slate-300';
+                btnMonths.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600';
             } else {
                 secDays.classList.add('hidden');
                 secMonths.classList.remove('hidden');
-                btnMonths.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-amber-800 shadow-sm transition border border-slate-300';
-                btnDays.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600 transition border border-transparent';
+                btnMonths.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-amber-800 border border-slate-300';
+                btnDays.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600';
             }
         };
 
@@ -1381,7 +1371,7 @@
                 let isRecharge = t.id.includes('Recharge');
                 let badge = isRecharge ? '<span class="bg-indigo-100 text-indigo-800 text-[10px] px-2 py-0.5 rounded-md font-bold mr-1">شحن رصيد إلكتروني</span>' : '';
                 html += `
-                    <div class="bg-white p-3.5 rounded-2xl border-2 border-slate-300 grid grid-cols-1 md:grid-cols-3 gap-2 items-center text-xs shadow-2xs">
+                    <div class="bg-white p-3.5 rounded-2xl border-2 border-slate-300 grid grid-cols-1 md:grid-cols-3 gap-2 items-center text-xs">
                         <div>
                             <span class="font-black text-slate-900 block">${t.operator} - ${t.name}</span>
                             ${badge}
@@ -1531,12 +1521,12 @@
                 const loc = c.governorate ? `${c.governorate} - ${c.address || ''}` : (c.address || 'غير محدد');
                 selectHtml += `<option value="${c.name}">${c.name} (${c.phone}) - ${c.governorate || ''}</option>`;
                 listHtml += `
-                    <div class="bg-white p-4 rounded-2xl border border-slate-300 flex justify-between items-center shadow-2xs">
+                    <div class="bg-white p-4 rounded-2xl border border-slate-300 flex justify-between items-center">
                         <div class="cursor-pointer flex-1" onclick="openClientHistoryModal('${c.name}')">
-                            <h4 class="font-bold text-slate-900 hover:text-indigo-600 transition"><i class="fa-solid fa-store text-emerald-600 ml-1"></i> ${c.name} <span class="text-xs text-indigo-600 font-normal">(عرض العمليات السابقة)</span></h4>
+                            <h4 class="font-bold text-slate-900 hover:text-indigo-600"><i class="fa-solid fa-store text-emerald-600 ml-1"></i> ${c.name} <span class="text-xs text-indigo-600 font-normal">(عرض العمليات السابقة)</span></h4>
                             <p class="text-xs text-slate-500">الهاتف: ${c.phone} | المنطقة: <strong>${loc}</strong> | الكود: <strong class="text-slate-800">${c.password}</strong></p>
                         </div>
-                        <button type="button" onclick="openEditPasswordModal('${c.id}', '${c.name}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 border border-indigo-200">
+                        <button type="button" onclick="openEditPasswordModal('${c.id}', '${c.name}')" class="bg-indigo-50 text-indigo-700 px-3 py-2 rounded-xl text-xs font-bold border border-indigo-200">
                             <i class="fa-solid fa-key"></i> تغيير الكود
                         </button>
                     </div>
@@ -1555,7 +1545,7 @@
             if (!window.selectedOrderForAction) return;
 
             let o = window.selectedOrderForAction;
-            let itemsHtml = '<div class="space-y-2 bg-slate-50 p-3 rounded-2xl border border-slate-300 max-h-48 overflow-y-auto">';
+            let itemsHtml = '<div class="space-y-2 bg-slate-50 p-3 rounded-2xl border border-slate-300">';
             if (o.items && Array.isArray(o.items)) {
                 o.items.forEach(item => {
                     itemsHtml += `<div class="flex justify-between items-center text-xs font-bold text-slate-800 border-b pb-1 border-slate-200">
@@ -1633,11 +1623,11 @@
             let btnBest = document.getElementById('btnSortBest');
             let btnName = document.getElementById('btnSortName');
             if (mode === 'best') {
-                btnBest.className = 'bg-indigo-600 text-white px-3 py-1.5 rounded-xl shadow-xs transition';
-                btnName.className = 'bg-white text-slate-700 border border-slate-300 px-3 py-1.5 rounded-xl transition';
+                btnBest.className = 'bg-indigo-600 text-white px-3 py-1.5 rounded-xl';
+                btnName.className = 'bg-white text-slate-700 border border-slate-300 px-3 py-1.5 rounded-xl';
             } else {
-                btnName.className = 'bg-indigo-600 text-white px-3 py-1.5 rounded-xl shadow-xs transition';
-                btnBest.className = 'bg-white text-slate-700 border border-slate-300 px-3 py-1.5 rounded-xl transition';
+                btnName.className = 'bg-indigo-600 text-white px-3 py-1.5 rounded-xl';
+                btnBest.className = 'bg-white text-slate-700 border border-slate-300 px-3 py-1.5 rounded-xl';
             }
             processAdminStatsAndStock();
         };
@@ -1699,7 +1689,7 @@
                     }
                 } else {
                     ordersHtml += `
-                        <div onclick="openOrderDetailModal('${o.id}')" class="bg-white hover:bg-slate-50 cursor-pointer p-4 rounded-2xl border border-slate-300 flex justify-between items-center transition shadow-2xs">
+                        <div onclick="openOrderDetailModal('${o.id}')" class="bg-white hover:bg-slate-50 cursor-pointer p-4 rounded-2xl border border-slate-300 flex justify-between items-center">
                             <div class="space-y-1">
                                 <span class="font-bold text-slate-900 text-sm"><i class="fa-solid fa-store text-emerald-600 ml-1"></i> ${o.clientName}</span>
                                 <p class="text-xs text-slate-500">المجموع: <strong class="text-emerald-600">${o.totalSell} د.ت</strong></p>
@@ -1852,7 +1842,6 @@
         window.openRecetteModal = () => document.getElementById('recetteModal').classList.remove('hidden');
         window.closeRecetteModal = () => document.getElementById('recetteModal').classList.add('hidden');
 
-        // واجهة البيع السريع POS
         window.posCart = {};
         window.selectedPosOp = '';
 
@@ -1867,8 +1856,8 @@
             window.tariffs.filter(t => t.operator === op && !t.id.includes('Recharge')).forEach(t => {
                 let qty = window.posCart[t.id] ? window.posCart[t.id].qty : 0;
                 html += `
-                    <div class="bg-white border-2 p-3 rounded-2xl flex flex-col justify-between items-center text-center transition shadow-2xs relative ${headerBgColor}">
-                        ${qty > 0 ? `<span class="absolute -top-2 -right-2 bg-slate-900 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold shadow-sm">${qty}</span>` : ''}
+                    <div class="bg-white border-2 p-3 rounded-2xl flex flex-col justify-between items-center text-center relative ${headerBgColor}">
+                        ${qty > 0 ? `<span class="absolute -top-2 -right-2 bg-slate-900 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold">${qty}</span>` : ''}
                         
                         <div onclick="addPosCardByClick('${t.id}')" class="cursor-pointer w-full py-1">
                             <span class="font-black text-sm block">${t.name}</span>
@@ -1876,9 +1865,9 @@
                         </div>
 
                         <div class="flex items-center gap-2 mt-2 pt-2 border-t border-slate-200 w-full justify-center">
-                            <button type="button" onclick="decrementPosCard('${t.id}')" class="w-7 h-7 bg-rose-100 text-rose-700 rounded-lg font-bold text-xs hover:bg-rose-200 transition"><i class="fa-solid fa-minus"></i></button>
+                            <button type="button" onclick="decrementPosCard('${t.id}')" class="w-7 h-7 bg-rose-100 text-rose-700 rounded-lg font-bold text-xs"><i class="fa-solid fa-minus"></i></button>
                             <span class="font-bold text-xs w-6 text-center text-slate-800">${qty}</span>
-                            <button type="button" onclick="addPosCardByClick('${t.id}')" class="w-7 h-7 bg-emerald-100 text-emerald-700 rounded-lg font-bold text-xs hover:bg-emerald-200 transition"><i class="fa-solid fa-plus"></i></button>
+                            <button type="button" onclick="addPosCardByClick('${t.id}')" class="w-7 h-7 bg-emerald-100 text-emerald-700 rounded-lg font-bold text-xs"><i class="fa-solid fa-plus"></i></button>
                         </div>
                     </div>
                 `;
