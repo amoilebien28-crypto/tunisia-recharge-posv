@@ -26,7 +26,13 @@
             }
         }
 
-        /* جعل جميع النوافذ المنبثقة تملأ كامل شاشة الهاتف بنسبة 100% (Plein Écran Total) */
+        /* منع التمرير الأفقي الزائد للصفحة */
+        html, body {
+            overflow-x: hidden !important;
+            max-width: 100vw !important;
+        }
+
+        /* 1. التنسيق الافتراضي للنوافذ على شاشة الكمبيوتر (PC) */
         .admin-window, 
         #authScreen,
         #systemNotificationModal,
@@ -38,8 +44,8 @@
         #clientDetailHistoryModal,
         #historyOrderDetailModal,
         #orderDetailModal {
-            padding: 0 !important;
-            align-items: stretch !important;
+            padding: 16px !important;
+            align-items: center !important;
             justify-content: center !important;
         }
 
@@ -53,26 +59,58 @@
         #clientDetailHistoryModal > div,
         #historyOrderDetailModal > div,
         #orderDetailModal > div {
-            width: 100vw !important;
-            max-width: 100vw !important;
-            height: 100vh !important;
-            max-height: 100vh !important;
-            min-height: 100vh !important;
-            margin: 0 !important;
-            padding: 16px !important;
+            width: 100% !important;
+            max-width: 650px !important;
+            max-height: 90vh !important;
+            margin: auto !important;
+            padding: 20px !important;
             display: flex !important;
             flex-direction: column !important;
             overflow-y: auto !important;
-            -webkit-overflow-scrolling: touch !important;
-            border-radius: 0 !important;
-            border: none !important;
+            border-radius: 24px !important;
             box-sizing: border-box !important;
         }
 
-        /* استثناء نافذة التنبيهات الصغيرة لتبقى في الوسط بشكل جميل */
+        /* 2. التنسيق الخاص بالهاتف المحمول فقط (Plein écran على الهاتف) */
+        @media (max-width: 767px) {
+            .admin-window, 
+            #authScreen,
+            #payCreditModal,
+            #invoiceDetailModal,
+            #addClientModal,
+            #recetteModal,
+            #editClientPasswordModal,
+            #clientDetailHistoryModal,
+            #historyOrderDetailModal,
+            #orderDetailModal {
+                padding: 0 !important;
+            }
+
+            .admin-window > div,
+            #authScreen > div,
+            #payCreditModal > div,
+            #invoiceDetailModal > div,
+            #addClientModal > div,
+            #recetteModal > div,
+            #editClientPasswordModal > div,
+            #clientDetailHistoryModal > div,
+            #historyOrderDetailModal > div,
+            #orderDetailModal > div {
+                width: 100% !important;
+                max-width: 100% !important;
+                height: 100% !important;
+                min-height: 100vh !important;
+                max-height: 100vh !important;
+                border-radius: 0 !important;
+                border: none !important;
+                padding: 14px !important;
+            }
+        }
+
+        /* نافذة التنبيهات الصغيرة تبقى دائماً في المنتصف بشكل أنيق */
         #systemNotificationModal > div {
-            width: 90vw !important;
-            max-width: 380px !important;
+            width: 90% !important;
+            max-width: 360px !important;
             height: auto !important;
             min-height: auto !important;
             max-height: 80vh !important;
@@ -310,7 +348,7 @@
         </div>
     </div>
 
-    <!-- نافذة إشعار احترافية (تظهر مكان الـ alert العادية) -->
+    <!-- نافذة إشعار احترافية (بديلة للـ alert) -->
     <div id="systemNotificationModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-sm w-full space-y-4 text-center border border-slate-300">
             <div id="sysNotifIcon" class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold border border-indigo-300">
