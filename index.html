@@ -1976,6 +1976,80 @@
         };
 
         window.checkVendeurAuth();
+        // --- نظام التحكم في زر الرجوع الخاص بالهاتف (Back Button) ---
+        window.closeAnyOpenModalOrSection = function() {
+            // 1. التحقق من النوافذ الفرعية المنبثقة أولاً وإغلاقها بالتدريج
+            const subModals = [
+                'systemNotificationModal',
+                'payCreditModal',
+                'invoiceDetailModal',
+                'historyOrderDetailModal',
+                'orderDetailModal',
+                'editClientPasswordModal',
+                'clientDetailHistoryModal',
+                'addClientModal',
+                'recetteModal'
+            ];
+
+            for (let id of subModals) {
+                const el = document.getElementById(id);
+                if (el && !el.classList.contains('hidden')) {
+                    el.classList.add('hidden');
+                    return true;
+                }
+            }
+
+            // 2. التحقق من النوافذ الإدارية الكبرى (POS, Journal, Stock, etc.)
+            const openAdminWin = document.querySelector('.admin-window:not(.hidden)');
+            if (openAdminWin) {
+                openAdminWin.classList.add('hidden');
+                return true;
+            }
+
+            // 3. التحقق من قسم الإدارة التفصيلي والعودة للقائمة الرئيسية
+            const detailedSec = document.getElementById('detailedManagementSection');
+            if (detailedSec && !detailedSec.classList.contains('hidden')) {
+                window.backToMainChoices();
+                return true;
+            }
+
+            return false; // لا توجد أي نافذة مفتوحة (في القائمة الرئيسية)
+        };
+
+        // تسجيل خطوة في سجل المتصفح عند فتح أي نافذة أو قسم
+        const originalSelectMainChoice = window.selectMainChoice;
+        window.selectMainChoice = function(choice) {
+            history.pushState({ page: choice }, "");
+            originalSelectMainChoice(choice);
+        };
+
+        const originalOpenAdminWindow = window.openAdminWindow;
+        window.openAdminWindow = function(name) {
+            history.pushState({ modal: name }, "");
+            originalOpenAdminWindow(name);
+        };
+
+        ['openAddClientModal', 'openRecetteModal', 'openEditPasswordModal', 'openClientHistoryModal', 'openHistoryOrderDetail', 'openOrderDetailModal', 'openInvoiceDetailModal', 'openPayCreditModal'].forEach(fnName => {
+            const origFn = window[fnName];
+            if (typeof origFn === 'function') {
+                window[fnName] = function(...args) {
+                    history.pushState({ subModal: fnName }, "");
+                    return origFn.apply(this, args);
+                };
+            }
+        });
+
+        // عند الضغط على سهم الرجوع في الهاتف
+        window.addEventListener('popstate', function(event) {
+            const closedSomething = window.closeAnyOpenModalOrSection();
+            if (closedSomething) {
+                // إبقاء سجل التصفح نشطاً طالما هناك نوافذ أخرى مفتوحة
+                history.pushState({ active: true }, "");
+            }
+        });
+
+        // تهيئة نقطة البداية لمنع الخروج المفاجئ
+        history.pushState({ active: true }, "");
     </script>
 </body>
 </html>
