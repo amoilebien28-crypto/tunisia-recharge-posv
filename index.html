@@ -11,7 +11,6 @@
     <!-- مكتبة تحويل الجداول إلى صور واضحة -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        /* تسطير وتخطيط كافة الجداول أفقياً وعمودياً مع دعم الطباعة الرسمية */
         table.custom-grid {
             border-collapse: collapse !important;
             width: 100%;
@@ -29,7 +28,7 @@
 </head>
 <body class="bg-slate-300 min-h-screen font-sans pb-12 text-slate-800">
 
-    <!-- شاشة تسجيل الدخول للبائع (بدون خيار إنشاء حساب جديد) -->
+    <!-- شاشة تسجيل الدخول للبائع بالمعرف أو الهاتف -->
     <div id="authScreen" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full space-y-6 border border-slate-300">
             <div class="text-center space-y-2">
@@ -76,13 +75,14 @@
 
     <main class="container mx-auto px-4 py-8 max-w-3xl space-y-6">
 
-        <!-- واجهة الاختيار الرئيسية -->
+        <!-- واجهة الاختيار الرئيسية مع الزر الثالث المضاف -->
         <div id="mainChoicesSection" class="space-y-5">
             <div class="text-center space-y-2 mb-6">
                 <h2 class="text-2xl font-black text-slate-900">لوحة توزيع كروت الشحن</h2>
                 <p class="text-sm text-slate-600 font-bold">اختر القسم المناسب لإدارة عملك:</p>
             </div>
 
+            <!-- الزر 1 -->
             <button type="button" onclick="selectMainChoice('pos')" class="w-full text-right bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-lg border-2 border-emerald-500">
                 <div class="flex items-center gap-4">
                     <div class="bg-white/20 p-4 rounded-2xl text-3xl border border-white/20">
@@ -96,6 +96,7 @@
                 <i class="fa-solid fa-chevron-left text-2xl"></i>
             </button>
 
+            <!-- الزر 2 -->
             <button type="button" onclick="selectMainChoice('management')" class="w-full text-right bg-gradient-to-r from-indigo-800 to-slate-900 hover:from-indigo-900 hover:to-slate-950 text-white p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-lg border-2 border-indigo-600">
                 <div class="flex items-center gap-4">
                     <div class="bg-white/10 p-4 rounded-2xl text-3xl text-indigo-300 border border-white/10">
@@ -107,6 +108,20 @@
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-left text-2xl text-indigo-300"></i>
+            </button>
+
+            <!-- الزر 3 الجديد: يوميات المبيعات العامة -->
+            <button type="button" onclick="selectMainChoice('journal')" class="w-full text-right bg-gradient-to-r from-purple-800 to-slate-900 hover:from-purple-900 hover:to-slate-950 text-white p-6 rounded-3xl font-bold flex justify-between items-center transition shadow-lg border-2 border-purple-500">
+                <div class="flex items-center gap-4">
+                    <div class="bg-white/10 p-4 rounded-2xl text-3xl text-purple-300 border border-white/10">
+                        <i class="fa-solid fa-book-bookmark"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-black">3. يوميات المبيعات العامة (Journal de Vente)</h3>
+                        <p class="text-xs text-purple-200 font-normal mt-1">سجل المبيعات المباشرة وطلبيات الحوانت مرتبة زمنياً مع التفاصيل والتوتال</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-left text-2xl text-purple-300"></i>
             </button>
         </div>
 
@@ -206,6 +221,35 @@
         </div>
     </main>
 
+    <!-- نافذة يوميات المبيعات العامة (Journal de Vente) -->
+    <div id="windowJournal" class="admin-window fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
+        <div class="bg-white p-6 rounded-3xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto space-y-4 border border-slate-300">
+            <div class="flex justify-between items-center border-b pb-3 border-slate-200">
+                <h4 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-book-bookmark text-purple-600 ml-2"></i> يوميات المبيعات العامة (Journal de Vente)</h4>
+                <button type="button" onclick="closeAdminWindow('journal')" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+            </div>
+            <p class="text-xs text-slate-500">سجل كامل للمبيعات المباشرة وطلبيات الحوانت بالترتيب الزمني (انقر على أي سطر لعرض كامل التفاصيل):</p>
+            
+            <div class="overflow-x-auto border-2 border-slate-400 rounded-2xl bg-white shadow-inner">
+                <table class="custom-grid w-full text-right text-xs">
+                    <thead>
+                        <tr class="bg-slate-200 text-slate-800 font-black">
+                            <th>التاريخ والوقت</th>
+                            <th>الحانوت / الزبون</th>
+                            <th>نوع العملية</th>
+                            <th>طريقة الخلاص</th>
+                            <th>المجموع الجملي</th>
+                        </tr>
+                    </thead>
+                    <tbody id="journalSalesTableBody">
+                        <tr><td colspan="5" class="text-center text-slate-400 py-4">جاري تحميل سجل المبيعات...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <button type="button" onclick="closeAdminWindow('journal')" class="w-full bg-slate-800 text-white py-2.5 rounded-xl font-bold text-xs">إغلاق</button>
+        </div>
+    </div>
+
     <!-- نافذة إشعار احترافية -->
     <div id="systemNotificationModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-sm w-full space-y-4 text-center border border-slate-300">
@@ -259,7 +303,7 @@
         </div>
     </div>
 
-    <!-- نافذة تفاصيل الفاتورة عند النقر عليها مع الطباعة وتحويلها لصورة -->
+    <!-- نافذة تفاصيل الفاتورة عند النقر عليها مع الطباعة وتحويلها لصورة (مع سطر المجموع النهائي tfoot) -->
     <div id="invoiceDetailModal" class="fixed inset-0 bg-black/70 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
@@ -275,7 +319,7 @@
         </div>
     </div>
 
-    <!-- نافذة إضافة حانوت جديد -->
+    <!-- نافذة إضافة حانوت جديد مع خانة الولاية الإجبارية -->
     <div id="addClientModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-md w-full space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
@@ -288,6 +332,36 @@
                     <input type="text" id="newClientName" placeholder="مثال: حانوت البركة..." class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
                 </div>
                 <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">الولاية (إجباري):</label>
+                    <select id="newClientGov" class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50 focus:outline-none focus:border-emerald-500">
+                        <option value="">-- اختر الولاية --</option>
+                        <option value="مدنين">مدنين</option>
+                        <option value="قابس">قابس</option>
+                        <option value="تطاوين">تطاوين</option>
+                        <option value="قبلي">قبلي</option>
+                        <option value="توزر">توزر</option>
+                        <option value="قفصة">قفصة</option>
+                        <option value="صفاقس">صفاقس</option>
+                        <option value="سيدي بوزيد">سيدي بوزيد</option>
+                        <option value="القصرين">القصرين</option>
+                        <option value="القيروان">القيروان</option>
+                        <option value="المهدية">المهدية</option>
+                        <option value="المنستير">المنستير</option>
+                        <option value="سوسة">سوسة</option>
+                        <option value="نابل">نابل</option>
+                        <option value="زغوان">زغوان</option>
+                        <option value="سليانة">سليانة</option>
+                        <option value="الكاف">الكاف</option>
+                        <option value="جندوبة">جندوبة</option>
+                        <option value="باجة">باجة</option>
+                        <option value="بنزرت">بنزرت</option>
+                        <option value="أريانة">أريانة</option>
+                        <option value="منوبة">منوبة</option>
+                        <option value="تونس">تونس</option>
+                        <option value="بن عروس">بن عروس</option>
+                    </select>
+                </div>
+                <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">رقم الهاتف (رقم دخول الزبون):</label>
                     <input type="text" id="newClientPhone" placeholder="رقم الهاتف..." class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
                 </div>
@@ -296,7 +370,7 @@
                     <input type="password" id="newClientPassword" placeholder="كلمة المرور للدخول..." class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">العنوان / المنطقة:</label>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">العنوان / المنطقة بالتفصيل:</label>
                     <input type="text" id="newClientAddress" placeholder="المكان..." class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
                 </div>
             </div>
@@ -408,7 +482,7 @@
     <div id="clientDetailHistoryModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
-                <h4 id="historyModalTitle" class="font-bold text-lg text-slate-900"><i class="fa-solid fa-address-book text-blue-600 ml-2"></i> سجل معاملات وحانوت: ${clientName}</h4>
+                <h4 id="historyModalTitle" class="font-bold text-lg text-slate-900"><i class="fa-solid fa-address-book text-blue-600 ml-2"></i> سجل معاملات وحانوت</h4>
                 <button type="button" onclick="closeClientHistoryModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
             </div>
 
@@ -426,7 +500,7 @@
     <div id="historyOrderDetailModal" class="fixed inset-0 bg-black/70 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-md w-full space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
-                <h4 class="font-bold text-base text-slate-900"><i class="fa-solid fa-file-invoice text-emerald-600 ml-2"></i> تفاصيل الطلبية</h4>
+                <h4 class="font-bold text-base text-slate-900"><i class="fa-solid fa-file-invoice text-emerald-600 ml-2"></i> تفاصيل الطلبية / البيعة</h4>
                 <button type="button" onclick="closeHistoryOrderDetail()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
             </div>
             <div id="historyOrderDetailContent" class="space-y-3 text-xs"></div>
@@ -741,7 +815,7 @@
             }
         });
 
-        // دالة تسجيل الدخول المطورة: تقبل المعرف (VND-XXXX) أو رقم الهاتف
+        // دالة تسجيل الدخول بالمعرف أو رقم الهاتف مع تجاوز المسافات
         window.handleVendeurLogin = async function() {
             const rawInput = (document.getElementById('loginPhone').value || '').trim();
             const password = (document.getElementById('loginPassword').value || '').trim();
@@ -823,7 +897,7 @@
             win.document.close();
         };
 
-        // الدالة الاحترافية لتحويل الجداول إلى صور وإرسالها للواتساب
+        // تحويل الجداول إلى صور مع الاحتفاظ بسطر المجموع
         window.exportTableAsImage = async function(containerId, title) {
             const element = document.getElementById(containerId);
             if (!element) return;
@@ -898,22 +972,31 @@
         window.openAddClientModal = () => document.getElementById('addClientModal').classList.remove('hidden');
         window.closeAddClientModal = () => document.getElementById('addClientModal').classList.add('hidden');
 
+        // حفظ حانوت جديد مع التأكد من إجبارية الولاية
         window.saveNewClientByVendeur = async function() {
             const name = document.getElementById('newClientName').value.trim();
+            const gov = document.getElementById('newClientGov').value.trim();
             const phone = document.getElementById('newClientPhone').value.trim();
             const password = document.getElementById('newClientPassword').value.trim();
             const address = document.getElementById('newClientAddress').value.trim();
 
-            if (!name || !phone || !password) { alert('الرجاء إدخال اسم الحانوت، رقم الهاتف، وكلمة المرور.'); return; }
+            if (!name) { alert('الرجاء إدخال اسم الحانوت.'); return; }
+            if (!gov) { alert('الرجاء اختيار الولاية (إجباري).'); return; }
+            if (!phone || !password) { alert('الرجاء إدخال رقم الهاتف وكلمة المرور.'); return; }
 
             try {
                 await addDoc(collection(db, "clients"), {
-                    name, phone, password, address,
+                    name, 
+                    governorate: gov,
+                    phone, 
+                    password, 
+                    address,
                     vendeurId: window.currentVendeur.id,
                     createdAt: new Date().toISOString()
                 });
-                window.showSystemNotification("إضافة حانوت", "تمت إضافة الحانوت بنجاح! يمكن للتاجر الآن تسجيل الدخول مباشرة.");
+                window.showSystemNotification("إضافة حانوت", "تمت إضافة الحانوت بنجاح وحفظ الولاية!");
                 document.getElementById('newClientName').value = '';
+                document.getElementById('newClientGov').value = '';
                 document.getElementById('newClientPhone').value = '';
                 document.getElementById('newClientPassword').value = '';
                 document.getElementById('newClientAddress').value = '';
@@ -991,9 +1074,9 @@
             itemsHtml += '</ul>';
 
             document.getElementById('historyOrderDetailContent').innerHTML = `
-                <p class="font-bold text-slate-900">الحانوت: ${o.clientName}</p>
+                <p class="font-bold text-slate-900">الحانوت / الزبون: ${o.clientName}</p>
                 <p class="text-slate-500">التاريخ: ${new Date(o.date).toLocaleString()}</p>
-                <p class="font-black text-emerald-600 text-sm mt-1">المجموع الجملي: ${o.totalSell} د.ت</p>
+                <p class="font-black text-emerald-600 text-sm mt-1">المجموع الجملي (Total): ${o.totalSell.toFixed(3)} د.ت</p>
                 <div class="mt-2"><p class="font-bold text-slate-700 mb-1">تفاصيل القطع:</p>${itemsHtml}</div>
             `;
             document.getElementById('historyOrderDetailModal').classList.remove('hidden');
@@ -1025,7 +1108,37 @@
                 snap.forEach(d => window.allOrders.push({ id: d.id, ...d.data() }));
                 processAdminStatsAndStock();
                 renderCreditsList();
+                renderJournalTable(); // تحديث يوميات المبيعات العامة
             });
+        }
+
+        // رسم جدول يوميات المبيعات العامة (Journal de Vente) مرتبة زمنياً
+        function renderJournalTable() {
+            const tbody = document.getElementById('journalSalesTableBody');
+            if (!tbody) return;
+
+            // ترتيب المبيعات زمنياً من الأحدث إلى الأقدم
+            let sorted = [...window.allOrders].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+
+            let html = '';
+            sorted.forEach(o => {
+                const dateStr = o.date ? new Date(o.date).toLocaleString('ar-TN') : '—';
+                const isPOS = !o.notes && o.status === 'مكتمل ومؤكد'; // تحديد نوع البيع
+                const typeBadge = isPOS ? '<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px] font-bold">بيع مباشر</span>' : '<span class="bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded text-[10px] font-bold">طلبية حانوت</span>';
+                const payBadge = o.paymentStatus === 'Payé' ? '<span class="text-emerald-700 font-bold">كاش تام</span>' : (o.paymentStatus === 'Crédit' ? '<span class="text-rose-600 font-bold">كريدي</span>' : '<span class="text-amber-600 font-bold">جزئي</span>');
+
+                html += `
+                    <tr onclick="openHistoryOrderDetail('${o.id}')" class="hover:bg-purple-50 cursor-pointer transition">
+                        <td class="font-mono text-[11px] text-slate-700 font-bold">${dateStr}</td>
+                        <td class="font-bold text-slate-900">${o.clientName || '—'}</td>
+                        <td>${typeBadge}</td>
+                        <td>${payBadge}</td>
+                        <td class="font-black text-emerald-700 font-mono text-sm">${(o.totalSell || 0).toFixed(3)} د.ت</td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html || '<tr><td colspan="5" class="text-center text-slate-400 py-4">لا توجد عمليات بيع مسجلة بعد.</td></tr>';
         }
 
         function renderCreditsList() {
@@ -1047,11 +1160,12 @@
                 if (creditVal > 0) {
                     hasCredit = true;
                     let clientObj = window.allClients.find(c => c.name === clientName) || {};
+                    const loc = clientObj.governorate ? `${clientObj.governorate} - ${clientObj.address || ''}` : (clientObj.address || 'غير محدد');
                     html += `
                         <div class="bg-rose-50/70 p-4 rounded-2xl border-2 border-rose-300 flex justify-between items-center shadow-xs">
                             <div class="space-y-1">
                                 <h4 class="font-black text-slate-900 text-sm"><i class="fa-solid fa-store text-rose-600 ml-1"></i> ${clientName}</h4>
-                                <p class="text-xs text-slate-600 font-bold">الهاتف: ${clientObj.phone || 'غير مسجل'} | العنوان: ${clientObj.address || 'غير محدد'}</p>
+                                <p class="text-xs text-slate-600 font-bold">الهاتف: ${clientObj.phone || 'غير مسجل'} | المنطقة: ${loc}</p>
                             </div>
                             <div class="text-left space-y-1.5">
                                 <span class="text-xs font-bold text-rose-800 block">الدين المتبقي:</span>
@@ -1249,14 +1363,18 @@
             if (tbody) tbody.innerHTML = html || '<tr><td colspan="2" class="text-center text-slate-400 py-4">لا توجد فواتير سابقة.</td></tr>';
         }
 
+        // فتح تفاصيل الفاتورة مع سطر المجموع النهائي tfoot
         window.openInvoiceDetailModal = function(invId) {
             let inv = window.allInvoices.find(item => item.id === invId);
             if (!inv) return;
             window.currentActiveInvoice = inv;
             let rowsHtml = '';
+            let calculatedTotal = 0;
+
             if (inv.items && Array.isArray(inv.items)) {
                 inv.items.forEach(i => {
                     let totalLine = i.qty * i.buy;
+                    calculatedTotal += totalLine;
                     rowsHtml += `
                         <tr>
                             <td class="font-bold text-slate-800">${i.operator} - ${i.name}</td>
@@ -1271,7 +1389,6 @@
             document.getElementById('invoiceDetailModalContent').innerHTML = `
                 <div class="bg-slate-100 p-3 rounded-xl border border-slate-300 space-y-1 mb-2">
                     <p class="font-bold text-slate-900">تاريخ الفاتورة: ${new Date(inv.date).toLocaleString()}</p>
-                    <p class="font-black text-indigo-700 text-sm">المجموع الجملي للفاتورة: ${(inv.totalCost || 0).toFixed(3)} د.ت</p>
                 </div>
                 <div class="overflow-x-auto border-2 border-slate-400 rounded-xl bg-white">
                     <table class="custom-grid w-full text-right text-xs">
@@ -1284,6 +1401,12 @@
                             </tr>
                         </thead>
                         <tbody>${rowsHtml}</tbody>
+                        <tfoot>
+                            <tr class="bg-emerald-100 text-emerald-950 font-black text-sm border-t-2 border-slate-500">
+                                <td colspan="3" class="text-left font-black p-2.5">المجموع الجملي للفاتورة (Total):</td>
+                                <td class="text-center p-2.5 text-emerald-800 font-black text-sm">${calculatedTotal.toFixed(3)} د.ت</td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             `;
@@ -1298,7 +1421,7 @@
         window.printSingleInvoice = function() {
             if (!window.currentActiveInvoice) return;
             let win = window.open('', '_blank');
-            win.document.write(`<html lang="ar" dir="rtl"><head><title>فاتورة شراء مخزون</title><style>body{font-family:Tahoma,sans-serif;padding:25px;text-align:right;}table{width:100%;border-collapse:collapse;margin-top:15px;}th,td{border:1px solid #334155 !important;padding:8px 10px;font-size:12px;}th{background-color:#f1f5f9;}</style></head><body><h2>فاتورة شراء مخزون كروت ورصيد</h2>${document.getElementById('invoiceDetailModalContent').innerHTML}<script>window.print()<\/script></body></html>`);
+            win.document.write(`<html lang="ar" dir="rtl"><head><title>فاتورة شراء مخزون</title><style>body{font-family:Tahoma,sans-serif;padding:25px;text-align:right;}table{width:100%;border-collapse:collapse;margin-top:15px;}th,td{border:1px solid #334155 !important;padding:8px 10px;font-size:12px;}th{background-color:#f1f5f9;}tfoot tr{background-color:#dcfce7;font-weight:bold;}</style></head><body><h2>فاتورة شراء مخزون كروت ورصيد</h2>${document.getElementById('invoiceDetailModalContent').innerHTML}<script>window.print()<\/script></body></html>`);
             win.document.close();
         };
 
@@ -1306,12 +1429,13 @@
             let selectHtml = '<option value="">اختر الحانوت...</option>';
             let listHtml = '';
             window.allClients.forEach(c => {
-                selectHtml += `<option value="${c.name}">${c.name} (${c.phone})</option>`;
+                const loc = c.governorate ? `${c.governorate} - ${c.address || ''}` : (c.address || 'غير محدد');
+                selectHtml += `<option value="${c.name}">${c.name} (${c.phone}) - ${c.governorate || ''}</option>`;
                 listHtml += `
                     <div class="bg-white p-4 rounded-2xl border border-slate-300 flex justify-between items-center shadow-2xs">
                         <div class="cursor-pointer flex-1" onclick="openClientHistoryModal('${c.name}')">
                             <h4 class="font-bold text-slate-900 hover:text-indigo-600 transition"><i class="fa-solid fa-store text-emerald-600 ml-1"></i> ${c.name} <span class="text-xs text-indigo-600 font-normal">(عرض العمليات السابقة)</span></h4>
-                            <p class="text-xs text-slate-500">الهاتف: ${c.phone} | الكود الحالي: <strong class="text-slate-800">${c.password}</strong> | العنوان: ${c.address || 'غير محدد'}</p>
+                            <p class="text-xs text-slate-500">الهاتف: ${c.phone} | المنطقة: <strong>${loc}</strong> | الكود: <strong class="text-slate-800">${c.password}</strong></p>
                         </div>
                         <button type="button" onclick="openEditPasswordModal('${c.id}', '${c.name}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 border border-indigo-200">
                             <i class="fa-solid fa-key"></i> تغيير الكود
@@ -1347,7 +1471,7 @@
                 <div class="bg-slate-100 p-3.5 rounded-2xl border border-slate-300 space-y-1">
                     <p class="font-bold text-slate-900">الحانوت: ${o.clientName}</p>
                     <p class="text-xs text-slate-500">التاريخ: ${new Date(o.date).toLocaleString()}</p>
-                    <p class="text-sm font-black text-emerald-600 mt-1">المجموع الجملي: ${o.totalSell} د.ت</p>
+                    <p class="text-sm font-black text-emerald-600 mt-1">المجموع الجملي (Total): ${(o.totalSell || 0).toFixed(3)} د.ت</p>
                 </div>
                 <div>
                     <p class="text-xs font-bold text-slate-700 mb-1">تفاصيل القطع المطلوبة للتحضير:</p>
@@ -1571,7 +1695,6 @@
             const statsTable = document.getElementById('salesStatsTableBody');
             if (statsTable) statsTable.innerHTML = statsHtml || '<tr><td colspan="3" class="text-center text-slate-400 py-4">لا توجد مبيعات مؤكدة للتجار بعد.</td></tr>';
 
-            // جرد المخزون النهائي وتحديث سطر المجموع (الطوطال) داخل الجدول
             let stockHtml = '';
             let totalStockFinancialValue = 0;
             for (let k in stockMap) {
@@ -1596,16 +1719,18 @@
             const stockTable = document.getElementById('stockTableBody');
             if (stockTable) stockTable.innerHTML = stockHtml || '<tr><td colspan="5" class="text-center text-slate-400 py-4">لا توجد بيانات مخزون.</td></tr>';
             
-            // تحديث سطر المجموع في أسفل الجدول tfoot
             const footerTotalEl = document.getElementById('tableFooterTotalStock');
             if (footerTotalEl) footerTotalEl.innerText = totalStockFinancialValue.toFixed(3) + ' د.ت';
         }
 
         window.selectMainChoice = function(choice) {
-            if (choice === 'pos') window.openAdminWindow('pos');
-            else if (choice === 'management') {
+            if (choice === 'pos') {
+                window.openAdminWindow('pos');
+            } else if (choice === 'management') {
                 document.getElementById('mainChoicesSection').classList.add('hidden');
                 document.getElementById('detailedManagementSection').classList.remove('hidden');
+            } else if (choice === 'journal') {
+                window.openAdminWindow('journal');
             }
         };
 
