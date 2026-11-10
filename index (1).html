@@ -29,7 +29,7 @@
 </head>
 <body class="bg-slate-300 min-h-screen font-sans pb-12 text-slate-800">
 
-    <!-- شاشة تسجيل الدخول / التسجيل للبائع -->
+    <!-- شاشة تسجيل الدخول للبائع (بدون خيار إنشاء حساب جديد) -->
     <div id="authScreen" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white p-8 rounded-3xl shadow-2xl max-w-md w-full space-y-6 border border-slate-300">
             <div class="text-center space-y-2">
@@ -37,41 +37,21 @@
                     <i class="fa-solid fa-user-tie"></i>
                 </div>
                 <h2 class="text-2xl font-black text-slate-900">منصة البائعين (فضاء الموزع)</h2>
-                <p class="text-xs text-slate-500">الرجاء تسجيل الدخول أو إنشاء حساب جديد للمتابعة</p>
-            </div>
-
-            <div class="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200 gap-1">
-                <button type="button" onclick="switchAuthMode('login')" id="loginTabBtn" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-2xs transition">دخول</button>
-                <button type="button" onclick="switchAuthMode('register')" id="registerTabBtn" class="flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-500 transition">حساب جديد</button>
+                <p class="text-xs text-slate-500">أدخل معرّف الموزع الخاص بك (ID) المسلم لك من الإدارة</p>
             </div>
 
             <div id="loginForm" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">رقم الهاتف:</label>
-                    <input type="text" id="loginPhone" placeholder="أدخل رقم الهاتف..." class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">معرّف الموزع (ID Vendeur) أو رقم الهاتف:</label>
+                    <input type="text" id="loginPhone" placeholder="مثال: VND-9811 أو 98123456" class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50 font-mono text-center">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">كلمة المرور:</label>
-                    <input type="password" id="loginPassword" placeholder="••••••••" class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">كلمة المرور (Mot de passe):</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50 text-center">
                 </div>
                 <button type="button" onclick="handleVendeurLogin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold shadow-sm transition">تسجيل الدخول</button>
             </div>
-
-            <div id="registerForm" class="space-y-4 hidden">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">اسم البائع / الشركة:</label>
-                    <input type="text" id="regName" placeholder="اسمك الكامل..." class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">رقم الهاتف:</label>
-                    <input type="text" id="regPhone" placeholder="رقم الهاتف..." class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">كلمة المرور:</label>
-                    <input type="password" id="regPassword" placeholder="••••••••" class="w-full border border-slate-300 p-3 rounded-xl text-sm font-bold bg-slate-50">
-                </div>
-                <button type="button" onclick="handleVendeurRegister()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold shadow-sm transition">إنشاء الحساب</button>
-            </div>
+            <p class="text-[11px] text-slate-400 text-center">الحسابات تدار حصرياً من قبل الإدارة المركزية (Super Admin)</p>
         </div>
     </div>
 
@@ -428,7 +408,7 @@
     <div id="clientDetailHistoryModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center z-50 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto space-y-4 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
-                <h4 id="historyModalTitle" class="font-bold text-lg text-slate-900"><i class="fa-solid fa-address-book text-blue-600 ml-2"></i> سجل معاملات الحانوت</h4>
+                <h4 id="historyModalTitle" class="font-bold text-lg text-slate-900"><i class="fa-solid fa-address-book text-blue-600 ml-2"></i> سجل معاملات وحانوت: ${clientName}</h4>
                 <button type="button" onclick="closeClientHistoryModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
             </div>
 
@@ -566,7 +546,7 @@
         </div>
     </div>
 
-    <!-- نافذة تقرير المخزون النهائي المقسمة بالأسطر الأفقية والعمودية مع سطر المجموع (الطوطال) داخل الجدول -->
+    <!-- نافذة تقرير المخزون النهائي -->
     <div id="windowStock" class="admin-window fixed inset-0 bg-black/50 backdrop-blur-xs hidden flex items-center justify-center z-40 p-4 text-slate-800">
         <div class="bg-white p-6 rounded-3xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto space-y-6 border border-slate-300">
             <div class="flex justify-between items-center border-b pb-3 border-slate-200">
@@ -586,7 +566,6 @@
                 </div>
             </div>
 
-            <!-- الجدول ومعه سطر المجموع النهائي داخل tfoot ليخرج دائماً في الطباعة والصور -->
             <div id="stockTableContainer" class="overflow-x-auto border-2 border-slate-400 rounded-2xl shadow-inner bg-white">
                 <table class="custom-grid w-full text-right text-xs">
                     <thead>
@@ -762,72 +741,59 @@
             }
         });
 
-        window.switchAuthMode = function(mode) {
-            const loginForm = document.getElementById('loginForm');
-            const registerForm = document.getElementById('registerForm');
-            const loginTab = document.getElementById('loginTabBtn');
-            const registerTab = document.getElementById('registerTabBtn');
-
-            if (!loginForm || !registerForm || !loginTab || !registerTab) return;
-
-            if (mode === 'login') {
-                loginForm.classList.remove('hidden');
-                registerForm.classList.add('hidden');
-                loginTab.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-2xs transition';
-                registerTab.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-500 transition';
-            } else {
-                loginForm.classList.add('hidden');
-                registerForm.classList.remove('hidden');
-                registerTab.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-2xs transition';
-                loginTab.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-500 transition';
-            }
-        };
-
-        window.handleVendeurRegister = async function() {
-            const name = document.getElementById('regName').value.trim();
-            const phone = document.getElementById('regPhone').value.trim();
-            const password = document.getElementById('regPassword').value.trim();
-            if (!name || !phone || !password) { alert('الرجاء ملء كل البيانات.'); return; }
-            try {
-                const docRef = await addDoc(collection(db, "vendeurs"), { 
-                    name, 
-                    phone, 
-                    password,
-                    isActive: true, // مفعّل افتراضياً
-                    createdAt: new Date().toISOString()
-                });
-                window.currentVendeur = { id: docRef.id, name, phone, isActive: true };
-                localStorage.setItem('currentVendeur', JSON.stringify(window.currentVendeur));
-                window.showSystemNotification("تم التسجيل", "تم إنشاء الحساب بنجاح وشكرا!");
-                window.checkVendeurAuth();
-            } catch (e) { alert('خطأ في التسجيل: ' + e.message); }
-        };
-
+        // دالة تسجيل الدخول المطورة: تقبل المعرف (VND-XXXX) أو رقم الهاتف
         window.handleVendeurLogin = async function() {
-            const phone = document.getElementById('loginPhone').value.trim();
-            const password = document.getElementById('loginPassword').value.trim();
-            if (!phone || !password) { alert('الرجاء إدخال رقم الهاتف وكلمة المرور.'); return; }
-            try {
-                const q = query(collection(db, "vendeurs"), where("phone", "==", phone), where("password", "==", password));
-                const querySnapshot = await getDocs(q);
-                if (!querySnapshot.empty) {
-                    let vData;
-                    querySnapshot.forEach(d => vData = { id: d.id, ...d.data() });
-                    
-                    // التحقق مما إذا كان الحساب موقوفاً من الأدمن
-                    if (vData.isActive === false) {
-                        alert('حسابك موقوف أو بانتظار تفعيل الاشتراك. يرجى التواصل مع الإدارة.');
-                        return;
-                    }
+            const rawInput = (document.getElementById('loginPhone').value || '').trim();
+            const password = (document.getElementById('loginPassword').value || '').trim();
 
-                    window.currentVendeur = vData;
-                    localStorage.setItem('currentVendeur', JSON.stringify(window.currentVendeur));
-                    window.checkVendeurAuth();
-                } else { 
-                    alert('رقم الهاتف أو كلمة المرور غير صحيحة.'); 
+            if (!rawInput || !password) {
+                alert('الرجاء إدخال معرّف الموزع وكلمة المرور.');
+                return;
+            }
+
+            const cleanInput = rawInput.replace(/[-\s]/g, '').toUpperCase();
+
+            try {
+                const vSnap = await getDocs(collection(db, "vendeurs"));
+                let matched = null;
+
+                vSnap.forEach(d => {
+                    const data = d.data();
+                    const storedCode = String(data.vendeurCode || '').replace(/[-\s]/g, '').toUpperCase();
+                    const storedPhone = String(data.phone || '').replace(/[^0-9]/g, '');
+                    const storedPass = String(data.password || '').trim();
+
+                    const codeMatches = storedCode && (storedCode === cleanInput || cleanInput.endsWith(storedCode.replace('VND', '')));
+                    const phoneMatches = storedPhone && cleanInput.includes(storedPhone);
+
+                    if (codeMatches || phoneMatches) {
+                        if (storedPass === password) {
+                            matched = { id: d.id, ...data };
+                        }
+                    }
+                });
+
+                if (!matched) {
+                    alert('معرّف الموزع أو كلمة المرور غير صحيحة.');
+                    return;
                 }
-            } catch (e) { 
-                alert('خطأ في الاتصال بقاعدة البيانات: ' + e.message); 
+
+                if (matched.isActive === false) {
+                    alert('حسابك موقوف أو بانتظار تفعيل الاشتراك. يرجى التواصل مع الإدارة.');
+                    return;
+                }
+
+                if (matched.expiryDate && new Date() > new Date(matched.expiryDate)) {
+                    alert('انتهت صلاحية اشتراكك في المنظومة. يرجى التواصل مع الإدارة للتجديد.');
+                    return;
+                }
+
+                window.currentVendeur = matched;
+                localStorage.setItem('currentVendeur', JSON.stringify(window.currentVendeur));
+                window.checkVendeurAuth();
+
+            } catch (e) {
+                alert('خطأ في الاتصال بقاعدة البيانات: ' + e.message);
             }
         };
 
