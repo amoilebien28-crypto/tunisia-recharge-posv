@@ -38,7 +38,7 @@
             display: none !important;
         }
 
-        /* إعطاء أقصى z-index وflex لجميع النوافذ لضمان ظهورها فوق الواجهة تماماً وعدم اختفائها في الخلفية */
+        /* الخلفية السوداء الشفافة وراء النافذة */
         .admin-window:not(.hidden), 
         #authScreen:not(.hidden),
         #systemNotificationModal:not(.hidden),
@@ -50,7 +50,7 @@
         #clientDetailHistoryModal:not(.hidden),
         #historyOrderDetailModal:not(.hidden),
         #orderDetailModal:not(.hidden) {
-            display: flex !important;
+            display: block !important;
             position: fixed !important;
             top: 0 !important;
             left: 0 !important;
@@ -59,15 +59,12 @@
             width: 100% !important;
             height: 100% !important;
             background-color: rgba(15, 23, 42, 0.85) !important;
-            z-index: 2147483647 !important; /* أعلى قيمة لطبقة العرض لضمان عدم وجود أي عنصر فوقها */
-            align-items: center !important;
-            justify-content: center !important;
-            padding: 10px !important;
+            z-index: 9999 !important;
+            padding: 0 !important;
             margin: 0 !important;
-            box-sizing: border-box !important;
         }
 
-        /* الصندوق الأبيض الداخلي للنافذة - متناسق تماماً ويأخذ مكانة الصحيح */
+        /* الصندوق الأبيض الداخلي للنافذة - مربوط بحواف الشاشة مباشرة لمنع تحوله لخط */
         .admin-window > div,
         #authScreen > div,
         #payCreditModal > div,
@@ -79,27 +76,40 @@
         #historyOrderDetailModal > div,
         #orderDetailModal > div {
             display: block !important;
-            position: relative !important;
-            width: 100% !important;
-            max-width: 600px !important;
-            max-height: 85vh !important;
-            margin: auto !important;
+            position: fixed !important;
+            top: 8px !important;
+            bottom: 8px !important;
+            left: 8px !important;
+            right: 8px !important;
+            width: auto !important;
+            height: auto !important;
+            max-width: 650px !important;
+            max-height: none !important;
+            min-height: 0 !important;
+            margin: 0 auto !important;
             padding: 16px !important;
             background-color: #ffffff !important;
             border-radius: 20px !important;
             overflow-y: auto !important;
             -webkit-overflow-scrolling: touch !important;
             box-sizing: border-box !important;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5) !important;
-            z-index: 2147483647 !important;
+            transform: none !important;
         }
 
         /* نافذة التنبيهات الصغيرة في المنتصف */
         #systemNotificationModal > div {
+            display: block !important;
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            right: auto !important;
+            bottom: auto !important;
+            transform: translate(-50%, -50%) !important;
             width: 90% !important;
             max-width: 360px !important;
             height: auto !important;
             padding: 20px !important;
+            background-color: #ffffff !important;
             border-radius: 24px !important;
         }
     </style>
@@ -390,7 +400,8 @@
             </div>
             <div id="invoiceDetailModalContent" class="space-y-3 text-xs mb-4"></div>
             <div class="flex gap-2">
-                <button type="button" onclick="printOrSavePDF()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-xl font-bold text-xs shadow-md"><i class="fa-solid fa-file-pdf ml-1"></i> تحميل / طباعة (PDF)</button>
+                <button type="button" onclick="printSingleInvoice()" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white py-3.5 rounded-xl font-bold text-xs"><i class="fa-solid fa-print ml-1"></i> طباعة الفاتورة</button>
+                <button type="button" onclick="exportTableAsImage('invoiceDetailModalContent', 'فاتورة_شراء')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold text-xs"><i class="fa-solid fa-image ml-1"></i> صورة للواتساب</button>
                 <button type="button" onclick="closeInvoiceDetailModal()" class="bg-slate-200 text-slate-700 px-4 py-3.5 rounded-xl font-bold text-xs">إغلاق</button>
             </div>
         </div>
@@ -455,11 +466,11 @@
         </div>
     </div>
 
-    <!-- نافذة المداخيل والمرابيح (الروسيت وجداول الأرباح اليومية والشهرية) -->
+    <!-- نافذة المداخيل والمرابيح (الروسيت) -->
     <div id="recetteModal" class="hidden">
         <div>
             <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
-                <h3 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-chart-line text-amber-600 ml-2"></i> المداخيل والمرابيح (الروسيت والأرباح)</h3>
+                <h3 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-chart-line text-amber-600 ml-2"></i> المداخيل والمرابيح (الروسيت)</h3>
                 <button type="button" onclick="closeRecetteModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
             </div>
 
@@ -475,16 +486,19 @@
             </div>
 
             <div class="flex bg-slate-200 p-1.5 rounded-2xl gap-2 border border-slate-300 mb-3">
-                <button type="button" onclick="switchRecetteTab('days')" id="tabBtnRecetteDays" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-amber-800 shadow-sm transition border border-slate-300">روسيت والأرباح باليوم</button>
-                <button type="button" onclick="switchRecetteTab('months')" id="tabBtnRecetteMonths" class="flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600 transition border border-transparent">روسيت والأرباح بالشهر</button>
+                <button type="button" onclick="switchRecetteTab('days')" id="tabBtnRecetteDays" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-white text-amber-800 shadow-sm transition border border-slate-300">روسيت الأيام</button>
+                <button type="button" onclick="switchRecetteTab('months')" id="tabBtnRecetteMonths" class="flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-600 transition border border-transparent">روسيت الشهور</button>
             </div>
 
             <div id="sectionRecetteDays" class="space-y-2 mb-4">
                 <div class="flex justify-between items-center">
-                    <h5 class="font-bold text-xs text-slate-700">تقرير الأرباح والمداخيل اليومية:</h5>
+                    <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الأيام:</h5>
                     <div class="flex gap-1.5">
-                        <button type="button" onclick="printOrSavePDF()" class="bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-                            <i class="fa-solid fa-file-pdf"></i> PDF / طباعة
+                        <button type="button" onclick="printReportTable('recetteDaysTableContainer', 'تقرير روسيت الأيام')" class="bg-slate-800 text-white px-2.5 py-1 rounded-lg text-xs font-bold">
+                            <i class="fa-solid fa-print"></i> طباعة
+                        </button>
+                        <button type="button" onclick="exportTableAsImage('recetteDaysTableContainer', 'تقرير_روسيت_الأيام')" class="bg-emerald-600 text-white px-2.5 py-1 rounded-lg text-xs font-bold">
+                            <i class="fa-solid fa-image"></i> صورة
                         </button>
                     </div>
                 </div>
@@ -493,12 +507,11 @@
                         <thead>
                             <tr class="bg-slate-200 text-slate-800 font-black">
                                 <th class="p-3">اليوم (التاريخ)</th>
-                                <th class="p-3">قيمة الروسيت</th>
-                                <th class="p-3">صافي الأرباح</th>
+                                <th class="p-3">قيمة الروسيت اليومية</th>
                             </tr>
                         </thead>
                         <tbody id="recetteDaysTableBody">
-                            <tr><td colspan="3" class="text-center text-slate-400 py-4">لا توجد مبيعات.</td></tr>
+                            <tr><td colspan="2" class="text-center text-slate-400 py-4">لا توجد مبيعات.</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -506,10 +519,13 @@
 
             <div id="sectionRecetteMonths" class="space-y-2 hidden mb-4">
                 <div class="flex justify-between items-center">
-                    <h5 class="font-bold text-xs text-slate-700">تقرير الأرباح والمداخيل الشهرية:</h5>
+                    <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الشهور:</h5>
                     <div class="flex gap-1.5">
-                        <button type="button" onclick="printOrSavePDF()" class="bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-                            <i class="fa-solid fa-file-pdf"></i> PDF / طباعة
+                        <button type="button" onclick="printReportTable('recetteMonthsTableContainer', 'تقرير روسيت الشهور')" class="bg-slate-800 text-white px-2.5 py-1 rounded-lg text-xs font-bold">
+                            <i class="fa-solid fa-print"></i> طباعة
+                        </button>
+                        <button type="button" onclick="exportTableAsImage('recetteMonthsTableContainer', 'تقرير_روسيت_الشهور')" class="bg-emerald-600 text-white px-2.5 py-1 rounded-lg text-xs font-bold">
+                            <i class="fa-solid fa-image"></i> صورة
                         </button>
                     </div>
                 </div>
@@ -518,12 +534,11 @@
                         <thead>
                             <tr class="bg-slate-200 text-slate-800 font-black">
                                 <th class="p-3">الشهر</th>
-                                <th class="p-3">قيمة الروسيت</th>
-                                <th class="p-3">صافي الأرباح</th>
+                                <th class="p-3">قيمة الروسيت الشهرية</th>
                             </tr>
                         </thead>
                         <tbody id="recetteMonthsTableBody">
-                            <tr><td colspan="3" class="text-center text-slate-400 py-4">لا توجد مبيعات.</td></tr>
+                            <tr><td colspan="2" class="text-center text-slate-400 py-4">لا توجد مبيعات.</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -669,6 +684,9 @@
                         <button type="button" onclick="printReportTable('invoicesHistoryTableContainer', 'قائمة جميع الفواتير السابقة')" class="bg-slate-800 text-white px-2.5 py-1 rounded-lg text-xs font-bold">
                             <i class="fa-solid fa-print"></i> طباعة
                         </button>
+                        <button type="button" onclick="exportTableAsImage('invoicesHistoryTableContainer', 'قائمة_الفواتير_السابقة')" class="bg-emerald-600 text-white px-2.5 py-1 rounded-lg text-xs font-bold">
+                            <i class="fa-solid fa-image"></i> صورة
+                        </button>
                     </div>
                 </div>
                 <div id="invoicesHistoryTableContainer" class="overflow-x-auto border-2 border-slate-400 rounded-2xl bg-white">
@@ -703,6 +721,9 @@
                 <div class="flex gap-1.5">
                     <button type="button" onclick="printReportTable('stockTableContainer', 'تقرير المخزون النهائي')" class="bg-slate-800 text-white px-3 py-1.5 rounded-xl text-xs font-bold">
                         <i class="fa-solid fa-print"></i> طباعة
+                    </button>
+                    <button type="button" onclick="exportTableAsImage('stockTableContainer', 'تقرير_المخزون_النهائي')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold">
+                        <i class="fa-solid fa-image"></i> صورة
                     </button>
                 </div>
             </div>
@@ -879,15 +900,6 @@
         window.currentPayingClient = null;
         window.statsSortMode = 'best';
 
-        // دالة الطباعة الاحترافية والذكية (بدون كابتور شاشة وبدون أزرار مزعجة)
-        window.printOrSavePDF = function() {
-            if (window.AndroidPrinter && typeof window.AndroidPrinter.printDocument === 'function') {
-                window.AndroidPrinter.printDocument();
-            } else {
-                window.print();
-            }
-        };
-
         document.addEventListener('change', function(e) {
             if (e.target && e.target.id === 'posPaymentStatus') {
                 const val = e.target.value;
@@ -971,6 +983,53 @@
                 renderInvoiceForm();
             } else {
                 if (authScreen) authScreen.classList.remove('hidden');
+            }
+        };
+
+        window.printReportTable = function(containerId, title) {
+            let container = document.getElementById(containerId);
+            if (!container) return;
+            let win = window.open('', '_blank');
+            win.document.write(`<html lang="ar" dir="rtl"><head><title>${title}</title><style>body{font-family:Tahoma,sans-serif;padding:25px;text-align:right;}table{width:100%;border-collapse:collapse;margin-top:15px;}th,td{border:1px solid #334155 !important;padding:10px;font-size:13px;}th{background-color:#f1f5f9;}</style></head><body><h2>${title}</h2>${container.innerHTML}<script>window.print()<\/script></body></html>`);
+            win.document.close();
+        };
+
+        window.exportTableAsImage = async function(containerId, title) {
+            const element = document.getElementById(containerId);
+            if (!element) return;
+
+            try {
+                const canvas = await html2canvas(element, {
+                    scale: 2,
+                    backgroundColor: "#ffffff",
+                    useCORS: true
+                });
+
+                canvas.toBlob(async (blob) => {
+                    const file = new File([blob], `${title}.png`, { type: "image/png" });
+
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        try {
+                            await navigator.share({
+                                files: [file],
+                                title: title,
+                                text: `*${title} - Tunisie Recharge*`
+                            });
+                            return;
+                        } catch (err) {
+                            console.log("تم إلغاء المشاركة أو غير مدعومة");
+                        }
+                    }
+
+                    const link = document.createElement("a");
+                    link.href = canvas.toDataURL("image/png");
+                    link.download = `${title}.png`;
+                    link.click();
+                    alert("تم حفظ الجدول كصورة بجهازك! يمكنك الآن إرسالها عبر واتساب.");
+                }, "image/png");
+
+            } catch (error) {
+                alert("حدث خطأ أثناء إنشاء الصورة: " + error.message);
             }
         };
 
@@ -1515,12 +1574,12 @@
             let total = window.selectedOrderForAction.totalSell;
             let paidAmount = 0, creditAmount = 0;
 
-            if (payStatus === 'Payé') { 
-                paidAmount = total; 
-                creditAmount = 0; 
-            } else if (payStatus === 'Crédit') { 
-                paidAmount = 0; 
-                creditAmount = total; 
+            if (payStatus === 'Payé') { 
+                paidAmount = total; 
+                creditAmount = 0; 
+            } else if (payStatus === 'Crédit') { 
+                paidAmount = 0; 
+                creditAmount = total; 
             } else if (payStatus === 'Partiel') {
                 paidAmount = parseFloat(document.getElementById('validerPaidAmount').value) || 0;
                 creditAmount = total - paidAmount;
@@ -1573,9 +1632,7 @@
             let clientSalesMap = {};
             let stockMap = {};
             let daysRecetteMap = {};
-            let daysBeneficeMap = {};
             let monthsRecetteMap = {};
-            let monthsBeneficeMap = {};
 
             window.tariffs.forEach(t => {
                 stockMap[t.id] = { operator: t.operator, name: t.name, buy: t.buy, purchased: 0, sold: 0 };
@@ -1596,17 +1653,13 @@
 
             window.allOrders.forEach(o => {
                 let isCompleted = o.status === 'مكتمل ومؤكد';
-                let orderDateStr = o.date ? o.date.slice(0, 10) : ''; 
-                let orderMonthStr = o.date ? o.date.slice(0, 7) : '';   
+                let orderDateStr = o.date ? o.date.slice(0, 10) : ''; 
+                let orderMonthStr = o.date ? o.date.slice(0, 7) : '';    
 
                 if (isCompleted) {
-                    let orderBenefice = o.benefice || 0;
                     if (o.paidAmount && o.paidAmount > 0) {
                         daysRecetteMap[orderDateStr] = (daysRecetteMap[orderDateStr] || 0) + o.paidAmount;
-                        daysBeneficeMap[orderDateStr] = (daysBeneficeMap[orderDateStr] || 0) + orderBenefice;
-                        
                         monthsRecetteMap[orderMonthStr] = (monthsRecetteMap[orderMonthStr] || 0) + o.paidAmount;
-                        monthsBeneficeMap[orderMonthStr] = (monthsBeneficeMap[orderMonthStr] || 0) + orderBenefice;
                     }
                     if (o.benefice) totalBenefice += o.benefice;
                     if (o.creditAmount) totalCredit += o.creditAmount;
@@ -1653,12 +1706,10 @@
                 let mStr = month < 10 ? '0' + month : '' + month;
                 let dayKey = `${year}-${mStr}-${dStr}`;
                 let val = daysRecetteMap[dayKey] || 0;
-                let ben = daysBeneficeMap[dayKey] || 0;
                 daysHtml += `
                     <tr class="hover:bg-slate-50">
                         <td class="font-bold text-slate-800">${dayKey}</td>
                         <td class="font-black text-emerald-600">${val.toFixed(3)} د.ت</td>
-                        <td class="font-black text-indigo-600">${ben.toFixed(3)} د.ت</td>
                     </tr>
                 `;
             }
@@ -1681,16 +1732,14 @@
             allMonthsList.sort().reverse();
 
             allMonthsList.forEach(m => {
-                let parts = m.split('-'); 
+                let parts = m.split('-'); 
                 let mName = monthNames[parts[1]] || parts[1];
                 let displayStr = `${mName} ${parts[0]}`;
                 let val = monthsRecetteMap[m] || 0;
-                let ben = monthsBeneficeMap[m] || 0;
                 monthsHtml += `
                     <tr class="hover:bg-slate-50">
                         <td class="font-bold text-slate-800">${displayStr}</td>
-                        <td class="font-black text-emerald-600">${val.toFixed(3)} د.ت</td>
-                        <td class="font-black text-indigo-600">${ben.toFixed(3)} د.ت</td>
+                        <td class="font-black text-indigo-600">${val.toFixed(3)} د.ت</td>
                     </tr>
                 `;
             });
@@ -1903,7 +1952,7 @@
 
             try {
                 await addDoc(collection(db, "orders"), {
-                    clientName, 
+                    clientName, 
                     vendeurId: window.currentVendeur.id,
                     items, totalSell, totalBuy, benefice: totalSell - totalBuy,
                     paymentStatus: paymentStatus === 'Payé' ? 'Payé' : (paymentStatus === 'Crédit' ? 'Crédit' : 'جزئي'),
@@ -1922,6 +1971,7 @@
         window.checkVendeurAuth();
         // --- نظام التحكم في زر الرجوع الخاص بالهاتف (Back Button) ---
         window.closeAnyOpenModalOrSection = function() {
+            // 1. التحقق من النوافذ الفرعية المنبثقة أولاً وإغلاقها بالتدريج
             const subModals = [
                 'systemNotificationModal',
                 'payCreditModal',
@@ -1942,21 +1992,24 @@
                 }
             }
 
+            // 2. التحقق من النوافذ الإدارية الكبرى (POS, Journal, Stock, etc.)
             const openAdminWin = document.querySelector('.admin-window:not(.hidden)');
             if (openAdminWin) {
                 openAdminWin.classList.add('hidden');
                 return true;
             }
 
+            // 3. التحقق من قسم الإدارة التفصيلي والعودة للقائمة الرئيسية
             const detailedSec = document.getElementById('detailedManagementSection');
             if (detailedSec && !detailedSec.classList.contains('hidden')) {
                 window.backToMainChoices();
                 return true;
             }
 
-            return false;
+            return false; // لا توجد أي نافذة مفتوحة (في القائمة الرئيسية)
         };
 
+        // تسجيل خطوة في سجل المتصفح عند فتح أي نافذة أو قسم
         const originalSelectMainChoice = window.selectMainChoice;
         window.selectMainChoice = function(choice) {
             history.pushState({ page: choice }, "");
@@ -1979,13 +2032,16 @@
             }
         });
 
+        // عند الضغط على سهم الرجوع في الهاتف
         window.addEventListener('popstate', function(event) {
             const closedSomething = window.closeAnyOpenModalOrSection();
             if (closedSomething) {
+                // إبقاء سجل التصفح نشطاً طالما هناك نوافذ أخرى مفتوحة
                 history.pushState({ active: true }, "");
             }
         });
 
+        // تهيئة نقطة البداية لمنع الخروج المفاجئ
         history.pushState({ active: true }, "");
     </script>
 </body>
