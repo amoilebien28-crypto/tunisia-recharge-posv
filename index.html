@@ -20,31 +20,7 @@
             border: 1px solid #64748b !important;
             padding: 8px 10px;
         }
-
-        /* تنسيقات الطباعة العامة لضمان خروج الجدول أو التقرير نظيفاً ومنظماً على صفحات A4 */
         @media print {
-            body {
-                background-color: #ffffff !important;
-                color: #000000 !important;
-                padding: 15px !important;
-                margin: 0 !important;
-            }
-            header, button, .no-print, .admin-window, #authScreen, #systemNotificationModal, #payCreditModal, #invoiceDetailModal, #addClientModal, #recetteModal, #editClientPasswordModal, #clientDetailHistoryModal, #historyOrderDetailModal, #orderDetailModal {
-                display: none !important;
-            }
-            /* إظهار عنصر الطباعة فقط وتأهيله للطباعة النظيفة */
-            .print-container, .print-container * {
-                visibility: visible !important;
-            }
-            .print-container {
-                position: absolute !important;
-                top: 0 !important;
-                right: 0 !important;
-                width: 100% !important;
-                background: white !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
             table.custom-grid th, table.custom-grid td {
                 border: 1px solid #000 !important;
             }
@@ -424,7 +400,7 @@
             </div>
             <div id="invoiceDetailModalContent" class="space-y-3 text-xs mb-4"></div>
             <div class="flex gap-2">
-                <button type="button" onclick="printReportTable('invoiceDetailModalContent', 'تفاصيل الفاتورة')" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white py-3.5 rounded-xl font-bold text-xs"><i class="fa-solid fa-print ml-1"></i> طباعة الفاتورة</button>
+                <button type="button" onclick="printSingleInvoice()" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white py-3.5 rounded-xl font-bold text-xs"><i class="fa-solid fa-print ml-1"></i> طباعة الفاتورة</button>
                 <button type="button" onclick="exportTableAsImage('invoiceDetailModalContent', 'فاتورة_شراء')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold text-xs"><i class="fa-solid fa-image ml-1"></i> صورة للواتساب</button>
                 <button type="button" onclick="closeInvoiceDetailModal()" class="bg-slate-200 text-slate-700 px-4 py-3.5 rounded-xl font-bold text-xs">إغلاق</button>
             </div>
@@ -999,7 +975,7 @@
         };
 
         window.checkVendeurAuth = function() {
-            const authScreen = document.getElementById('authScreen');
+            const authScreen = document.getElementById('authScreen'); نافذة تسجيل الدخول
             if (window.currentVendeur && window.currentVendeur.id) {
                 if (authScreen) authScreen.classList.add('hidden');
                 document.getElementById('headerVendeurName').innerText = window.currentVendeur.name || "Mourad";
@@ -1010,20 +986,21 @@
             }
         };
 
-        // دالة طباعة الجداول والتقارير بشكل نظيف ومرتب (A4)
+        // دالة الطباعة الأصلية الصحيحة والمضبوطة (تفتح نافذة جديدة نظيفة للطباعة بدون أزرار زايدة)
         window.printReportTable = function(containerId, title) {
             let container = document.getElementById(containerId);
             if (!container) return;
-            
-            // إضافة كلاس الطباعة المؤقت لعزل التقرير المطلوب طباعته فقط
-            container.classList.add('print-container');
-            
-            window.print();
-            
-            // إزالة كلاس الطباعة بعد الانتهاء
-            setTimeout(() => {
-                container.classList.remove('print-container');
-            }, 500);
+            let win = window.open('', '_blank');
+            win.document.write(`<html lang="ar" dir="rtl"><head><title>${title}</title><style>body{font-family:Tahoma,sans-serif;padding:25px;text-align:right;}table{width:100%;border-collapse:collapse;margin-top:15px;}th,td{border:1px solid #334155 !important;padding:8px 10px;font-size:12px;}th{background-color:#f1f5f9;}</style></head><body><h2>${title}</h2>${container.innerHTML}<script>window.print()<\/script></body></html>`);
+            win.document.close();
+        };
+
+        // دالة طباعة الفاتورة الفردية بصيغة نظيفة ومطابقة للمطلوب
+        window.printSingleInvoice = function() {
+            if (!window.currentActiveInvoice) return;
+            let win = window.open('', '_blank');
+            win.document.write(`<html lang="ar" dir="rtl"><head><title>فاتورة شراء مخزون</title><style>body{font-family:Tahoma,sans-serif;padding:25px;text-align:right;}table{width:100%;border-collapse:collapse;margin-top:15px;}th,td{border:1px solid #334155 !important;padding:8px 10px;font-size:12px;}th{background-color:#f1f5f9;}tfoot tr{background-color:#dcfce7;font-weight:bold;}</style></head><body><h2>فاتورة شراء مخزون كروت ورصيد</h2>${document.getElementById('invoiceDetailModalContent').innerHTML}<script>window.print()<\/script></body></html>`);
+            win.document.close();
         };
 
         window.exportTableAsImage = async function(containerId, title) {
@@ -1875,7 +1852,7 @@
         window.selectPosOperator = function(op) {
             window.selectedPosOp = op;
             document.getElementById('posProductsSection').classList.remove('hidden');
-            document.getElementById('posSelectedOperatorTitle',).innerText = `البطاقات المتاحة للمشغل: ${op} (انقر للزيادة أو النقصان بالسبحة)`;
+            document.getElementById('posSelectedOperatorTitle').innerText = `البطاقات المتاحة للمشغل: ${op} (انقر للزيادة أو النقصان بالسبحة)`;
 
             let headerBgColor = op === 'Ooredoo' ? 'bg-red-50 text-red-700 border-red-300' : (op === 'Telecom' ? 'bg-blue-50 text-blue-700 border-blue-300' : 'bg-orange-50 text-orange-700 border-orange-300');
 
@@ -1979,7 +1956,7 @@
                 paidAmount = 0;
                 creditAmount = totalSell;
             } else if (paymentStatus === 'Partiel') {
-                paidAmount = parseFloat(document.getElementById('posPaidAmountInput').value) || 0;
+                paidAmount = parseFloat(document.getElementById('validerPaidAmount').value) || 0;
                 creditAmount = totalSell - paidAmount;
                 if (paidAmount <= 0 || paidAmount >= totalSell) { alert('الرجاء إدخال مبلغ مدفوع جزئي صحيح.'); return; }
             }
