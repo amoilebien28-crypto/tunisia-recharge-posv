@@ -20,7 +20,31 @@
             border: 1px solid #64748b !important;
             padding: 8px 10px;
         }
+
+        /* تنسيقات الطباعة العامة لضمان خروج الجدول أو التقرير نظيفاً ومنظماً على صفحات A4 */
         @media print {
+            body {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                padding: 15px !important;
+                margin: 0 !important;
+            }
+            header, button, .no-print, .admin-window, #authScreen, #systemNotificationModal, #payCreditModal, #invoiceDetailModal, #addClientModal, #recetteModal, #editClientPasswordModal, #clientDetailHistoryModal, #historyOrderDetailModal, #orderDetailModal {
+                display: none !important;
+            }
+            /* إظهار عنصر الطباعة فقط وتأهيله للطباعة النظيفة */
+            .print-container, .print-container * {
+                visibility: visible !important;
+            }
+            .print-container {
+                position: absolute !important;
+                top: 0 !important;
+                right: 0 !important;
+                width: 100% !important;
+                background: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
             table.custom-grid th, table.custom-grid td {
                 border: 1px solid #000 !important;
             }
@@ -400,7 +424,7 @@
             </div>
             <div id="invoiceDetailModalContent" class="space-y-3 text-xs mb-4"></div>
             <div class="flex gap-2">
-                <button type="button" onclick="printSingleInvoice()" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white py-3.5 rounded-xl font-bold text-xs"><i class="fa-solid fa-print ml-1"></i> طباعة الفاتورة</button>
+                <button type="button" onclick="printReportTable('invoiceDetailModalContent', 'تفاصيل الفاتورة')" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white py-3.5 rounded-xl font-bold text-xs"><i class="fa-solid fa-print ml-1"></i> طباعة الفاتورة</button>
                 <button type="button" onclick="exportTableAsImage('invoiceDetailModalContent', 'فاتورة_شراء')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold text-xs"><i class="fa-solid fa-image ml-1"></i> صورة للواتساب</button>
                 <button type="button" onclick="closeInvoiceDetailModal()" class="bg-slate-200 text-slate-700 px-4 py-3.5 rounded-xl font-bold text-xs">إغلاق</button>
             </div>
@@ -986,12 +1010,20 @@
             }
         };
 
+        // دالة طباعة الجداول والتقارير بشكل نظيف ومرتب (A4)
         window.printReportTable = function(containerId, title) {
             let container = document.getElementById(containerId);
             if (!container) return;
-            let win = window.open('', '_blank');
-            win.document.write(`<html lang="ar" dir="rtl"><head><title>${title}</title><style>body{font-family:Tahoma,sans-serif;padding:25px;text-align:right;}table{width:100%;border-collapse:collapse;margin-top:15px;}th,td{border:1px solid #334155 !important;padding:10px;font-size:13px;}th{background-color:#f1f5f9;}</style></head><body><h2>${title}</h2>${container.innerHTML}<script>window.print()<\/script></body></html>`);
-            win.document.close();
+            
+            // إضافة كلاس الطباعة المؤقت لعزل التقرير المطلوب طباعته فقط
+            container.classList.add('print-container');
+            
+            window.print();
+            
+            // إزالة كلاس الطباعة بعد الانتهاء
+            setTimeout(() => {
+                container.classList.remove('print-container');
+            }, 500);
         };
 
         window.exportTableAsImage = async function(containerId, title) {
@@ -1119,7 +1151,6 @@
         };
 
         window.openClientHistoryModal = function(clientName) {
-            // إغلاق النافذة السابقة (قائمة الحوانت) لتفادي تداخل الطبقات واختفائها في الخلفية
             window.closeAdminWindow('clients');
 
             document.getElementById('historyModalTitle').innerHTML = `<i class="fa-solid fa-address-book text-blue-600 ml-2"></i> سجل معاملات وحانوت: ${clientName}`;
@@ -1844,7 +1875,7 @@
         window.selectPosOperator = function(op) {
             window.selectedPosOp = op;
             document.getElementById('posProductsSection').classList.remove('hidden');
-            document.getElementById('posSelectedOperatorTitle').innerText = `البطاقات المتاحة للمشغل: ${op} (انقر للزيادة أو النقصان بالسبحة)`;
+            document.getElementById('posSelectedOperatorTitle',).innerText = `البطاقات المتاحة للمشغل: ${op} (انقر للزيادة أو النقصان بالسبحة)`;
 
             let headerBgColor = op === 'Ooredoo' ? 'bg-red-50 text-red-700 border-red-300' : (op === 'Telecom' ? 'bg-blue-50 text-blue-700 border-blue-300' : 'bg-orange-50 text-orange-700 border-orange-300');
 
@@ -1948,7 +1979,7 @@
                 paidAmount = 0;
                 creditAmount = totalSell;
             } else if (paymentStatus === 'Partiel') {
-                paidAmount = parseFloat(document.getElementById('validerPaidAmount').value) || 0;
+                paidAmount = parseFloat(document.getElementById('posPaidAmountInput').value) || 0;
                 creditAmount = totalSell - paidAmount;
                 if (paidAmount <= 0 || paidAmount >= totalSell) { alert('الرجاء إدخال مبلغ مدفوع جزئي صحيح.'); return; }
             }
@@ -1974,7 +2005,6 @@
         window.checkVendeurAuth();
         // --- نظام التحكم في زر الرجوع الخاص بالهاتف (Back Button) ---
         window.closeAnyOpenModalOrSection = function() {
-            // 1. التحقق من النوافذ الفرعية المنبثقة أولاً وإغلاقها بالتدريج
             const subModals = [
                 'systemNotificationModal',
                 'payCreditModal',
@@ -1995,24 +2025,21 @@
                 }
             }
 
-            // 2. التحقق من النوافذ الإدارية الكبرى (POS, Journal, Stock, etc.)
             const openAdminWin = document.querySelector('.admin-window:not(.hidden)');
             if (openAdminWin) {
                 openAdminWin.classList.add('hidden');
                 return true;
             }
 
-            // 3. التحقق من قسم الإدارة التفصيلي والعودة للقائمة الرئيسية
             const detailedSec = document.getElementById('detailedManagementSection');
             if (detailedSec && !detailedSec.classList.contains('hidden')) {
                 window.backToMainChoices();
                 return true;
             }
 
-            return false; // لا توجد أي نافذة مفتوحة (في القائمة الرئيسية)
+            return false;
         };
 
-        // تسجيل خطوة في سجل المتصفح عند فتح أي نافذة أو قسم
         const originalSelectMainChoice = window.selectMainChoice;
         window.selectMainChoice = function(choice) {
             history.pushState({ page: choice }, "");
@@ -2035,16 +2062,13 @@
             }
         });
 
-        // عند الضغط على سهم الرجوع في الهاتف
         window.addEventListener('popstate', function(event) {
             const closedSomething = window.closeAnyOpenModalOrSection();
             if (closedSomething) {
-                // إبقاء سجل التصفح نشطاً طالما هناك نوافذ أخرى مفتوحة
                 history.pushState({ active: true }, "");
             }
         });
 
-        // تهيئة نقطة البداية لمنع الخروج المفاجئ
         history.pushState({ active: true }, "");
     </script>
 </body>
