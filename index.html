@@ -35,7 +35,7 @@
             font-weight: 600 !important;
         }
 
-        /* تحسين وتخشان الخطوط في كامل التطبيق لتكون واضحة وجلية */
+        /* تخشان الخطوط في كامل التطبيق لتكون واضحة وجلية */
         button, label, span, p, a, th, td, input, select {
             font-weight: 700 !important;
         }
@@ -45,7 +45,7 @@
             display: none !important;
         }
 
-        /* التصحيح النهائي والمضمون لعرض النوافذ المنبثقة على الهاتف والحاسوب */
+        /* الخلفية السوداء الشفافة لكل النوافذ */
         .admin-window, 
         #authScreen,
         #systemNotificationModal,
@@ -63,16 +63,16 @@
             left: 0 !important;
             right: 0 !important;
             bottom: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
+            width: 100vw !important;
+            height: 100vh !important;
             background-color: rgba(15, 23, 42, 0.85) !important;
             z-index: 9999 !important;
             overflow-y: auto !important;
-            padding: 12px !important;
+            padding: 10px !important;
             box-sizing: border-box !important;
         }
 
-        /* ظهور النافذة عند عدم وجود hidden وتمركزها بشكل سليم */
+        /* إظهار النافذة في المنتصف بطريقة صحيحة وعريضة */
         .admin-window:not(.hidden), 
         #authScreen:not(.hidden),
         #systemNotificationModal:not(.hidden),
@@ -89,7 +89,7 @@
             justify-content: center !important;
         }
 
-        /* الصندوق الأبيض الداخلي للنافذة - مبرمج خصيصاً لكي لا ينضغط أبداً ولا يتحول لخط */
+        /* الصندوق الأبيض الداخلي للنافذة - العرض أصبح 94% لكي يملأ الشاشة ببحبوحة وبدون انضغاط */
         .admin-window > div,
         #authScreen > div,
         #payCreditModal > div,
@@ -102,19 +102,19 @@
         #orderDetailModal > div {
             background-color: #ffffff !important;
             border-radius: 20px !important;
-            width: 100% !important;
-            max-width: 520px !important;
+            width: 94% !important;
+            max-width: 550px !important;
             max-height: 88vh !important;
             overflow-y: auto !important;
-            padding: 20px !important;
+            padding: 16px !important;
             box-sizing: border-box !important;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4) !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5) !important;
             margin: auto !important;
         }
 
         /* نافذة التنبيهات الصغيرة في المنتصف */
         #systemNotificationModal > div {
-            width: 90% !important;
+            width: 85% !important;
             max-width: 340px !important;
             height: auto !important;
             padding: 20px !important;
@@ -1282,7 +1282,7 @@
                 window.showSystemNotification("خلاص الدين", `تم تسجيل دفع مبلغ ${payAmount.toFixed(3)} د.ت بنجاح وتحديث حساب التاجر!`);
                 closePayCreditModal();
             } catch (e) {
-                alert('خطأ أثناء تسجيل الدفع: ' + e.message);
+                alert('حدث خطأ أثناء تسجيل الدفع: ' + e.message);
             }
         };
 
