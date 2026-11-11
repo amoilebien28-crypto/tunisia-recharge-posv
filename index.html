@@ -38,7 +38,7 @@
             display: none !important;
         }
 
-        /* الخلفية السوداء الشفافة وراء النافذة */
+        /* الخلفية السوداء الشفافة وراء النافذة متوافقة تماماً مع الهاتف والحاسوب */
         .admin-window:not(.hidden), 
         #authScreen:not(.hidden),
         #systemNotificationModal:not(.hidden),
@@ -56,17 +56,18 @@
             left: 0 !important;
             right: 0 !important;
             bottom: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
+            width: 100vw !important;
+            height: 100vh !important;
             background-color: rgba(15, 23, 42, 0.85) !important;
             z-index: 9999 !important;
-            padding: 0 !important;
+            padding: 12px !important;
             margin: 0 !important;
             align-items: center !important;
             justify-content: center !important;
+            overflow-y: auto !important;
         }
 
-        /* الصندوق الأبيض الداخلي للنافذة - إصلاح مشكلة الطبقات والنوافذ */
+        /* الصندوق الأبيض الداخلي مصمم خصيصاً لكي لا ينضغط أبداً على الأندرويد */
         .admin-window > div,
         #authScreen > div,
         #payCreditModal > div,
@@ -79,24 +80,24 @@
         #orderDetailModal > div {
             display: block !important;
             position: relative !important;
-            width: 92% !important;
-            max-width: 650px !important;
-            max-height: 90vh !important;
+            width: 100% !important;
+            max-width: 550px !important;
+            max-height: 85vh !important;
             margin: auto !important;
-            padding: 16px !important;
+            padding: 20px !important;
             background-color: #ffffff !important;
             border-radius: 20px !important;
             overflow-y: auto !important;
             -webkit-overflow-scrolling: touch !important;
             box-sizing: border-box !important;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3) !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4) !important;
             z-index: 10000 !important;
         }
 
         /* نافذة التنبيهات الصغيرة في المنتصف */
         #systemNotificationModal > div {
             width: 90% !important;
-            max-width: 360px !important;
+            max-width: 340px !important;
             height: auto !important;
             padding: 20px !important;
             background-color: #ffffff !important;
@@ -381,7 +382,7 @@
         </div>
     </div>
 
-    <!-- نافذة تفاصيل الفاتورة (محدثة مع زر PDF الموحد وإلغاء زر الصورة) -->
+    <!-- نافذة تفاصيل الفاتورة -->
     <div id="invoiceDetailModal" class="hidden">
         <div>
             <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
