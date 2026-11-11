@@ -38,7 +38,7 @@
             display: none !important;
         }
 
-        /* الخلفية السوداء الشفافة وراء النافذة */
+        /* الخلفية السوداء الشفافة وراء النافذة مع رفع الـ z-index لأقصى درجة باش ما تختفيش وراء حتى شيء */
         .admin-window:not(.hidden), 
         #authScreen:not(.hidden),
         #systemNotificationModal:not(.hidden),
@@ -59,12 +59,12 @@
             width: 100% !important;
             height: 100% !important;
             background-color: rgba(15, 23, 42, 0.85) !important;
-            z-index: 9999 !important;
+            z-index: 2147483647 !important; /* أقصى طبقة عرض باش تظهر الفونتير في المقدمة المطلقة */
             padding: 0 !important;
             margin: 0 !important;
         }
 
-        /* الصندوق الأبيض الداخلي للنافذة - مربوط بحواف الشاشة مباشرة لمنع تحوله لخط */
+        /* الصندوق الأبيض الداخلي للنافذة - مضبوط بحواف الشاشة مباشرة لمنع تحوله لخط */
         .admin-window > div,
         #authScreen > div,
         #payCreditModal > div,
@@ -94,6 +94,7 @@
             -webkit-overflow-scrolling: touch !important;
             box-sizing: border-box !important;
             transform: none !important;
+            z-index: 2147483647 !important;
         }
 
         /* نافذة التنبيهات الصغيرة في المنتصف */
@@ -596,7 +597,7 @@
         </div>
     </div>
 
-    <!-- نافذة قائمة الحوانت المسجلة -->
+    <!-- نافذة قائمة الحوانت المسجلة (تمت إضافة كلاس admin-window لضمان فتحها بانتظام فوق الواجهة) -->
     <div id="windowClients" class="admin-window hidden">
         <div>
             <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
@@ -1775,7 +1776,7 @@
                 `;
             });
             const statsTable = document.getElementById('salesStatsTableBody');
-            if (statsTable) statsTable.innerHTML = statsHtml || '<tr><td colspan="3" class="text-center text-slate-400 py-4">لا توجد مبيعات مؤكدة للتجار بعد.</td></tr>';
+            if (statsTable) statsTable.innerHTML = statsHtml || '<tr><td colspan="3" class="text-center text-slate-400 py-4">لا توجد إحصائيات مبيعات بعد.</td></tr>';
 
             let stockHtml = '';
             let totalStockFinancialValue = 0;
