@@ -38,7 +38,7 @@
             display: none !important;
         }
 
-        /* الخلفية السوداء الشفافة وراء النافذة مع رفع الـ z-index لأقصى درجة باش ما تختفيش وراء حتى شيء */
+        /* الخلفية السوداء الشفافة وراء النافذة */
         .admin-window:not(.hidden), 
         #authScreen:not(.hidden),
         #systemNotificationModal:not(.hidden),
@@ -59,12 +59,12 @@
             width: 100% !important;
             height: 100% !important;
             background-color: rgba(15, 23, 42, 0.85) !important;
-            z-index: 2147483647 !important; /* أقصى طبقة عرض باش تظهر الفونتير في المقدمة المطلقة */
+            z-index: 9999 !important;
             padding: 0 !important;
             margin: 0 !important;
         }
 
-        /* الصندوق الأبيض الداخلي للنافذة - مضبوط بحواف الشاشة مباشرة لمنع تحوله لخط */
+        /* الصندوق الأبيض الداخلي للنافذة - مضبوط ومستقر */
         .admin-window > div,
         #authScreen > div,
         #payCreditModal > div,
@@ -94,7 +94,6 @@
             -webkit-overflow-scrolling: touch !important;
             box-sizing: border-box !important;
             transform: none !important;
-            z-index: 2147483647 !important;
         }
 
         /* نافذة التنبيهات الصغيرة في المنتصف */
@@ -393,7 +392,7 @@
     </div>
 
     <!-- نافذة تفاصيل الفاتورة -->
-    <div id="invoiceDetailModal" class="hidden">
+    <div id="invoiceDetailModal" class="hidden" style="z-index: 10005 !important;">
         <div>
             <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
                 <h4 id="invoiceDetailModalTitle" class="font-bold text-lg text-slate-900"><i class="fa-solid fa-file-invoice text-indigo-600 ml-2"></i> تفاصيل الفاتورة</h4>
@@ -409,7 +408,7 @@
     </div>
 
     <!-- نافذة إضافة حانوت جديد -->
-    <div id="addClientModal" class="hidden">
+    <div id="addClientModal" class="hidden" style="z-index: 10005 !important;">
         <div>
             <div class="flex justify-between items-center border-b pb-3 mb-4 border-slate-200">
                 <h3 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-store text-emerald-600 ml-2"></i> إضافة حانوت جديد لزبائنك</h3>
@@ -468,7 +467,7 @@
     </div>
 
     <!-- نافذة المداخيل والمرابيح (الروسيت) -->
-    <div id="recetteModal" class="hidden">
+    <div id="recetteModal" class="hidden" style="z-index: 10005 !important;">
         <div>
             <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
                 <h3 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-chart-line text-amber-600 ml-2"></i> المداخيل والمرابيح (الروسيت)</h3>
@@ -550,7 +549,7 @@
     </div>
 
     <!-- نافذة تعديل كلمة مرور التاجر -->
-    <div id="editClientPasswordModal" class="hidden">
+    <div id="editClientPasswordModal" class="hidden" style="z-index: 10010 !important;">
         <div>
             <div class="flex justify-between items-center border-b pb-3 mb-4 border-slate-200">
                 <h4 class="font-bold text-base text-slate-900"><i class="fa-solid fa-key text-indigo-600 ml-2"></i> تغيير كلمة المرور للتاجر</h4>
@@ -568,7 +567,7 @@
     </div>
 
     <!-- نافذة سجل التاجر -->
-    <div id="clientDetailHistoryModal" class="hidden">
+    <div id="clientDetailHistoryModal" class="hidden" style="z-index: 10010 !important;">
         <div>
             <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
                 <h4 id="historyModalTitle" class="font-bold text-lg text-slate-900"><i class="fa-solid fa-address-book text-blue-600 ml-2"></i> سجل معاملات وحانوت</h4>
@@ -586,7 +585,7 @@
     </div>
 
     <!-- نافذة تفاصيل فاتورة أو طلبية داخل السجل -->
-    <div id="historyOrderDetailModal" class="hidden">
+    <div id="historyOrderDetailModal" class="hidden" style="z-index: 10020 !important;">
         <div>
             <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
                 <h4 class="font-bold text-base text-slate-900"><i class="fa-solid fa-file-invoice text-emerald-600 ml-2"></i> تفاصيل الطلبية / البيعة</h4>
@@ -597,7 +596,7 @@
         </div>
     </div>
 
-    <!-- نافذة قائمة الحوانت المسجلة (تمت إضافة كلاس admin-window لضمان فتحها بانتظام فوق الواجهة) -->
+    <!-- نافذة قائمة الحوانت المسجلة -->
     <div id="windowClients" class="admin-window hidden">
         <div>
             <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
@@ -625,7 +624,7 @@
     </div>
 
     <!-- نافذة تفاصيل الطلبية وتأكيدها -->
-    <div id="orderDetailModal" class="hidden">
+    <div id="orderDetailModal" class="hidden" style="z-index: 10005 !important;">
         <div>
             <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
                 <h4 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-file-invoice text-emerald-600 ml-2"></i> تفاصيل الطلبية وتأكيدها</h4>
@@ -1120,6 +1119,9 @@
         };
 
         window.openClientHistoryModal = function(clientName) {
+            // إغلاق النافذة السابقة (قائمة الحوانت) لتفادي تداخل الطبقات واختفائها في الخلفية
+            window.closeAdminWindow('clients');
+
             document.getElementById('historyModalTitle').innerHTML = `<i class="fa-solid fa-address-book text-blue-600 ml-2"></i> سجل معاملات وحانوت: ${clientName}`;
             let clientOrders = window.allOrders.filter(o => o.clientName === clientName);
             let totalCredit = 0;
@@ -1776,7 +1778,7 @@
                 `;
             });
             const statsTable = document.getElementById('salesStatsTableBody');
-            if (statsTable) statsTable.innerHTML = statsHtml || '<tr><td colspan="3" class="text-center text-slate-400 py-4">لا توجد إحصائيات مبيعات بعد.</td></tr>';
+            if (statsTable) statsTable.innerHTML = statsHtml || '<tr><td colspan="3" class="text-center text-slate-400 py-4">لا توجد مبيعات مؤكدة للتجار بعد.</td></tr>';
 
             let stockHtml = '';
             let totalStockFinancialValue = 0;
@@ -1946,7 +1948,7 @@
                 paidAmount = 0;
                 creditAmount = totalSell;
             } else if (paymentStatus === 'Partiel') {
-                paidAmount = parseFloat(document.getElementById('posPaidAmountInput').value) || 0;
+                paidAmount = parseFloat(document.getElementById('validerPaidAmount').value) || 0;
                 creditAmount = totalSell - paidAmount;
                 if (paidAmount <= 0 || paidAmount >= totalSell) { alert('الرجاء إدخال مبلغ مدفوع جزئي صحيح.'); return; }
             }
