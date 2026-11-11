@@ -391,7 +391,7 @@
         </div>
     </div>
 
-    <!-- نافذة تفاصيل الفاتورة (زر إرسال PDF موحد ونظيف) -->
+    <!-- نافذة تفاصيل الفاتورة (زر إرسال PDF المباشر والواضح) -->
     <div id="invoiceDetailModal" class="hidden" style="z-index: 10005 !important;">
         <div>
             <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
@@ -400,7 +400,7 @@
             </div>
             <div id="invoiceDetailModalContent" class="space-y-3 text-xs mb-4"></div>
             <div class="flex gap-2">
-                <button type="button" onclick="printSingleInvoice()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-xl font-bold text-xs shadow-md"><i class="fa-solid fa-file-pdf ml-1"></i> إرسال PDF / طباعة</button>
+                <button type="button" onclick="printSingleInvoice()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold text-xs shadow-md"><i class="fa-solid fa-file-pdf ml-1"></i> إرسال PDF / طباعة</button>
                 <button type="button" onclick="closeInvoiceDetailModal()" class="bg-slate-200 text-slate-700 px-4 py-3.5 rounded-xl font-bold text-xs">إغلاق</button>
             </div>
         </div>
@@ -493,7 +493,7 @@
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الأيام:</h5>
                     <div class="flex gap-1.5">
-                        <button type="button" onclick="printReportTable('recetteDaysTableContainer', 'تقرير روسيت الأيام')" class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+                        <button type="button" onclick="printReportTable('recetteDaysTableContainer', 'تقرير روسيت الأيام')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
                             <i class="fa-solid fa-file-pdf ml-1"></i> إرسال PDF / طباعة
                         </button>
                     </div>
@@ -517,7 +517,7 @@
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الشهور:</h5>
                     <div class="flex gap-1.5">
-                        <button type="button" onclick="printReportTable('recetteMonthsTableContainer', 'تقرير روسيت الشهور')" class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+                        <button type="button" onclick="printReportTable('recetteMonthsTableContainer', 'تقرير روسيت الشهور')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
                             <i class="fa-solid fa-file-pdf ml-1"></i> إرسال PDF / طباعة
                         </button>
                     </div>
@@ -674,7 +674,7 @@
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">جميع الفواتير السابقة:</h5>
                     <div class="flex gap-1.5">
-                        <button type="button" onclick="printReportTable('invoicesHistoryTableContainer', 'قائمة جميع الفواتير السابقة')" class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+                        <button type="button" onclick="printReportTable('invoicesHistoryTableContainer', 'قائمة جميع الفواتير السابقة')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
                             <i class="fa-solid fa-file-pdf ml-1"></i> إرسال PDF / طباعة
                         </button>
                     </div>
@@ -709,7 +709,7 @@
             <div class="flex justify-between items-center mb-3">
                 <span class="text-xs text-slate-600 font-bold">جرد المخزون الحالي بالقطعة والرصيد:</span>
                 <div class="flex gap-1.5">
-                    <button type="button" onclick="printReportTable('stockTableContainer', 'تقرير المخزون النهائي')" class="bg-indigo-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold">
+                    <button type="button" onclick="printReportTable('stockTableContainer', 'تقرير المخزون النهائي')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold">
                         <i class="fa-solid fa-file-pdf ml-1"></i> إرسال PDF / طباعة
                     </button>
                 </div>
@@ -973,7 +973,7 @@
             }
         };
 
-        // دالة الطباعة الأصلية الثابتة والمضمونة للتقارير والجداول
+        // دالة إرسال PDF / الطباعة الموحدة والنظيفة للجداول
         window.printReportTable = function(containerId, title) {
             let container = document.getElementById(containerId);
             if (!container) return;
@@ -982,51 +982,12 @@
             win.document.close();
         };
 
-        // دالة طباعة الفاتورة الفردية بصيغة نظيفة ومباشرة
+        // دالة طباعة وإرسال الفاتورة المفردة كـ PDF نظيف
         window.printSingleInvoice = function() {
             if (!window.currentActiveInvoice) return;
             let win = window.open('', '_blank');
             win.document.write(`<html lang="ar" dir="rtl"><head><title>فاتورة شراء مخزون</title><style>body{font-family:Tahoma,sans-serif;padding:25px;text-align:right;}table{width:100%;border-collapse:collapse;margin-top:15px;}th,td{border:1px solid #334155 !important;padding:8px 10px;font-size:12px;}th{background-color:#f1f5f9;}tfoot tr{background-color:#dcfce7;font-weight:bold;}</style></head><body><h2>فاتورة شراء مخزون كروت ورصيد</h2>${document.getElementById('invoiceDetailModalContent').innerHTML}<script>window.print()<\/script></body></html>`);
             win.document.close();
-        };
-
-        window.exportTableAsImage = async function(containerId, title) {
-            const element = document.getElementById(containerId);
-            if (!element) return;
-
-            try {
-                const canvas = await html2canvas(element, {
-                    scale: 2,
-                    backgroundColor: "#ffffff",
-                    useCORS: true
-                });
-
-                canvas.toBlob(async (blob) => {
-                    const file = new File([blob], `${title}.png`, { type: "image/png" });
-
-                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                        try {
-                            await navigator.share({
-                                files: [file],
-                                title: title,
-                                text: `*${title} - Tunisie Recharge*`
-                            });
-                            return;
-                        } catch (err) {
-                            console.log("تم إلغاء المشاركة أو غير مدعومة");
-                        }
-                    }
-
-                    const link = document.createElement("a");
-                    link.href = canvas.toDataURL("image/png");
-                    link.download = `${title}.png`;
-                    link.click();
-                    alert("تم حفظ الجدول كصورة بجهازك! يمكنك الآن إرسالها عبر واتساب.");
-                }, "image/png");
-
-            } catch (error) {
-                alert("حدث خطأ أثناء إنشاء الصورة: " + error.message);
-            }
         };
 
         window.showSystemNotification = function(title, text) {
