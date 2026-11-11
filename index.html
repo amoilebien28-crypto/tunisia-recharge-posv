@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- مكتبة تحويل الجداول إلى صور واضحة -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         table.custom-grid {
@@ -18,37 +20,9 @@
             border: 1px solid #64748b !important;
             padding: 8px 10px;
         }
-
-        /* تنسيقات الطباعة وتوليد الـ PDF الاحترافي (إخفاء الأزرار وتنسيق الصفحات) */
         @media print {
-            body {
-                background-color: #ffffff !important;
-                color: #000000 !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-            header, button, .no-print, .close-modal {
-                display: none !important;
-            }
             table.custom-grid th, table.custom-grid td {
                 border: 1px solid #000 !important;
-            }
-            .admin-window, #invoiceDetailModal, #recetteModal, #clientDetailHistoryModal {
-                position: absolute !important;
-                top: 0 !important;
-                left: 0 !important;
-                width: 100% !important;
-                height: auto !important;
-                background: white !important;
-                z-index: 99999 !important;
-            }
-            .admin-window > div, #invoiceDetailModal > div, #recetteModal > div, #clientDetailHistoryModal > div {
-                box-shadow: none !important;
-                border: none !important;
-                width: 100% !important;
-                max-width: 100% !important;
-                padding: 0 !important;
-                margin: 0 !important;
             }
         }
 
@@ -64,7 +38,7 @@
             display: none !important;
         }
 
-        /* الخلفية السوداء الشفافة وراء النافذة */
+        /* إعطاء أقصى z-index وflex لجميع النوافذ لضمان ظهورها فوق الواجهة تماماً وعدم اختفائها في الخلفية */
         .admin-window:not(.hidden), 
         #authScreen:not(.hidden),
         #systemNotificationModal:not(.hidden),
@@ -76,7 +50,7 @@
         #clientDetailHistoryModal:not(.hidden),
         #historyOrderDetailModal:not(.hidden),
         #orderDetailModal:not(.hidden) {
-            display: block !important;
+            display: flex !important;
             position: fixed !important;
             top: 0 !important;
             left: 0 !important;
@@ -85,12 +59,15 @@
             width: 100% !important;
             height: 100% !important;
             background-color: rgba(15, 23, 42, 0.85) !important;
-            z-index: 9999 !important;
-            padding: 0 !important;
+            z-index: 2147483647 !important; /* أعلى قيمة لطبقة العرض لضمان عدم وجود أي عنصر فوقها */
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 10px !important;
             margin: 0 !important;
+            box-sizing: border-box !important;
         }
 
-        /* الصندوق الأبيض الداخلي للنافذة - مضبوط ومستقر على التليفون */
+        /* الصندوق الأبيض الداخلي للنافذة - متناسق تماماً ويأخذ مكانة الصحيح */
         .admin-window > div,
         #authScreen > div,
         #payCreditModal > div,
@@ -102,40 +79,27 @@
         #historyOrderDetailModal > div,
         #orderDetailModal > div {
             display: block !important;
-            position: fixed !important;
-            top: 8px !important;
-            bottom: 8px !important;
-            left: 8px !important;
-            right: 8px !important;
-            width: auto !important;
-            height: auto !important;
-            max-width: 650px !important;
-            max-height: none !important;
-            min-height: 0 !important;
-            margin: 0 auto !important;
+            position: relative !important;
+            width: 100% !important;
+            max-width: 600px !important;
+            max-height: 85vh !important;
+            margin: auto !important;
             padding: 16px !important;
             background-color: #ffffff !important;
             border-radius: 20px !important;
             overflow-y: auto !important;
             -webkit-overflow-scrolling: touch !important;
             box-sizing: border-box !important;
-            transform: none !important;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5) !important;
+            z-index: 2147483647 !important;
         }
 
         /* نافذة التنبيهات الصغيرة في المنتصف */
         #systemNotificationModal > div {
-            display: block !important;
-            position: fixed !important;
-            top: 50% !important;
-            left: 50% !important;
-            right: auto !important;
-            bottom: auto !important;
-            transform: translate(-50%, -50%) !important;
             width: 90% !important;
             max-width: 360px !important;
             height: auto !important;
             padding: 20px !important;
-            background-color: #ffffff !important;
             border-radius: 24px !important;
         }
     </style>
@@ -417,7 +381,7 @@
         </div>
     </div>
 
-    <!-- نافذة تفاصيل الفاتورة (محدثة بزر PDF موحد ومحذوف منها زر الصورة العشوائي) -->
+    <!-- نافذة تفاصيل الفاتورة -->
     <div id="invoiceDetailModal" class="hidden">
         <div>
             <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
@@ -491,7 +455,7 @@
         </div>
     </div>
 
-    <!-- نافذة المداخيل والمرابيح (الروسيت مع جداول الأرباح اليومية والشهرية) -->
+    <!-- نافذة المداخيل والمرابيح (الروسيت وجداول الأرباح اليومية والشهرية) -->
     <div id="recetteModal" class="hidden">
         <div>
             <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
@@ -915,7 +879,7 @@
         window.currentPayingClient = null;
         window.statsSortMode = 'best';
 
-        // دالة الطباعة وتصدير PDF الموحدة والذكية المتوافقة مع الأندرويد والمتصفح دون لقطة شاشة عشوائية
+        // دالة الطباعة الاحترافية والذكية (بدون كابتور شاشة وبدون أزرار مزعجة)
         window.printOrSavePDF = function() {
             if (window.AndroidPrinter && typeof window.AndroidPrinter.printDocument === 'function') {
                 window.AndroidPrinter.printDocument();
@@ -1551,12 +1515,12 @@
             let total = window.selectedOrderForAction.totalSell;
             let paidAmount = 0, creditAmount = 0;
 
-            if (payStatus === 'Payé') { 
-                paidAmount = total; 
-                creditAmount = 0; 
-            } else if (payStatus === 'Crédit') { 
-                paidAmount = 0; 
-                creditAmount = total; 
+            if (payStatus === 'Payé') { 
+                paidAmount = total; 
+                creditAmount = 0; 
+            } else if (payStatus === 'Crédit') { 
+                paidAmount = 0; 
+                creditAmount = total; 
             } else if (payStatus === 'Partiel') {
                 paidAmount = parseFloat(document.getElementById('validerPaidAmount').value) || 0;
                 creditAmount = total - paidAmount;
@@ -1632,8 +1596,8 @@
 
             window.allOrders.forEach(o => {
                 let isCompleted = o.status === 'مكتمل ومؤكد';
-                let orderDateStr = o.date ? o.date.slice(0, 10) : ''; 
-                let orderMonthStr = o.date ? o.date.slice(0, 7) : '';   
+                let orderDateStr = o.date ? o.date.slice(0, 10) : ''; 
+                let orderMonthStr = o.date ? o.date.slice(0, 7) : '';   
 
                 if (isCompleted) {
                     let orderBenefice = o.benefice || 0;
@@ -1717,7 +1681,7 @@
             allMonthsList.sort().reverse();
 
             allMonthsList.forEach(m => {
-                let parts = m.split('-'); 
+                let parts = m.split('-'); 
                 let mName = monthNames[parts[1]] || parts[1];
                 let displayStr = `${mName} ${parts[0]}`;
                 let val = monthsRecetteMap[m] || 0;
@@ -1939,7 +1903,7 @@
 
             try {
                 await addDoc(collection(db, "orders"), {
-                    clientName, 
+                    clientName, 
                     vendeurId: window.currentVendeur.id,
                     items, totalSell, totalBuy, benefice: totalSell - totalBuy,
                     paymentStatus: paymentStatus === 'Payé' ? 'Payé' : (paymentStatus === 'Crédit' ? 'Crédit' : 'جزئي'),
