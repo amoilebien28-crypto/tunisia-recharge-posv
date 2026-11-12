@@ -391,7 +391,7 @@
         </div>
     </div>
 
-    <!-- نافذة تفاصيل الفاتورة (زر إرسال PDF المباشر والواضح) -->
+    <!-- نافذة تفاصيل الفاتورة -->
     <div id="invoiceDetailModal" class="hidden" style="z-index: 10005 !important;">
         <div>
             <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
@@ -852,10 +852,10 @@
         </div>
     </div>
 
-    <!-- السكربت والربط بقاعدة البيانات -->
+    <!-- السكربت والربط بقاعدة البيانات مع دعم العمل بدون إنترنت (Offline Local Cache) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, getDocs, doc, updateDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         window.alert = function(msg) {
             if (window.showSystemNotification) {
@@ -876,7 +876,13 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        
+        // تفعيل التخزين المؤقت المحلي للعمل دون إنترنت والمزامنة التلقائية
+        const db = initializeFirestore(app, {
+            localCache: persistentLocalCache({
+                tabManager: persistentMultipleTabManager()
+            })
+        });
         window.db = db;
 
         window.currentVendeur = JSON.parse(localStorage.getItem('currentVendeur') || 'null');
@@ -973,7 +979,7 @@
             }
         };
 
-        // دالة إرسال PDF / الطباعة الموحدة والنظيفة للجداول
+        // دالة طباعة الجداول والتقارير
         window.printReportTable = function(containerId, title) {
             let container = document.getElementById(containerId);
             if (!container) return;
@@ -982,7 +988,7 @@
             win.document.close();
         };
 
-        // دالة طباعة وإرسال الفاتورة المفردة كـ PDF نظيف
+        // دالة طباعة الفاتورة الفردية
         window.printSingleInvoice = function() {
             if (!window.currentActiveInvoice) return;
             let win = window.open('', '_blank');
