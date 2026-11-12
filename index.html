@@ -44,6 +44,7 @@
         #systemNotificationModal:not(.hidden),
         #payCreditModal:not(.hidden),
         #invoiceDetailModal:not(.hidden),
+        #printPreviewModal:not(.hidden),
         #addClientModal:not(.hidden),
         #recetteModal:not(.hidden),
         #editClientPasswordModal:not(.hidden),
@@ -69,6 +70,7 @@
         #authScreen > div,
         #payCreditModal > div,
         #invoiceDetailModal > div,
+        #printPreviewModal > div,
         #addClientModal > div,
         #recetteModal > div,
         #editClientPasswordModal > div,
@@ -400,8 +402,23 @@
             </div>
             <div id="invoiceDetailModalContent" class="space-y-3 text-xs mb-4"></div>
             <div class="flex gap-2">
-                <button type="button" onclick="printSingleInvoice()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold text-xs shadow-md"><i class="fa-solid fa-file-pdf ml-1"></i> إرسال PDF / طباعة</button>
+                <button type="button" onclick="openPrintPreviewModal()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold text-xs shadow-md"><i class="fa-solid fa-file-pdf ml-1"></i> طباعة / مشاركة PDF</button>
                 <button type="button" onclick="closeInvoiceDetailModal()" class="bg-slate-200 text-slate-700 px-4 py-3.5 rounded-xl font-bold text-xs">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة المعاينة والطباعة الداخلية الآمنة (بدون تعليق على الهاتف) -->
+    <div id="printPreviewModal" class="hidden" style="z-index: 10020 !important;">
+        <div>
+            <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
+                <h4 class="font-bold text-base text-slate-900"><i class="fa-solid fa-print text-indigo-600 ml-2"></i> معاينة وثيقة الطباعة</h4>
+                <button type="button" onclick="closePrintPreviewModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
+            </div>
+            <div id="printPreviewContent" class="bg-white p-4 rounded-xl border border-slate-300 text-xs mb-4 overflow-y-auto max-h-[60vh]"></div>
+            <div class="flex gap-2">
+                <button type="button" onclick="triggerActualPrint()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-xl font-bold text-xs shadow-md"><i class="fa-solid fa-print ml-1"></i> طباعة الآن</button>
+                <button type="button" onclick="closePrintPreviewModal()" class="bg-slate-200 text-slate-700 px-6 py-3.5 rounded-xl font-bold text-xs">رجوع</button>
             </div>
         </div>
     </div>
@@ -493,8 +510,8 @@
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الأيام:</h5>
                     <div class="flex gap-1.5">
-                        <button type="button" onclick="printReportTable('recetteDaysTableContainer', 'تقرير روسيت الأيام')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-                            <i class="fa-solid fa-file-pdf ml-1"></i> إرسال PDF / طباعة
+                        <button type="button" onclick="openSafeReportPrint('recetteDaysTableContainer', 'تقرير روسيت الأيام')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+                            <i class="fa-solid fa-file-pdf ml-1"></i> طباعة / مشاركة PDF
                         </button>
                     </div>
                 </div>
@@ -517,8 +534,8 @@
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الشهور:</h5>
                     <div class="flex gap-1.5">
-                        <button type="button" onclick="printReportTable('recetteMonthsTableContainer', 'تقرير روسيت الشهور')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-                            <i class="fa-solid fa-file-pdf ml-1"></i> إرسال PDF / طباعة
+                        <button type="button" onclick="openSafeReportPrint('recetteMonthsTableContainer', 'تقرير روسيت الشهور')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+                            <i class="fa-solid fa-file-pdf ml-1"></i> طباعة / مشاركة PDF
                         </button>
                     </div>
                 </div>
@@ -674,8 +691,8 @@
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">جميع الفواتير السابقة:</h5>
                     <div class="flex gap-1.5">
-                        <button type="button" onclick="printReportTable('invoicesHistoryTableContainer', 'قائمة جميع الفواتير السابقة')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-                            <i class="fa-solid fa-file-pdf ml-1"></i> إرسال PDF / طباعة
+                        <button type="button" onclick="openSafeReportPrint('invoicesHistoryTableContainer', 'قائمة جميع الفواتير السابقة')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+                            <i class="fa-solid fa-file-pdf ml-1"></i> طباعة / مشاركة PDF
                         </button>
                     </div>
                 </div>
@@ -709,8 +726,8 @@
             <div class="flex justify-between items-center mb-3">
                 <span class="text-xs text-slate-600 font-bold">جرد المخزون الحالي بالقطعة والرصيد:</span>
                 <div class="flex gap-1.5">
-                    <button type="button" onclick="printReportTable('stockTableContainer', 'تقرير المخزون النهائي')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold">
-                        <i class="fa-solid fa-file-pdf ml-1"></i> إرسال PDF / طباعة
+                    <button type="button" onclick="openSafeReportPrint('stockTableContainer', 'تقرير المخزون النهائي')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold">
+                        <i class="fa-solid fa-file-pdf ml-1"></i> طباعة / مشاركة PDF
                     </button>
                 </div>
             </div>
@@ -852,7 +869,7 @@
         </div>
     </div>
 
-    <!-- السكربت والربط بقاعدة البيانات مع دعم العمل بدون إنترنت والمزامنة والترتيب الزمني -->
+    <!-- السكربت والربط بقاعدة البيانات مع دعم العمل بدون إنترنت والترتيب الزمني وإصلاح الطباعة -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, getDocs, doc, updateDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -979,21 +996,27 @@
             }
         };
 
-        // دالة طباعة الجداول والتقارير
-        window.printReportTable = function(containerId, title) {
-            let container = document.getElementById(containerId);
+        // --- نظام المعاينة والطباعة الآمن داخل التطبيق (يحمي الهاتف من التعليق) ---
+        window.openSafeReportPrint = function(containerId, title) {
+            const container = document.getElementById(containerId);
             if (!container) return;
-            let win = window.open('', '_blank');
-            win.document.write(`<html lang="ar" dir="rtl"><head><title>${title}</title><style>body{font-family:Tahoma,sans-serif;padding:25px;text-align:right;}table{width:100%;border-collapse:collapse;margin-top:15px;}th,td{border:1px solid #334155 !important;padding:8px 10px;font-size:12px;}th{background-color:#f1f5f9;}</style></head><body><h2>${title}</h2>${container.innerHTML}<script>window.print()<\/script></body></html>`);
-            win.document.close();
+            document.getElementById('printPreviewContent').innerHTML = `<h3>${title}</h3>` + container.innerHTML;
+            document.getElementById('printPreviewModal').classList.remove('hidden');
         };
 
-        // دالة طباعة الفاتورة الفردية
+        window.closePrintPreviewModal = function() {
+            document.getElementById('printPreviewModal').classList.add('hidden');
+        };
+
+        window.triggerActualPrint = function() {
+            window.print();
+        };
+
         window.printSingleInvoice = function() {
             if (!window.currentActiveInvoice) return;
-            let win = window.open('', '_blank');
-            win.document.write(`<html lang="ar" dir="rtl"><head><title>فاتورة شراء مخزون</title><style>body{font-family:Tahoma,sans-serif;padding:25px;text-align:right;}table{width:100%;border-collapse:collapse;margin-top:15px;}th,td{border:1px solid #334155 !important;padding:8px 10px;font-size:12px;}th{background-color:#f1f5f9;}tfoot tr{background-color:#dcfce7;font-weight:bold;}</style></head><body><h2>فاتورة شراء مخزون كروت ورصيد</h2>${document.getElementById('invoiceDetailModalContent').innerHTML}<script>window.print()<\/script></body></html>`);
-            win.document.close();
+            const content = document.getElementById('invoiceDetailModalContent').innerHTML;
+            document.getElementById('printPreviewContent').innerHTML = `<h2>فاتورة شراء مخزون كروت ورصيد</h2>` + content;
+            document.getElementById('printPreviewModal').classList.remove('hidden');
         };
 
         window.showSystemNotification = function(title, text) {
@@ -1081,17 +1104,22 @@
             } catch (e) { alert('خطأ أثناء تحديث كلمة المرور.'); }
         };
 
+        // سجل معاملات التاجر مرتب تنازلياً من الأحدث إلى الأقدم
         window.openClientHistoryModal = function(clientName) {
             window.closeAdminWindow('clients');
 
             document.getElementById('historyModalTitle').innerHTML = `<i class="fa-solid fa-address-book text-blue-600 ml-2"></i> سجل معاملات وحانوت: ${clientName}`;
-            let clientOrders = window.allOrders.filter(o => o.clientName === clientName);
+            
+            let clientOrders = window.allOrders
+                .filter(o => o.clientName === clientName)
+                .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+
             let totalCredit = 0;
             let ordersHtml = '';
 
             clientOrders.forEach(o => {
                 if (o.creditAmount) totalCredit += o.creditAmount;
-                let dateStr = o.date ? new Date(o.date).toLocaleDateString() : '';
+                let dateStr = o.date ? new Date(o.date).toLocaleString() : '';
                 let statusBadge = o.status === 'مكتمل ومؤكد' ? '<span class="text-xs bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded font-bold border border-emerald-300">مؤكد</span>' : '<span class="text-xs bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded font-bold border border-amber-300">قيد الانتظار</span>';
 
                 ordersHtml += `
@@ -1169,12 +1197,11 @@
             });
         }
 
-        // دالة عرض يوميات المبيعات مرتبطة بالترتيب الزمني (من الأحدث إلى الأقدم)
+        // يوميات المبيعات العامة مرتبة تنازلياً (الأحدث في المقدمة)
         function renderJournalTable() {
             const tbody = document.getElementById('journalSalesTableBody');
             if (!tbody) return;
 
-            // ترتيب دقيق وتنازلي حسب التاريخ (الأحدث في المقدمة)
             let sorted = [...window.allOrders].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
 
             let html = '';
@@ -1290,7 +1317,7 @@
                 window.showSystemNotification("خلاص الدين", `تم تسجيل دفع مبلغ ${payAmount.toFixed(3)} د.ت بنجاح وتحديث حساب التاجر!`);
                 closePayCreditModal();
             } catch (e) {
-                alert('خطأ أثناء تسجيل الدفع: ' + e.message);
+                alert('حدث خطأ أثناء تسجيل الدفع: ' + e.message);
             }
         };
 
@@ -1407,7 +1434,7 @@
             } catch (e) { alert('خطأ أثناء حفظ الفاتورة.'); }
         };
 
-        // ترتيب الفواتير السابقة من الأحدث إلى الأقدم
+        // ترتيب الفواتير السابقة تنازلياً (الأحدث في المقدمة)
         function renderInvoicesHistory() {
             let sortedInvoices = [...window.allInvoices].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
             let html = '';
@@ -1937,7 +1964,6 @@
             try {
                 const docRef = await addDoc(collection(db, "orders"), newOrderData);
                 
-                // إضافة فورية للقائمة المحلية لعرضها في الجورنال دون انتظار الإنترنت
                 window.allOrders.unshift({ id: docRef.id, ...newOrderData });
                 processAdminStatsAndStock();
                 renderJournalTable();
@@ -1948,7 +1974,6 @@
                 if (window.selectedPosOp) selectPosOperator(window.selectedPosOp);
                 window.closeAdminWindow('pos');
             } catch (e) {
-                // حتى عند انقطاع الإنترنت، تحفظ محلياً وتظهر في الجورنال فوراً
                 window.allOrders.unshift({ id: 'local_' + Date.now(), ...newOrderData });
                 processAdminStatsAndStock();
                 renderJournalTable();
@@ -1961,12 +1986,13 @@
         };
 
         window.checkVendeurAuth();
-        // --- نظام التحكم في زر الرجوع الخاص بالهاتف (Back Button) ---
+        // --- نظام التحكم في زر الرجوع الخاص بالهاتف (Back Button) وحماية التطبيق من التعليق ---
         window.closeAnyOpenModalOrSection = function() {
             const subModals = [
                 'systemNotificationModal',
                 'payCreditModal',
                 'invoiceDetailModal',
+                'printPreviewModal',
                 'historyOrderDetailModal',
                 'orderDetailModal',
                 'editClientPasswordModal',
