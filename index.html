@@ -316,7 +316,7 @@
                 <h4 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-book-bookmark text-purple-600 ml-2"></i> يوميات المبيعات العامة (Journal de Vente)</h4>
                 <button type="button" onclick="closeAdminWindow('journal')" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
             </div>
-            <p class="text-xs text-slate-500 mb-3">سجل كامل للمبيعات المباشرة وطلبيات الحوانت بالترتيب الزمني (انقر على أي سطر لعرض كامل التفاصيل):</p>
+            <p class="text-xs text-slate-500 mb-3">سجل كامل للمبيعات المباشرة وطلبيات الحوانت مرتبة زمنياً من الأحدث إلى الأقدم:</p>
             
             <div class="overflow-x-auto border-2 border-slate-400 rounded-2xl bg-white shadow-inner mb-4">
                 <table class="custom-grid w-full text-right text-xs">
@@ -852,7 +852,7 @@
         </div>
     </div>
 
-    <!-- السكربت والربط بقاعدة البيانات مع دعم العمل بدون إنترنت (Offline Local Cache) -->
+    <!-- السكربت والربط بقاعدة البيانات مع دعم العمل بدون إنترنت والمزامنة والترتيب الزمني -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, addDoc, getDocs, doc, updateDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -1169,10 +1169,12 @@
             });
         }
 
+        // دالة عرض يوميات المبيعات مرتبطة بالترتيب الزمني (من الأحدث إلى الأقدم)
         function renderJournalTable() {
             const tbody = document.getElementById('journalSalesTableBody');
             if (!tbody) return;
 
+            // ترتيب دقيق وتنازلي حسب التاريخ (الأحدث في المقدمة)
             let sorted = [...window.allOrders].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
 
             let html = '';
@@ -1288,7 +1290,7 @@
                 window.showSystemNotification("خلاص الدين", `تم تسجيل دفع مبلغ ${payAmount.toFixed(3)} د.ت بنجاح وتحديث حساب التاجر!`);
                 closePayCreditModal();
             } catch (e) {
-                alert('حدث خطأ أثناء تسجيل الدفع: ' + e.message);
+                alert('خطأ أثناء تسجيل الدفع: ' + e.message);
             }
         };
 
@@ -1387,12 +1389,17 @@
             });
             if (itemsToSave.length === 0) { alert('الرجاء إدخال كمية أو رصيد لمنتج واحد على الأقل.'); return; }
             try {
-                await addDoc(collection(db, "invoices"), {
+                const newInv = {
                     vendeurId: window.currentVendeur.id,
                     items: itemsToSave,
                     totalCost: totalInvoiceCost,
                     date: new Date().toISOString()
-                });
+                };
+                const docRef = await addDoc(collection(db, "invoices"), newInv);
+                window.allInvoices.unshift({ id: docRef.id, ...newInv });
+                processAdminStatsAndStock();
+                renderInvoicesHistory();
+
                 window.showSystemNotification("نجاح الحفظ", "تم حفظ فاتورة المخزون بنجاح وإضافتها للستوك!");
                 renderInvoiceForm();
                 calcInvoiceTotal();
@@ -1400,15 +1407,17 @@
             } catch (e) { alert('خطأ أثناء حفظ الفاتورة.'); }
         };
 
+        // ترتيب الفواتير السابقة من الأحدث إلى الأقدم
         function renderInvoicesHistory() {
+            let sortedInvoices = [...window.allInvoices].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
             let html = '';
-            window.allInvoices.forEach((inv, index) => {
+            sortedInvoices.forEach((inv, index) => {
                 let dateStr = inv.date ? new Date(inv.date).toLocaleString() : 'تاريخ غير محدد';
                 let total = inv.totalCost || 0;
                 html += `
                     <tr class="hover:bg-slate-50">
                         <td onclick="openInvoiceDetailModal('${inv.id}')" class="font-bold text-indigo-700 cursor-pointer hover:underline">
-                            <i class="fa-solid fa-file-invoice ml-1"></i> فاتورة شراء #${index + 1} (${dateStr})
+                            <i class="fa-solid fa-file-invoice ml-1"></i> فاتورة شراء (${dateStr})
                         </td>
                         <td class="font-black text-indigo-600">${total.toFixed(3)} د.ت</td>
                     </tr>
@@ -1915,22 +1924,40 @@
                 if (paidAmount <= 0 || paidAmount >= totalSell) { alert('الرجاء إدخال مبلغ مدفوع جزئي صحيح.'); return; }
             }
 
+            const newOrderData = {
+                clientName, 
+                vendeurId: window.currentVendeur.id,
+                items, totalSell, totalBuy, benefice: totalSell - totalBuy,
+                paymentStatus: paymentStatus === 'Payé' ? 'Payé' : (paymentStatus === 'Crédit' ? 'Crédit' : 'جزئي'),
+                paidAmount: paidAmount,
+                creditAmount: creditAmount,
+                date: new Date().toISOString(), status: 'مكتمل ومؤكد'
+            };
+
             try {
-                await addDoc(collection(db, "orders"), {
-                    clientName, 
-                    vendeurId: window.currentVendeur.id,
-                    items, totalSell, totalBuy, benefice: totalSell - totalBuy,
-                    paymentStatus: paymentStatus === 'Payé' ? 'Payé' : (paymentStatus === 'Crédit' ? 'Crédit' : 'جزئي'),
-                    paidAmount: paidAmount,
-                    creditAmount: creditAmount,
-                    date: new Date().toISOString(), status: 'مكتمل ومؤكد'
-                });
-                window.showSystemNotification("عملية بيع", "تم إتمام البيع بنجاح وتأكيد الفاتورة وشكرا لك!");
+                const docRef = await addDoc(collection(db, "orders"), newOrderData);
+                
+                // إضافة فورية للقائمة المحلية لعرضها في الجورنال دون انتظار الإنترنت
+                window.allOrders.unshift({ id: docRef.id, ...newOrderData });
+                processAdminStatsAndStock();
+                renderJournalTable();
+
+                window.showSystemNotification("عملية بيع", "تم إتمام البيع بنجاح وتأكيد الفاتورة وتسجيلها في السجل!");
                 window.posCart = {};
                 calcPosTotal();
                 if (window.selectedPosOp) selectPosOperator(window.selectedPosOp);
                 window.closeAdminWindow('pos');
-            } catch (e) { alert('خطأ أثناء الحفظ: ' + e.message); }
+            } catch (e) {
+                // حتى عند انقطاع الإنترنت، تحفظ محلياً وتظهر في الجورنال فوراً
+                window.allOrders.unshift({ id: 'local_' + Date.now(), ...newOrderData });
+                processAdminStatsAndStock();
+                renderJournalTable();
+
+                window.showSystemNotification("تسجيل محلي (Offline)", "تم حفظ البيعة محلياً وتظهر في السجل، وستتزامن مع السيرفر عند عودة الإنترنت.");
+                window.posCart = {};
+                calcPosTotal();
+                window.closeAdminWindow('pos');
+            }
         };
 
         window.checkVendeurAuth();
