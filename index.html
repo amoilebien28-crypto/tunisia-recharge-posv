@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- مكتبة تحويل الجداول إلى صور أو PDF -->
+    <!-- مكتبة المعالجة -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
@@ -314,8 +314,8 @@
             
             <div class="flex justify-between items-center mb-2">
                 <p class="text-xs text-slate-500">سجل كامل للمبيعات المباشرة وطلبيات الحوانت:</p>
-                <button type="button" onclick="openSafeReportDownload('journalSalesTableBody', 'يوميات_المبيعات')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-                    <i class="fa-solid fa-download ml-1"></i> تحميل السجل
+                <button type="button" onclick="shareJournalWhatsApp()" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+                    <i class="fa-brands fa-whatsapp ml-1"></i> إرسال السجل عبر الواتساب
                 </button>
             </div>
 
@@ -509,8 +509,8 @@
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الأيام:</h5>
                     <div class="flex gap-1.5">
-                        <button type="button" onclick="openSafeReportDownload('recetteDaysTableContainer', 'تقرير_روسيت_الأيام')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-                            <i class="fa-solid fa-download ml-1"></i> تحميل كصورة
+                        <button type="button" onclick="shareRecetteWhatsApp('days')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+                            <i class="fa-brands fa-whatsapp ml-1"></i> إرسال عبر الواتساب
                         </button>
                     </div>
                 </div>
@@ -533,8 +533,8 @@
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الشهور:</h5>
                     <div class="flex gap-1.5">
-                        <button type="button" onclick="openSafeReportDownload('recetteMonthsTableContainer', 'تقرير_روسيت_الشهور')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-                            <i class="fa-solid fa-download ml-1"></i> تحميل كصورة
+                        <button type="button" onclick="shareRecetteWhatsApp('months')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+                            <i class="fa-brands fa-whatsapp ml-1"></i> إرسال عبر الواتساب
                         </button>
                     </div>
                 </div>
@@ -690,8 +690,8 @@
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">جميع الفواتير السابقة:</h5>
                     <div class="flex gap-1.5">
-                        <button type="button" onclick="openSafeReportDownload('invoicesHistoryTableContainer', 'قائمة_الفواتير_السابقة')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
-                            <i class="fa-solid fa-download ml-1"></i> تحميل كصورة
+                        <button type="button" onclick="shareInvoicesListWhatsApp()" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+                            <i class="fa-brands fa-whatsapp ml-1"></i> إرسال عبر الواتساب
                         </button>
                     </div>
                 </div>
@@ -725,8 +725,8 @@
             <div class="flex justify-between items-center mb-3">
                 <span class="text-xs text-slate-600 font-bold">جرد المخزون الحالي بالقطعة والرصيد:</span>
                 <div class="flex gap-1.5">
-                    <button type="button" onclick="openSafeReportDownload('stockTableContainer', 'تقرير_المخزون_النهائي')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold">
-                        <i class="fa-solid fa-download ml-1"></i> تحميل كصورة
+                    <button type="button" onclick="shareStockWhatsApp()" class="bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold">
+                        <i class="fa-brands fa-whatsapp ml-1"></i> إرسال عبر الواتساب
                     </button>
                 </div>
             </div>
@@ -998,7 +998,7 @@
             }
         };
 
-        // --- دالة إرسال الفاتورة عبر الواتساب (برنامج حساب شحن الهاتف) ---
+        // --- دوال الإرسال عبر الواتساب لجميع الأقسام بنسق مرتب واحترافي ---
         window.shareInvoiceWhatsApp = function() {
             if (!window.currentActiveInvoice) return;
             let inv = window.currentActiveInvoice;
@@ -1017,49 +1017,50 @@
             text += `---------------------------------\n`;
             text += `📱 برنامج حساب شحن الهاتف`;
 
-            let encodedText = encodeURIComponent(text);
-            window.open(`https://api.whatsapp.com/send?text=${encodedText}`, '_blank');
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
         };
 
-        // --- نظام التنزيل الذكي للجداول والتقارير ---
-        window.openSafeReportDownload = function(containerId, title) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            document.getElementById('printPreviewContent').innerHTML = `
-                <div style="text-align: center; margin-bottom: 10px;">
-                    <h3 style="font-size: 15px; font-weight: bold; color: #1e293b;">${title}</h3>
-                    <p style="font-size: 10px; color: #64748b;">التاريخ: ${new Date().toLocaleString('ar-TN')}</p>
-                </div>
-                ${container.innerHTML}
-            `;
-            document.getElementById('printPreviewModal').classList.remove('hidden');
-        };
-
-        window.closePrintPreviewModal = function() {
-            document.getElementById('printPreviewModal').classList.add('hidden');
-        };
-
-        window.triggerActualDownload = function() {
-            const element = document.getElementById('printPreviewContent');
-            html2canvas(element, { scale: 2 }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'Recharge_Doc_' + Date.now() + '.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
+        window.shareJournalWhatsApp = function() {
+            let text = `📚 *برنامج حساب شحن الهاتف - يوميات المبيعات*\n`;
+            text += `---------------------------------\n`;
+            let sorted = [...window.allOrders].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0)).slice(0, 10);
+            sorted.forEach(o => {
+                text += `🔹 ${o.clientName || 'زبون'} | ${o.totalSell.toFixed(3)} د.ت (${o.paymentStatus || 'كاش'})\n`;
             });
+            text += `---------------------------------\n`;
+            text += `📱 برنامج حساب شحن الهاتف`;
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
         };
 
-        window.printSingleInvoice = function() {
-            if (!window.currentActiveInvoice) return;
-            const content = document.getElementById('invoiceDetailModalContent').innerHTML;
-            document.getElementById('printPreviewContent').innerHTML = `
-                <div style="text-align: center; margin-bottom: 10px;">
-                    <h3 style="font-size: 15px; font-weight: bold; color: #1e293b;">فاتورة شراء مخزون كروت ورصيد</h3>
-                </div>
-                ${content}
-            `;
-            document.getElementById('invoiceDetailModal').classList.add('hidden');
-            document.getElementById('printPreviewModal').classList.remove('hidden');
+        window.shareInvoicesListWhatsApp = function() {
+            let text = `📄 *برنامج حساب شحن الهاتف - قائمة الفواتير السابقة*\n`;
+            text += `---------------------------------\n`;
+            let sorted = [...window.allInvoices].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0)).slice(0, 10);
+            sorted.forEach(inv => {
+                text += `🔹 تاريخ: ${new Date(inv.date).toLocaleDateString()} | المجموع: ${inv.totalCost.toFixed(3)} د.ت\n`;
+            });
+            text += `---------------------------------\n`;
+            text += `📱 برنامج حساب شحن الهاتف`;
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+        };
+
+        window.shareStockWhatsApp = function() {
+            let text = `📦 *برنامج حساب شحن الهاتف - تقرير المخزون*\n`;
+            text += `---------------------------------\n`;
+            text += `تم استخراج جرد المخزون والبطاقات المتاحة بنجاح.\n`;
+            text += `---------------------------------\n`;
+            text += `📱 برنامج حساب شحن الهاتف`;
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+        };
+
+        window.shareRecetteWhatsApp = function(type) {
+            let text = `📊 *برنامج حساب شحن الهاتف - تقرير المداخيل (${type === 'days' ? 'الأيام' : 'الشهور'})*\n`;
+            text += `---------------------------------\n`;
+            text += `صافي الأرباح: ${document.getElementById('modalTotalBenefice').innerText}\n`;
+            text += `إجمالي ديون الكريدي: ${document.getElementById('modalTotalCredit').innerText}\n`;
+            text += `---------------------------------\n`;
+            text += `📱 برنامج حساب شحن الهاتف`;
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
         };
 
         window.showSystemNotification = function(title, text) {
