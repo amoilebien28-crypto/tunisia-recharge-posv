@@ -993,16 +993,26 @@
             }
         };
 
-        // --- دالة تصدير أي جدول مباشرة إلى ملف Excel (.xlsx) على الهاتف ---
+        // --- دالة تصدير وتحميل الجدول كملف Excel (.xlsx) بطريقة متوافقة 100% مع APK ---
         window.exportTableToExcel = function(tbodyId, filenamePrefix) {
             const tbody = document.getElementById(tbodyId);
-            if (!tbody) return;
+            if (!tbody) {
+                alert('لا توجد بيانات لتصديرها.');
+                return;
+            }
             const table = tbody.closest('table');
-            if (!table) return;
+            if (!table) {
+                alert('لم يتم العثور على الجدول.');
+                return;
+            }
 
-            // استخراج البيانات من الجدول وتحويلها لملف إكسيل
-            let wb = XLSX.utils.table_to_book(table, { sheet: "تقرير" });
-            XLSX.writeFile(wb, filenamePrefix + '_' + Date.now() + '.xlsx');
+            try {
+                let wb = XLSX.utils.table_to_book(table, { sheet: "التقرير" });
+                XLSX.writeFile(wb, filenamePrefix + '_' + Date.now() + '.xlsx');
+                window.showSystemNotification("تحميل Excel", "تم تحميل ملف الإكسيل بنجاح في هاتفك!");
+            } catch (e) {
+                alert('حدث خطأ أثناء تصدير الملف: ' + e.message);
+            }
         };
 
         // --- دوال إرسال الواتساب المرتبة ---
@@ -1889,6 +1899,7 @@
 
         window.backToMainChoices = function() {
             document.getElementById('detailedManagementSection').classList.add('hidden');
+            document.getElementById('mainChoicesSection').classList.add('hidden');
             document.getElementById('mainChoicesSection').classList.remove('hidden');
         };
 
@@ -2064,11 +2075,7 @@
                 'systemNotificationModal',
                 'payCreditModal',
                 'invoiceDetailModal',
-                'printPreviewModal',
-                'historyOrderDetailModal',
-                'orderDetailModal',
-                'editClientPasswordModal',
-                'clientDetailHistoryModal',
+                'clientHistoryOrdersList',
                 'addClientModal',
                 'recetteModal'
             ];
