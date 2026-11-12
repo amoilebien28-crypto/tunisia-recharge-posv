@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tunisie Recharge - لوحة تحكم البائع</title>
+    <title>برنامج حساب شحن الهاتف - لوحة تحكم البائع</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome للأيقونات -->
@@ -121,7 +121,7 @@
                 <div class="bg-indigo-50 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto text-indigo-600 text-2xl font-bold border border-indigo-200">
                     <i class="fa-solid fa-user-tie"></i>
                 </div>
-                <h2 class="text-2xl font-black text-slate-900">منصة البائعين (فضاء الموزع)</h2>
+                <h2 class="text-2xl font-black text-slate-900">برنامج حساب شحن الهاتف</h2>
                 <p class="text-xs text-slate-500">أدخل معرّف الموزع الخاص بك (ID) المسلم لك من الإدارة</p>
             </div>
 
@@ -164,7 +164,7 @@
         <!-- واجهة الاختيار الرئيسية -->
         <div id="mainChoicesSection" class="space-y-5">
             <div class="text-center space-y-2 mb-6">
-                <h2 class="text-2xl font-black text-slate-900">لوحة توزيع كروت الشحن</h2>
+                <h2 class="text-2xl font-black text-slate-900">برنامج حساب شحن الهاتف</h2>
                 <p class="text-sm text-slate-600 font-bold">اختر القسم المناسب لإدارة عملك:</p>
             </div>
 
@@ -992,12 +992,12 @@
             }
         };
 
-        // --- دالة إرسال الفاتورة عبر الواتساب كنص مرتب ومنسق ---
+        // --- دالة إرسال الفاتورة عبر الواتساب باسم برنامج حساب شحن الهاتف ---
         window.shareInvoiceWhatsApp = function() {
             if (!window.currentActiveInvoice) return;
             let inv = window.currentActiveInvoice;
             let dateStr = inv.date ? new Date(inv.date).toLocaleString('ar-TN') : '';
-            let text = `📦 *TUNISIE RECHARGE - فاتورة شراء مخزون*\n`;
+            let text = `📦 *برنامج حساب شحن الهاتف - فاتورة شراء مخزون*\n`;
             text += `---------------------------------\n`;
             text += `📅 التاريخ: ${dateStr}\n`;
             text += `---------------------------------\n`;
@@ -1009,7 +1009,7 @@
             text += `---------------------------------\n`;
             text += `💰 *المجموع الجملي: ${(inv.totalCost || 0).toFixed(3)} د.ت*\n`;
             text += `---------------------------------\n`;
-            text += `منظومة توزيع الكروت - تونس 🇹🇳`;
+            text += `📱 برنامج حساب شحن الهاتف`;
 
             let encodedText = encodeURIComponent(text);
             window.open(`https://api.whatsapp.com/send?text=${encodedText}`, '_blank');
@@ -1037,7 +1037,7 @@
             const element = document.getElementById('printPreviewContent');
             html2canvas(element, { scale: 2 }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = 'Tunisie_Recharge_Doc_' + Date.now() + '.png';
+                link.download = 'Recharge_Doc_' + Date.now() + '.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             });
