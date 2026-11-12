@@ -8,8 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- مكتبة المعالجة -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- مكتبة تصدير الجداول إلى ملفات Excel (.xlsx) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <style>
         table.custom-grid {
@@ -307,13 +307,18 @@
             
             <div class="flex justify-between items-center mb-2">
                 <p class="text-xs text-slate-500">سجل كامل للمبيعات المباشرة وطلبيات الحوانت:</p>
-                <button type="button" onclick="shareJournalWhatsApp()" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md">
-                    <i class="fa-brands fa-whatsapp ml-1"></i> إرسال السجل عبر الواتساب
-                </button>
+                <div class="flex gap-1.5">
+                    <button type="button" onclick="exportTableToExcel('journalSalesTableBody', 'يوميات_المبيعات')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md">
+                        <i class="fa-solid fa-file-excel ml-1"></i> تحميل Excel
+                    </button>
+                    <button type="button" onclick="shareJournalWhatsApp()" class="bg-teal-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md">
+                        <i class="fa-brands fa-whatsapp ml-1"></i> إرسال واتساب
+                    </button>
+                </div>
             </div>
 
             <div class="overflow-x-auto border-2 border-slate-400 rounded-2xl bg-white shadow-inner mb-4">
-                <table class="custom-grid w-full text-right text-xs">
+                <table id="journalTable" class="custom-grid w-full text-right text-xs">
                     <thead>
                         <tr class="bg-slate-200 text-slate-800 font-black">
                             <th>التاريخ والوقت</th>
@@ -385,7 +390,7 @@
         </div>
     </div>
 
-    <!-- نافذة تفاصيل الفاتورة مع زر واتساب -->
+    <!-- نافذة تفاصيل الفاتورة -->
     <div id="invoiceDetailModal" class="hidden" style="z-index: 10005 !important;">
         <div>
             <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
@@ -394,7 +399,7 @@
             </div>
             <div id="invoiceDetailModalContent" class="space-y-3 text-xs mb-4"></div>
             <div class="flex gap-2">
-                <button type="button" onclick="shareInvoiceWhatsApp()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold text-xs shadow-md"><i class="fa-brands fa-whatsapp ml-1"></i> إرسال عبر الواتساب</button>
+                <button type="button" onclick="shareInvoiceWhatsApp()" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white py-3.5 rounded-xl font-bold text-xs shadow-md"><i class="fa-brands fa-whatsapp ml-1"></i> إرسال عبر الواتساب</button>
                 <button type="button" onclick="closeInvoiceDetailModal()" class="bg-slate-200 text-slate-700 px-4 py-3.5 rounded-xl font-bold text-xs">إغلاق</button>
             </div>
         </div>
@@ -487,13 +492,16 @@
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الأيام:</h5>
                     <div class="flex gap-1.5">
-                        <button type="button" onclick="shareRecetteWhatsApp('days')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md">
-                            <i class="fa-brands fa-whatsapp ml-1"></i> إرسال عبر الواتساب
+                        <button type="button" onclick="exportTableToExcel('recetteDaysTableBody', 'تقرير_روسيت_الأيام')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md">
+                            <i class="fa-solid fa-file-excel ml-1"></i> تحميل Excel
+                        </button>
+                        <button type="button" onclick="shareRecetteWhatsApp('days')" class="bg-teal-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md">
+                            <i class="fa-brands fa-whatsapp ml-1"></i> واتساب
                         </button>
                     </div>
                 </div>
                 <div id="recetteDaysTableContainer" class="overflow-x-auto border-2 border-slate-400 rounded-2xl bg-white">
-                    <table class="custom-grid w-full text-right text-xs">
+                    <table id="recetteDaysTable" class="custom-grid w-full text-right text-xs">
                         <thead>
                             <tr class="bg-slate-200 text-slate-800 font-black">
                                 <th class="p-3">اليوم (التاريخ)</th>
@@ -511,13 +519,16 @@
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الشهور:</h5>
                     <div class="flex gap-1.5">
-                        <button type="button" onclick="shareRecetteWhatsApp('months')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md">
-                            <i class="fa-brands fa-whatsapp ml-1"></i> إرسال عبر الواتساب
+                        <button type="button" onclick="exportTableToExcel('recetteMonthsTableBody', 'تقرير_روسيت_الشهور')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md">
+                            <i class="fa-solid fa-file-excel ml-1"></i> تحميل Excel
+                        </button>
+                        <button type="button" onclick="shareRecetteWhatsApp('months')" class="bg-teal-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md">
+                            <i class="fa-brands fa-whatsapp ml-1"></i> واتساب
                         </button>
                     </div>
                 </div>
                 <div id="recetteMonthsTableContainer" class="overflow-x-auto border-2 border-slate-400 rounded-2xl bg-white">
-                    <table class="custom-grid w-full text-right text-xs">
+                    <table id="recetteMonthsTable" class="custom-grid w-full text-right text-xs">
                         <thead>
                             <tr class="bg-slate-200 text-slate-800 font-black">
                                 <th class="p-3">الشهر</th>
@@ -668,13 +679,16 @@
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">جميع الفواتير السابقة:</h5>
                     <div class="flex gap-1.5">
-                        <button type="button" onclick="shareInvoicesListWhatsApp()" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md">
-                            <i class="fa-brands fa-whatsapp ml-1"></i> إرسال عبر الواتساب
+                        <button type="button" onclick="exportTableToExcel('invoicesHistoryTableBody', 'قائمة_الفواتير_السابقة')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md">
+                            <i class="fa-solid fa-file-excel ml-1"></i> تحميل Excel
+                        </button>
+                        <button type="button" onclick="shareInvoicesListWhatsApp()" class="bg-teal-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md">
+                            <i class="fa-brands fa-whatsapp ml-1"></i> واتساب
                         </button>
                     </div>
                 </div>
                 <div id="invoicesHistoryTableContainer" class="overflow-x-auto border-2 border-slate-400 rounded-2xl bg-white">
-                    <table class="custom-grid w-full text-right text-xs">
+                    <table id="invoicesHistoryTable" class="custom-grid w-full text-right text-xs">
                         <thead>
                             <tr class="bg-slate-200 text-slate-800 font-black">
                                 <th class="p-3">رقم الفاتورة / التاريخ</th>
@@ -703,14 +717,17 @@
             <div class="flex justify-between items-center mb-3">
                 <span class="text-xs text-slate-600 font-bold">جرد المخزون الحالي بالقطعة والرصيد:</span>
                 <div class="flex gap-1.5">
-                    <button type="button" onclick="shareStockWhatsApp()" class="bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow-md">
-                        <i class="fa-brands fa-whatsapp ml-1"></i> إرسال عبر الواتساب
+                    <button type="button" onclick="exportTableToExcel('stockTableBody', 'تقرير_المخزون_النهائي')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow-md">
+                        <i class="fa-solid fa-file-excel ml-1"></i> تحميل Excel
+                    </button>
+                    <button type="button" onclick="shareStockWhatsApp()" class="bg-teal-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow-md">
+                        <i class="fa-brands fa-whatsapp ml-1"></i> واتساب
                     </button>
                 </div>
             </div>
 
             <div id="stockTableContainer" class="overflow-x-auto border-2 border-slate-400 rounded-2xl bg-white mb-4">
-                <table class="custom-grid w-full text-right text-xs">
+                <table id="stockTable" class="custom-grid w-full text-right text-xs">
                     <thead>
                         <tr class="bg-slate-200 text-slate-900 font-black">
                             <th>المشغل</th>
@@ -976,7 +993,19 @@
             }
         };
 
-        // --- دوال مشاركة التقارير والفواتير عبر الواتساب بنسق مرتب واحترافي ---
+        // --- دالة تصدير أي جدول مباشرة إلى ملف Excel (.xlsx) على الهاتف ---
+        window.exportTableToExcel = function(tbodyId, filenamePrefix) {
+            const tbody = document.getElementById(tbodyId);
+            if (!tbody) return;
+            const table = tbody.closest('table');
+            if (!table) return;
+
+            // استخراج البيانات من الجدول وتحويلها لملف إكسيل
+            let wb = XLSX.utils.table_to_book(table, { sheet: "تقرير" });
+            XLSX.writeFile(wb, filenamePrefix + '_' + Date.now() + '.xlsx');
+        };
+
+        // --- دوال إرسال الواتساب المرتبة ---
         window.shareInvoiceWhatsApp = function() {
             if (!window.currentActiveInvoice) return;
             let inv = window.currentActiveInvoice;
