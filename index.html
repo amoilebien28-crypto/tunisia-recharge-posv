@@ -25,6 +25,9 @@
                 border: 1px solid #000 !important;
             }
             body * {
+                visibility: hidden !important;
+            }
+            #printPreviewModal, #printPreviewModal * {
                 visibility: visible !important;
             }
             #printPreviewModal {
@@ -325,12 +328,12 @@
             
             <div class="flex justify-between items-center mb-2">
                 <p class="text-xs text-slate-500">سجل كامل للمبيعات المباشرة وطلبيات الحوانت:</p>
-                <button type="button" onclick="openSafeReportPDF('Journal de Vente')" class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+                <button type="button" onclick="openSafeReportPDF('Journal de Vente', 'journalSalesTableBody')" class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md">
                     <i class="fa-solid fa-file-pdf ml-1"></i> طباعة / حفظ PDF
                 </button>
             </div>
 
-            <div id="journalPrintableArea" class="overflow-x-auto border-2 border-slate-400 rounded-2xl bg-white shadow-inner mb-4">
+            <div class="overflow-x-auto border-2 border-slate-400 rounded-2xl bg-white shadow-inner mb-4">
                 <table class="custom-grid w-full text-right text-xs">
                     <thead>
                         <tr class="bg-slate-200 text-slate-800 font-black">
@@ -412,7 +415,7 @@
             </div>
             <div id="invoiceDetailModalContent" class="space-y-3 text-xs mb-4"></div>
             <div class="flex gap-2">
-                <button type="button" onclick="openSafeReportPDF('فاتورة شراء مخزون')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-xl font-bold text-xs shadow-md"><i class="fa-solid fa-file-pdf ml-1"></i> طباعة / حفظ PDF</button>
+                <button type="button" onclick="printSingleInvoice()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-xl font-bold text-xs shadow-md"><i class="fa-solid fa-file-pdf ml-1"></i> طباعة / حفظ PDF</button>
                 <button type="button" onclick="closeInvoiceDetailModal()" class="bg-slate-200 text-slate-700 px-4 py-3.5 rounded-xl font-bold text-xs">إغلاق</button>
             </div>
         </div>
@@ -520,7 +523,7 @@
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الأيام:</h5>
                     <div class="flex gap-1.5">
-                        <button type="button" onclick="openSafeReportPDF('تقرير روسيت الأيام')" class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+                        <button type="button" onclick="openSafeReportPDF('تقرير روسيت الأيام', 'recetteDaysTableContainer')" class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md">
                             <i class="fa-solid fa-file-pdf ml-1"></i> طباعة / حفظ PDF
                         </button>
                     </div>
@@ -544,7 +547,7 @@
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">تقرير روسيت الشهور:</h5>
                     <div class="flex gap-1.5">
-                        <button type="button" onclick="openSafeReportPDF('تقرير روسيت الشهور')" class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+                        <button type="button" onclick="openSafeReportPDF('تقرير روسيت الشهور', 'recetteMonthsTableContainer')" class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md">
                             <i class="fa-solid fa-file-pdf ml-1"></i> طباعة / حفظ PDF
                         </button>
                     </div>
@@ -701,7 +704,7 @@
                 <div class="flex justify-between items-center">
                     <h5 class="font-bold text-xs text-slate-700">جميع الفواتير السابقة:</h5>
                     <div class="flex gap-1.5">
-                        <button type="button" onclick="openSafeReportPDF('قائمة الفواتير السابقة')" class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+                        <button type="button" onclick="openSafeReportPDF('قائمة الفواتير السابقة', 'invoicesHistoryTableBody')" class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md">
                             <i class="fa-solid fa-file-pdf ml-1"></i> طباعة / حفظ PDF
                         </button>
                     </div>
@@ -736,7 +739,7 @@
             <div class="flex justify-between items-center mb-3">
                 <span class="text-xs text-slate-600 font-bold">جرد المخزون الحالي بالقطعة والرصيد:</span>
                 <div class="flex gap-1.5">
-                    <button type="button" onclick="openSafeReportPDF('تقرير المخزون النهائي')" class="bg-indigo-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold">
+                    <button type="button" onclick="openSafeReportPDF('تقرير المخزون النهائي', 'stockTableBody')" class="bg-indigo-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow-md">
                         <i class="fa-solid fa-file-pdf ml-1"></i> طباعة / حفظ PDF
                     </button>
                 </div>
@@ -1009,25 +1012,21 @@
             }
         };
 
-        // --- نظام الطباعة وتحويل التقارير إلى PDF حقيقي آمن في كل الأقسام ---
-        window.openSafeReportPDF = function(title) {
-            let containerId = '';
-            if (title.includes('يوميات')) containerId = 'journalSalesTableBody';
-            else if (title.includes('الفواتير')) containerId = 'invoicesHistoryTableBody';
-            else if (title.includes('المخزون')) containerId = 'stockTableBody';
-            else if (title.includes('روسيت')) containerId = 'recetteDaysTableBody';
+        // --- نظام فتح نافذة المعاينة والطباعة الحقيقية لجميع الجداول ---
+        window.openSafeReportPDF = function(title, tbodyId) {
+            const tbody = document.getElementById(tbodyId);
+            if (!tbody) return;
 
-            let container = document.getElementById(containerId);
-            if (!container) return;
+            let tableElement = tbody.closest('table');
+            if (!tableElement) return;
 
-            let parentTableHtml = container.closest('table').outerHTML;
             document.getElementById('printPreviewContent').innerHTML = `
                 <div style="text-align: center; margin-bottom: 15px;">
                     <h3 style="font-size: 16px; font-weight: bold; color: #1e293b;">برنامج حساب شحن الهاتف - ${title}</h3>
                     <p style="font-size: 11px; color: #64748b;">تاريخ الاستخراج: ${new Date().toLocaleString('ar-TN')}</p>
                 </div>
                 <div style="overflow-x: auto;">
-                    ${parentTableHtml}
+                    ${tableElement.outerHTML}
                 </div>
             `;
             document.getElementById('printPreviewModal').classList.remove('hidden');
@@ -1046,7 +1045,7 @@
             const content = document.getElementById('invoiceDetailModalContent').innerHTML;
             document.getElementById('printPreviewContent').innerHTML = `
                 <div style="text-align: center; margin-bottom: 15px;">
-                    <h3 style="font-size: 16px; font-weight: bold; color: #1e293b;">برنامج حساب شحن الهاتف - فاتورة شراء مخزون</h3>
+                    <h3 style="font-size: 16px; font-weight: bold; color: #1e293b;">برنامج حساب شحن الهاتف - تفاصيل الفاتورة</h3>
                 </div>
                 ${content}
             `;
