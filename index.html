@@ -311,8 +311,14 @@
                 <h4 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-book-bookmark text-purple-600 ml-2"></i> يوميات المبيعات العامة (Journal de Vente)</h4>
                 <button type="button" onclick="closeAdminWindow('journal')" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
             </div>
-            <p class="text-xs text-slate-500 mb-3">سجل كامل للمبيعات المباشرة وطلبيات الحوانت مرتبة زمنياً من الأحدث إلى الأقدم:</p>
             
+            <div class="flex justify-between items-center mb-2">
+                <p class="text-xs text-slate-500">سجل كامل للمبيعات المباشرة وطلبيات الحوانت:</p>
+                <button type="button" onclick="openSafeReportDownload('journalSalesTableBody', 'يوميات_المبيعات')" class="bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold">
+                    <i class="fa-solid fa-download ml-1"></i> تحميل السجل
+                </button>
+            </div>
+
             <div class="overflow-x-auto border-2 border-slate-400 rounded-2xl bg-white shadow-inner mb-4">
                 <table class="custom-grid w-full text-right text-xs">
                     <thead>
@@ -401,7 +407,7 @@
         </div>
     </div>
 
-    <!-- نافذة المعاينة والتحميل -->
+    <!-- نافذة المعاينة والتحميل العامة -->
     <div id="printPreviewModal" class="hidden" style="z-index: 10020 !important;">
         <div>
             <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
@@ -992,7 +998,7 @@
             }
         };
 
-        // --- دالة إرسال الفاتورة عبر الواتساب باسم برنامج حساب شحن الهاتف ---
+        // --- دالة إرسال الفاتورة عبر الواتساب (برنامج حساب شحن الهاتف) ---
         window.shareInvoiceWhatsApp = function() {
             if (!window.currentActiveInvoice) return;
             let inv = window.currentActiveInvoice;
