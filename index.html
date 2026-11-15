@@ -993,42 +993,71 @@
             }
         };
 
-        // --- تصحيح دالة دفع الدين لاستخدام setDoc للتعامل بسلاسة مع الطلبات المحلية والمسجلة ---
-        window.submitPayCredit = async function() {
-            if (!window.currentPayingClient) return;
-            let payAmount = parseFloat(document.getElementById('payCreditAmountInput').value) || 0;
-            if (payAmount <= 0) { alert('الرجاء إدخال مبلغ صحيح.'); return; }
-            if (payAmount > window.currentPayingClient.credit) {
-                alert('المبلغ المدخل أكبر من قيمة الدين الجملي.'); return;
+        // --- دالة إتمام البيع المباشر باستخدام معرّف Firestore متطابق منذ البداية ---
+        window.submitPosOrder = async function() {
+            const clientName = document.getElementById('posRegisteredClientSelect').value;
+            const paymentStatus = document.getElementById('posPaymentStatus').value;
+            if (!clientName) { alert('اختر الحانوت أولاً.'); return; }
+            
+            let items = [], totalSell = 0, totalBuy = 0;
+            for (let id in window.posCart) {
+                if (window.posCart[id].qty > 0) {
+                    let item = window.posCart[id];
+                    items.push(item);
+                    totalSell += item.sell * item.qty;
+                    totalBuy += item.buy * item.qty;
+                }
+            }
+            if (items.length === 0) { alert('القفة فارغة، الرجاء اختيار بطاقات للبيع.'); return; }
+
+            let paidAmount = 0, creditAmount = 0;
+            if (paymentStatus === 'Payé') {
+                paidAmount = totalSell;
+                creditAmount = 0;
+            } else if (paymentStatus === 'Crédit') {
+                paidAmount = 0;
+                creditAmount = totalSell;
+            } else if (paymentStatus === 'Partiel') {
+                paidAmount = parseFloat(document.getElementById('posPaidAmountInput').value) || 0;
+                creditAmount = totalSell - paidAmount;
+                if (paidAmount <= 0 || paidAmount >= totalSell) { alert('الرجاء إدخال مبلغ مدفوع جزئي صحيح.'); return; }
             }
 
-            let remainingToDeduct = payAmount;
-            let clientOrders = window.allOrders
-                .filter(o => o.clientName === window.currentPayingClient.name && o.creditAmount && o.creditAmount > 0)
-                .sort((a, b) => new Date(a.date) - new Date(b.date));
+            // توليد معرّف حقيقي ومتوافق مع Firestore منذ البداية لتجنب مشاكل التحديث لاحقاً
+            const orderRef = doc(collection(db, "orders"));
+            const newOrderData = {
+                id: orderRef.id,
+                clientName, 
+                vendeurId: window.currentVendeur.id,
+                items, totalSell, totalBuy, benefice: totalSell - totalBuy,
+                paymentStatus: paymentStatus === 'Payé' ? 'Payé' : (paymentStatus === 'Crédit' ? 'Crédit' : 'جزئي'),
+                paidAmount: paidAmount,
+                creditAmount: creditAmount,
+                date: new Date().toISOString(), 
+                status: 'مكتمل ومؤكد'
+            };
+
+            window.allOrders.unshift(newOrderData);
+            let localQueue = JSON.parse(localStorage.getItem('offlineOrdersQueue') || '[]');
+            localQueue.push(newOrderData);
+            localStorage.setItem('offlineOrdersQueue', JSON.stringify(localQueue));
+
+            processAdminStatsAndStock();
+            renderJournalTable();
+
+            window.showSystemNotification("عملية بيع", "تم تسجيل البيع بنجاح وتحديث السجل!");
+            window.posCart = {};
+            calcPosTotal();
+            if (window.selectedPosOp) selectPosOperator(window.selectedPosOp);
+            window.closeAdminWindow('pos');
 
             try {
-                for (let o of clientOrders) {
-                    if (remainingToDeduct <= 0) break;
-                    let deduct = Math.min(o.creditAmount, remainingToDeduct);
-                    let newCredit = o.creditAmount - deduct;
-                    let newPaid = (o.paidAmount || 0) + deduct;
-                    let newPaymentStatus = newCredit <= 0 ? 'Payé' : 'جزئي';
-
-                    // استخدام setDoc بدل updateDoc لتجنب أي خطأ في المستندات المحلية غير المتزامنة بعد
-                    await setDoc(doc(db, "orders", o.id), {
-                        creditAmount: newCredit,
-                        paidAmount: newPaid,
-                        paymentStatus: newPaymentStatus
-                    }, { merge: true });
-
-                    remainingToDeduct -= deduct;
-                }
-
-                window.showSystemNotification("خلاص الدين", `تم تسجيل دفع مبلغ ${payAmount.toFixed(3)} د.ت بنجاح وتحديث حساب التاجر!`);
-                closePayCreditModal();
+                await setDoc(orderRef, newOrderData);
+                let queue = JSON.parse(localStorage.getItem('offlineOrdersQueue') || '[]');
+                queue = queue.filter(q => q.id !== newOrderData.id);
+                localStorage.setItem('offlineOrdersQueue', JSON.stringify(queue));
             } catch (e) {
-                alert('خطأ أثناء تسجيل الدفع: ' + e.message);
+                console.log("الإنترنت مقصوصة، ستتم مزامنة البيعة لاحقاً تلقائياً.");
             }
         };
 
@@ -1309,8 +1338,7 @@
             try {
                 for (let order of localQueue) {
                     let cleanOrder = { ...order };
-                    delete cleanOrder.id;
-                    await addDoc(collection(db, "orders"), cleanOrder);
+                    await setDoc(doc(db, "orders", cleanOrder.id), cleanOrder);
                 }
                 localStorage.removeItem('offlineOrdersQueue');
             } catch (e) {
@@ -1625,67 +1653,6 @@
         window.closeInvoiceDetailModal = function() {
             document.getElementById('invoiceDetailModal').classList.add('hidden');
             window.currentActiveInvoice = null;
-        };
-
-        function updateClientsUI() {
-            let selectHtml = '<option value="">اختر الحانوت...</option>';
-            let listHtml = '';
-            window.allClients.forEach(c => {
-                const loc = c.governorate ? `${c.governorate} - ${c.address || ''}` : (c.address || 'غير محدد');
-                selectHtml += `<option value="${c.name}">${c.name} (${c.phone}) - ${c.governorate || ''}</option>`;
-                listHtml += `
-                    <div class="bg-white p-4 rounded-2xl border border-slate-300 flex justify-between items-center">
-                        <div class="cursor-pointer flex-1" onclick="openClientHistoryModal('${c.name}')">
-                            <h4 class="font-bold text-slate-900 hover:text-indigo-600"><i class="fa-solid fa-store text-emerald-600 ml-1"></i> ${c.name} <span class="text-xs text-indigo-600 font-normal">(عرض العمليات السابقة)</span></h4>
-                            <p class="text-xs text-slate-500">الهاتف: ${c.phone} | المنطقة: <strong>${loc}</strong> | الكود: <strong class="text-slate-800">${c.password}</strong></p>
-                        </div>
-                        <button type="button" onclick="openEditPasswordModal('${c.id}', '${c.name}')" class="bg-indigo-50 text-indigo-700 px-3 py-2 rounded-xl text-xs font-bold border border-indigo-200">
-                            <i class="fa-solid fa-key"></i> تغيير الكود
-                        </button>
-                    </div>
-                `;
-            });
-            const sel = document.getElementById('posRegisteredClientSelect');
-            if (sel) sel.innerHTML = selectHtml;
-            const lst = document.getElementById('clientsListContainer');
-            if (lst) lst.innerHTML = listHtml || '<p class="text-slate-400 text-center py-4">لا توجد حوانت مسجلة بعد.</p>';
-        }
-
-        window.selectedOrderForAction = null;
-
-        window.openOrderDetailModal = function(orderId) {
-            window.selectedOrderForAction = window.allOrders.find(o => o.id === orderId);
-            if (!window.selectedOrderForAction) return;
-
-            let o = window.selectedOrderForAction;
-            let itemsHtml = '<div class="space-y-2 bg-slate-50 p-3 rounded-2xl border border-slate-300">';
-            if (o.items && Array.isArray(o.items)) {
-                o.items.forEach(item => {
-                    itemsHtml += `<div class="flex justify-between items-center text-xs font-bold text-slate-800 border-b pb-1 border-slate-200">
-                        <span><i class="fa-solid fa-tag text-emerald-600 ml-1"></i> ${item.operator || ''} - ${item.name}</span>
-                        <span class="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded border border-indigo-200">الكمية: ${item.qty}</span>
-                    </div>`;
-                });
-            }
-            itemsHtml += '</div>';
-
-            document.getElementById('modalOrderContent').innerHTML = `
-                <div class="bg-slate-100 p-3.5 rounded-2xl border border-slate-300 space-y-1">
-                    <p class="font-bold text-slate-900">الحانوت: ${o.clientName}</p>
-                    <p class="text-xs text-slate-500">التاريخ: ${new Date(o.date).toLocaleString()}</p>
-                    <p class="text-sm font-black text-emerald-600 mt-1">المجموع الجملي (Total): ${(o.totalSell || 0).toFixed(3)} د.ت</p>
-                </div>
-                <div>
-                    <p class="text-xs font-bold text-slate-700 mb-1">تفاصيل القطع المطلوبة للتحضير:</p>
-                    ${itemsHtml}
-                </div>
-            `;
-            document.getElementById('orderDetailModal').classList.remove('hidden');
-        };
-
-        window.closeOrderDetailModal = function() {
-            document.getElementById('orderDetailModal').classList.add('hidden');
-            window.selectedOrderForAction = null;
         };
 
         window.confirmAndValidateOrder = async function() {
