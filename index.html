@@ -1535,7 +1535,7 @@
             window.currentPayingClient = null;
         };
 
-        window.submitPayCredit = async function() {
+                window.submitPayCredit = async function() {
             if (!window.currentPayingClient) return;
             let payAmount = parseFloat(document.getElementById('payCreditAmountInput').value) || 0;
             if (payAmount <= 0) { alert('الرجاء إدخال مبلغ صحيح.'); return; }
@@ -1556,11 +1556,23 @@
                     let newPaid = (o.paidAmount || 0) + deduct;
                     let newPaymentStatus = newCredit <= 0 ? 'Payé' : 'جزئي';
 
-                    await updateDoc(doc(db, "orders", o.id), {
-                        creditAmount: newCredit,
-                        paidAmount: newPaid,
-                        paymentStatus: newPaymentStatus
-                    });
+                    // تحديث محلياً فوراً
+                    o.creditAmount = newCredit;
+                    o.paidAmount = newPaid;
+                    o.paymentStatus = newPaymentStatus;
+
+                    // إذا لم يكن المعرّف محلياً، نقوم بتحديثه في فايرستور
+                    if (o.id && !o.id.startsWith('local_')) {
+                        try {
+                            await updateDoc(doc(db, "orders", o.id), {
+                                creditAmount: newCredit,
+                                paidAmount: newPaid,
+                                paymentStatus: newPaymentStatus
+                            });
+                        } catch (err) {
+                            console.log("خطأ في تحديث الطلب سحابياً:", err);
+                        }
+                    }
 
                     remainingToDeduct -= deduct;
                 }
@@ -1588,6 +1600,8 @@
                 }
 
                 renderPaymentsHistoryTable();
+                renderCreditsList();
+                processAdminStatsAndStock();
                 window.showSystemNotification("خلاص الدين", `تم تسجيل دفع مبلغ ${payAmount.toFixed(3)} د.ت بنجاح وتحديث حساب التاجر!`);
                 closePayCreditModal();
             } catch (e) {
