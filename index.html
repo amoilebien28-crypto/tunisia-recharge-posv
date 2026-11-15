@@ -993,7 +993,74 @@
             }
         };
 
-        // --- دالة تصدير وتحميل الجدول كملف Excel (.xlsx) بطريقة متوافقة 100% مع APK ---
+        // --- تصحيح دالة إتمام البيع المباشر لمعالجة مبلغ الكريدي الجزئي صحيحاً ---
+        window.submitPosOrder = async function() {
+            const clientName = document.getElementById('posRegisteredClientSelect').value;
+            const paymentStatus = document.getElementById('posPaymentStatus').value;
+            if (!clientName) { alert('اختر الحانوت أولاً.'); return; }
+            
+            let items = [], totalSell = 0, totalBuy = 0;
+            for (let id in window.posCart) {
+                if (window.posCart[id].qty > 0) {
+                    let item = window.posCart[id];
+                    items.push(item);
+                    totalSell += item.sell * item.qty;
+                    totalBuy += item.buy * item.qty;
+                }
+            }
+            if (items.length === 0) { alert('القفة فارغة، الرجاء اختيار بطاقات للبيع.'); return; }
+
+            let paidAmount = 0, creditAmount = 0;
+            if (paymentStatus === 'Payé') {
+                paidAmount = totalSell;
+                creditAmount = 0;
+            } else if (paymentStatus === 'Crédit') {
+                paidAmount = 0;
+                creditAmount = totalSell;
+            } else if (paymentStatus === 'Partiel') {
+                // التصحيح هنا: قراءة المبلغ المدفوع من حقل الـ POS الصحيح (posPaidAmountInput)
+                paidAmount = parseFloat(document.getElementById('posPaidAmountInput').value) || 0;
+                creditAmount = totalSell - paidAmount;
+                if (paidAmount <= 0 || paidAmount >= totalSell) { alert('الرجاء إدخال مبلغ مدفوع جزئي صحيح.'); return; }
+            }
+
+            const newOrderData = {
+                id: 'local_' + Date.now(),
+                clientName, 
+                vendeurId: window.currentVendeur.id,
+                items, totalSell, totalBuy, benefice: totalSell - totalBuy,
+                paymentStatus: paymentStatus === 'Payé' ? 'Payé' : (paymentStatus === 'Crédit' ? 'Crédit' : 'جزئي'),
+                paidAmount: paidAmount,
+                creditAmount: creditAmount,
+                date: new Date().toISOString(), 
+                status: 'مكتمل ومؤكد'
+            };
+
+            window.allOrders.unshift(newOrderData);
+            let localQueue = JSON.parse(localStorage.getItem('offlineOrdersQueue') || '[]');
+            localQueue.push(newOrderData);
+            localStorage.setItem('offlineOrdersQueue', JSON.stringify(localQueue));
+
+            processAdminStatsAndStock();
+            renderJournalTable();
+
+            window.showSystemNotification("عملية بيع", "تم تسجيل البيع بنجاح وتحديث السجل!");
+            window.posCart = {};
+            calcPosTotal();
+            if (window.selectedPosOp) selectPosOperator(window.selectedPosOp);
+            window.closeAdminWindow('pos');
+
+            try {
+                const docRef = await addDoc(collection(db, "orders"), newOrderData);
+                let queue = JSON.parse(localStorage.getItem('offlineOrdersQueue') || '[]');
+                queue = queue.filter(q => q.id !== newOrderData.id);
+                localStorage.setItem('offlineOrdersQueue', JSON.stringify(queue));
+            } catch (e) {
+                console.log("الإنترنت مقصوصة، ستتم مزامنة البيعة لاحقاً تلقائياً.");
+            }
+        };
+
+        // --- دالة تصدير وتحميل الجدول كملف Excel (.xlsx) على الهاتف والـ APK ---
         window.exportTableToExcel = function(tbodyId, filenamePrefix) {
             const tbody = document.getElementById(tbodyId);
             if (!tbody) {
@@ -1531,7 +1598,7 @@
                 `;
             });
             const tbody = document.getElementById('invoicesHistoryTableBody');
-            if (tbody) tbody.innerHTML = html || '<tr><td colspan="2" class="text-center text-slate-400 py-4">لا توجد فواتير سابقة.</td></tr>';
+            if (tbody) tbody.innerHTML = html || '<tr><td colspan="2" class="text-center text-slate-400 py-4">لا توجد فواتير مسجلة بعد.</td></tr>';
         }
 
         window.openInvoiceDetailModal = function(invId) {
@@ -2002,71 +2069,6 @@
             }
             document.getElementById('posCartTotal').innerText = total.toFixed(3) + ' د.ت';
         }
-
-        window.submitPosOrder = async function() {
-            const clientName = document.getElementById('posRegisteredClientSelect').value;
-            const paymentStatus = document.getElementById('posPaymentStatus').value;
-            if (!clientName) { alert('اختر الحانوت أولاً.'); return; }
-            
-            let items = [], totalSell = 0, totalBuy = 0;
-            for (let id in window.posCart) {
-                if (window.posCart[id].qty > 0) {
-                    let item = window.posCart[id];
-                    items.push(item);
-                    totalSell += item.sell * item.qty;
-                    totalBuy += item.buy * item.qty;
-                }
-            }
-            if (items.length === 0) { alert('القفة فارغة، الرجاء اختيار بطاقات للبيع.'); return; }
-
-            let paidAmount = 0, creditAmount = 0;
-            if (paymentStatus === 'Payé') {
-                paidAmount = totalSell;
-                creditAmount = 0;
-            } else if (paymentStatus === 'Crédit') {
-                paidAmount = 0;
-                creditAmount = totalSell;
-            } else if (paymentStatus === 'Partiel') {
-                paidAmount = parseFloat(document.getElementById('validerPaidAmount').value) || 0;
-                creditAmount = totalSell - paidAmount;
-                if (paidAmount <= 0 || paidAmount >= totalSell) { alert('الرجاء إدخال مبلغ مدفوع جزئي صحيح.'); return; }
-            }
-
-            const newOrderData = {
-                id: 'local_' + Date.now(),
-                clientName, 
-                vendeurId: window.currentVendeur.id,
-                items, totalSell, totalBuy, benefice: totalSell - totalBuy,
-                paymentStatus: paymentStatus === 'Payé' ? 'Payé' : (paymentStatus === 'Crédit' ? 'Crédit' : 'جزئي'),
-                paidAmount: paidAmount,
-                creditAmount: creditAmount,
-                date: new Date().toISOString(), 
-                status: 'مكتمل ومؤكد'
-            };
-
-            window.allOrders.unshift(newOrderData);
-            let localQueue = JSON.parse(localStorage.getItem('offlineOrdersQueue') || '[]');
-            localQueue.push(newOrderData);
-            localStorage.setItem('offlineOrdersQueue', JSON.stringify(localQueue));
-
-            processAdminStatsAndStock();
-            renderJournalTable();
-
-            window.showSystemNotification("عملية بيع", "تم تسجيل البيع بنجاح وتحديث السجل!");
-            window.posCart = {};
-            calcPosTotal();
-            if (window.selectedPosOp) selectPosOperator(window.selectedPosOp);
-            window.closeAdminWindow('pos');
-
-            try {
-                const docRef = await addDoc(collection(db, "orders"), newOrderData);
-                let queue = JSON.parse(localStorage.getItem('offlineOrdersQueue') || '[]');
-                queue = queue.filter(q => q.id !== newOrderData.id);
-                localStorage.setItem('offlineOrdersQueue', JSON.stringify(queue));
-            } catch (e) {
-                console.log("الإنترنت مقصوصة، ستتم مزامنة البيعة لاحقاً تلقائياً.");
-            }
-        };
 
         window.checkVendeurAuth();
 
