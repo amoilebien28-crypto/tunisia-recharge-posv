@@ -83,6 +83,7 @@
         #windowInvoice:not(.hidden),
         #windowStock:not(.hidden),
         #windowStats:not(.hidden),
+        #windowFicheArticle:not(.hidden),
         #windowPos:not(.hidden) {
             display: block !important;
             position: fixed !important;
@@ -259,6 +260,20 @@
                     <i class="fa-solid fa-chevron-left text-rose-700 text-xs"></i>
                 </button>
 
+                <!-- زر إدارة أسعار البطاقات (Fiche Article) -->
+                <button type="button" onclick="openFicheArticleWindow()" class="w-full text-right bg-amber-100 hover:bg-amber-200 text-amber-950 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-amber-500 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-amber-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold shadow-2xs">
+                            <i class="fa-solid fa-tags"></i>
+                        </div>
+                        <div>
+                            <span class="text-sm font-black block">إدارة أسعار الشراء والبيع (Fiche Article)</span>
+                            <span class="text-[11px] text-amber-800 font-normal">تحديد وتعديل أسعار الشراء والبيع لكل بطاقة وشحن لضبط الأرباح بدقة</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-left text-amber-800 text-xs"></i>
+                </button>
+
                 <!-- الزر الجديد: سجل خلاصات الديون -->
                 <button type="button" onclick="openAdminWindow('paymentsHistory')" class="w-full text-right bg-teal-100 hover:bg-teal-200 text-teal-950 p-4 rounded-2xl font-bold flex justify-between items-center transition border-2 border-teal-500 shadow-sm">
                     <div class="flex items-center gap-3">
@@ -419,6 +434,24 @@
                 </table>
             </div>
             <button type="button" onclick="closeAdminWindow('paymentsHistory')" class="w-full bg-slate-800 text-white py-3.5 rounded-xl font-bold text-xs">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- نافذة إدارة أسعار البطاقات والشحن (Fiche Article) -->
+    <div id="windowFicheArticle" class="admin-window hidden">
+        <div>
+            <div class="flex justify-between items-center border-b pb-3 mb-3 border-slate-200">
+                <h4 class="font-bold text-lg text-slate-900"><i class="fa-solid fa-tags text-amber-600 ml-2"></i> إدارة أسعار البطاقات والشحن (Fiche Article)</h4>
+                <button type="button" onclick="closeAdminWindow('ficheArticle')" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
+            </div>
+            <p class="text-xs text-slate-500 mb-3">قم بتعديل سعر الشراء وسعر البيع لكل صنف ثم اضغط حفظ وتحديث الأسعار:</p>
+            
+            <div id="ficheArticleListContainer" class="space-y-3 mb-4"></div>
+
+            <div class="flex gap-2 sticky bottom-0 bg-white py-3 border-t border-slate-200">
+                <button type="button" onclick="saveFicheArticlePrices()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold text-xs shadow-md">حفظ وتحديث الأسعار</button>
+                <button type="button" onclick="closeAdminWindow('ficheArticle')" class="bg-slate-200 text-slate-700 px-6 py-3.5 rounded-xl font-bold text-xs">إغلاق</button>
+            </div>
         </div>
     </div>
 
@@ -1038,7 +1071,48 @@
 
                 window.currentVendeur = matched;
                 localStorage.setItem('currentVendeur', JSON.stringify(window.currentVendeur));
-                window.checkVendeurAuth();
+                
+        window.openFicheArticleWindow = function() {
+            let html = '';
+            window.tariffs.forEach(t => {
+                html += `
+                    <div class="bg-white p-3.5 rounded-2xl border-2 border-slate-300 grid grid-cols-1 md:grid-cols-3 gap-2 items-center text-xs">
+                        <div>
+                            <span class="font-black text-slate-900 block">${t.operator} - ${t.name}</span>
+                            <span class="text-[10px] text-slate-400 font-mono">ID: ${t.id}</span>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-500 mb-0.5 font-bold">سعر الشراء (د.ت):</label>
+                            <input type="number" step="0.001" value="${t.buy}" id="fa_buy_${t.id}" class="w-full border border-slate-300 p-2 rounded-xl text-center font-bold bg-slate-50">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-slate-500 mb-0.5 font-bold">سعر البيع (د.ت):</label>
+                            <input type="number" step="0.001" value="${t.sell}" id="fa_sell_${t.id}" class="w-full border border-slate-300 p-2 rounded-xl text-center font-bold bg-slate-50">
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('ficheArticleListContainer').innerHTML = html;
+            window.openAdminWindow('ficheArticle');
+        };
+
+        window.saveFicheArticlePrices = function() {
+            window.tariffs.forEach(t => {
+                let buyInput = document.getElementById(`fa_buy_${t.id}`);
+                let sellInput = document.getElementById(`fa_sell_${t.id}`);
+                if (buyInput && sellInput) {
+                    t.buy = parseFloat(buyInput.value) || 0;
+                    t.sell = parseFloat(sellInput.value) || 0;
+                }
+            });
+            localStorage.setItem('customTariffs', JSON.stringify(window.tariffs));
+            renderInvoiceForm();
+            calcInvoiceTotal();
+            window.showSystemNotification("تحديث الأسعار", "تم حفظ وتحديث أسعار الشراء والبيع بنجاح!");
+            window.closeAdminWindow('ficheArticle');
+        };
+
+        window.checkVendeurAuth();
 
             } catch (e) {
                 if (window.currentVendeur) {
@@ -1237,7 +1311,7 @@
             document.getElementById('systemNotificationModal').classList.add('hidden');
         };
 
-        window.tariffs = [
+        const defaultTariffs = [
             { id: 'Ooredoo_1', operator: 'Ooredoo', name: 'بطاقة 1 د.ت', buy: 0.950, sell: 1.000 },
             { id: 'Ooredoo_5', operator: 'Ooredoo', name: 'بطاقة 5 د.ت', buy: 4.750, sell: 5.000 },
             { id: 'Ooredoo_10', operator: 'Ooredoo', name: 'بطاقة 10 د.ت', buy: 9.500, sell: 10.000 },
@@ -1256,6 +1330,7 @@
             { id: 'Orange_25', operator: 'Orange', name: 'بطاقة 25 د.ت', buy: 23.750, sell: 25.000 },
             { id: 'Orange_Recharge', operator: 'Orange', name: 'شحن إلكتروني (E-Recharge / Orange)', buy: 0.960, sell: 1.000 }
         ];
+        window.tariffs = JSON.parse(localStorage.getItem('customTariffs') || JSON.stringify(defaultTariffs));
 
         window.openAddClientModal = () => document.getElementById('addClientModal').classList.remove('hidden');
         window.closeAddClientModal = () => document.getElementById('addClientModal').classList.add('hidden');
