@@ -993,7 +993,7 @@
             }
         };
 
-        // --- تصحيح دالة إتمام البيع المباشر لمعالجة مبلغ الكريدي الجزئي صحيحاً ---
+        // --- دالة إتمام البيع المباشر مع تصحيح قراءة مبلغ الخلاص الجزئي ---
         window.submitPosOrder = async function() {
             const clientName = document.getElementById('posRegisteredClientSelect').value;
             const paymentStatus = document.getElementById('posPaymentStatus').value;
@@ -1018,7 +1018,6 @@
                 paidAmount = 0;
                 creditAmount = totalSell;
             } else if (paymentStatus === 'Partiel') {
-                // التصحيح هنا: قراءة المبلغ المدفوع من حقل الـ POS الصحيح (posPaidAmountInput)
                 paidAmount = parseFloat(document.getElementById('posPaidAmountInput').value) || 0;
                 creditAmount = totalSell - paidAmount;
                 if (paidAmount <= 0 || paidAmount >= totalSell) { alert('الرجاء إدخال مبلغ مدفوع جزئي صحيح.'); return; }
